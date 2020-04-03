@@ -1,0 +1,22 @@
+.block {
+    margin-left: 100px;
+    margin-right: 100px;
+  }
+
+  .block:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+  }
+
+  .centered {
+    display: inline-block;
+    vertical-align: middle;
+    width: 300px;
+  }
+
+img.logo {
+    width: 6%
+}

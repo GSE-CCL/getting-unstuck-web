@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Getting Unstuck 2020</title>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
+    
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a href="#" class="navbar-left"><img class="logo" src="static/img/getting-unstuck-logo.png"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="#">Challenges <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" href="#">Strategies</a>
+                <a class="nav-item nav-link active" href="#">About</a>
+              </div>
+            </div>
+        </div>
+      </nav>
+    <h1 class="block">
+        What did you make? <br> What did you learn?
+    </h1>
+    <p class="block">
+        Thank you for participating in Getting Unstuck! To explore some of what you made and learned, create a Scratch studio
+        and add all of the projects you made for Getting Unstuck into the studio. 
+    </p>
+
+    <p class="block">Enter your Scratch project link here!</p>
+    <form action="." method="POST" class="block">
+      <input type="text" id="project_url" name="project_url"><br><br>
+      <input type="submit" name="project-url">
+    </form>
+
+    <p class="block">Hello, [username]!</p><br>
+    <p class="block">You participated in 10 out of the 15 challenges!</p>
+</body>
+</html>

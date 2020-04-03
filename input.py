@@ -16,7 +16,6 @@ def project_form_post():
     project_id = scraper.get_id(project_url)
     downloaded_project = scraper.download_project(project_id)
 
-
     if project_id != "":
         return "<h1>" + str(project_id) + "</h1> <p>" + str(downloaded_project) + "</p>"
 

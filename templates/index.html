@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Getting Unstuck 2020</title>
-    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
-    
-    <!-- <link rel="stylesheet" href="css/style.css"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+  </head>
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a href="#" class="navbar-left"><img class="logo" src="static/img/getting-unstuck-logo.png"></a>
@@ -41,6 +39,18 @@
     </form>
 
     <p class="block">Hello, [username]!</p><br>
-    <p class="block">You participated in 10 out of the 15 challenges!</p>
+    <p class="block">
+      You participated in 10 out of the 15 challenges!
+      We noticed you used the <code class="b">if <<mouse down?> and <(costume #) = [1]>> then
+        stamp
+    end</code><code class="a"> wait (0.5) secs</code> block in Scratch.
+
+    </p>
 </body>
+<script src="https://scratchblocks.github.io/js/scratchblocks-v3-min.js"></script>
+<script>
+  scratchblocks.renderMatching('pre.blocks');
+  scratchblocks.renderMatching("code.b", {inline: true});
+  scratchblocks.renderMatching("code.a", {inline: true});
+</script>
 </html>

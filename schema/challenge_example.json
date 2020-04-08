@@ -1,0 +1,54 @@
+{
+    "id": 1,
+    "title": "Day 1",
+    "description": "Create a project that whenever two sprites collide, one of them says, \"Excuse me!\" and the other sprite says, \"Certainly.\"",
+    "studio": 5142661,
+    "min_instructions_length": 1,
+    "min_notes_length": 1,
+    "min_comments_made": 0,
+    "min_backdrops": 1,
+    "min_sprites": 1,
+    "required_text": [
+        [
+            "excuse me",
+            "pardon me"
+        ],
+        [
+            "certainly",
+            "of course",
+            "no worries"
+        ]
+    ],
+    "required_block_categories": [
+        {
+            "name": "looks",
+            "count": 2
+        },
+        {
+            "name": "sensing",
+            "count": 1
+        }
+    ],
+    "required_blocks": [
+        [
+            {
+                "name": "looks_say",
+                "count": 1
+            },
+            {
+                "name": "looks_sayforsecs",
+                "count": 1
+            }
+        ],
+        [
+            {
+                "name": "looks_say",
+                "count": 1
+            },
+            {
+                "name": "looks_sayforsecs",
+                "count": 1
+            }
+        ]
+    ]
+}

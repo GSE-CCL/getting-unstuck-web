@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">   
+    <head>
+        <meta charset="UTF-8">
+        <title>Getting Unstuck 2020</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      </head>
+
+      <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a href="#" class="navbar-left"><img class="logo" src="static/img/getting-unstuck-logo.png"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
+                  <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Challenges <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link active" href="#">Strategies</a>
+                    <a class="nav-item nav-link active" href="#">About</a>
+                  </div>
+                </div>
+            </div>
+          </nav>
+        {% if username %}
+            <h1 class="block">Hello, {{username}}!</h1><br>
+        {% else %}
+          <h1 class="block">Hello there!</h1>
+        {% endif %}
+
+        {% if results %}
+            <!-- <p class="block"> {{data}}</p> -->
+            <p class="block"> {{results}}</h1>
+        {% else %}
+            <p class="block"> No data was loaded!</p>
+        {% endif %}
+
+        <p class="block">
+            You participated in 10 out of the 15 challenges!
+            We noticed you used the <code class="b">if <<mouse down?> and <(costume #) = [1]>> then
+            stamp
+            end</code>
+            <code class="a"> wait (0.5) secs</code> block in Scratch.
+
+        </p>
+    <script src="https://scratchblocks.github.io/js/scratchblocks-v3-min.js"></script>
+    <script>
+        scratchblocks.renderMatching('pre.blocks');
+        scratchblocks.renderMatching("code.b", {inline: true});
+        scratchblocks.renderMatching("code.a", {inline: true});
+    </script>
+</html>
+

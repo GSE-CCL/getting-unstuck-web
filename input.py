@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from ccl_scratch_scrape import Scraper
+from blockify import *
 
 app = Flask(__name__)
 
@@ -15,9 +16,11 @@ def project_form_post():
     project_url = request.form['project_url']
     project_id = scraper.get_id(project_url)
     downloaded_project = scraper.download_project(project_id)
+    results = blockify(downloaded_project)
 
     if project_id != "":
-        return "<h1>" + str(project_id) + "</h1> <p>" + str(downloaded_project) + "</p>"
+        return render_template("results.html", username=project_id, data=downloaded_project, results=results)
+
 
 
 if __name__ == '__main__':

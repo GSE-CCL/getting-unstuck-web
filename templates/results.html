@@ -25,32 +25,120 @@
                 </div>
             </div>
           </nav>
-        {% if username %}
-            <h1 class="block">Hello, {{username}}!</h1><br>
-        {% else %}
-          <h1 class="block">Hello there!</h1>
-        {% endif %}
 
+        <p class="block">The Day 15 Prompt was: </p>
+        <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
+
+        <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
+            conditional Control blocks, which can be used when a conditions has been met:</p>
+        
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <code class="conditional1 nobreak">
+                        if <> then
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional2 nobreak">
+                        if <> then
+                        else
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional3 nobreak">
+                        repeat until <>
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional4 nobreak">
+                        wait until <>
+                    </code>
+                </div>
+            </div>
+        </div>
+<!-- 
         {% if results %}
-            <!-- <p class="block"> {{data}}</p> -->
             <p class="block"> {{results}}</h1>
         {% else %}
             <p class="block"> No data was loaded!</p>
-        {% endif %}
+        {% endif %} -->
 
+        {% for result in results %}
+            {% if result == "When Flag Clicked"%}
+                <p class="block" style = "text-align: center"> We noticed you used the <code class="d">When Green Flag Clicked</code> block! 
+                    That's a great way to start your project.</p>
+            {% endif %}
+        {% endfor %}
+
+        <p class="block">When Flag Clicked blocks used: </p>
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <h1>{{ results["When Flag Clicked"] }}</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>9</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>28</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>1</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <p>In your project</p>
+                </div>
+                <div class="col-sm">
+                    <p>In others' projects <br>(on average)</p>
+                </div>
+                <div class="col-sm">
+                    <p>In the project with <br> the largest number</p>
+                </div>
+                <div class="col-sm">
+                    <p>In the project with <br> the fewest number</p>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br>
         <p class="block">
-            You participated in 10 out of the 15 challenges!
-            We noticed you used the <code class="b">if <<mouse down?> and <(costume #) = [1]>> then
+            Some additional examples of vertical stacking: <br>
+            We noticed you used the <code class="b">if <<mouse down?> and <(costume #) = [1]>> 
+                then
             stamp
             end</code>
+
             <code class="a"> wait (0.5) secs</code> block in Scratch.
+
+            <code class="c">
+                set [dist v] to ((speed) * (distance to [mouse-pointer v]))
+                repeat until <(timer) > [10]>
+                    move (dist) steps
+                    play note (42 v) for (0.5) beats
+                    say [Wow! Scratch 2.0 scripts in the forums!]
+                end
+            </code>
 
         </p>
     <script src="https://scratchblocks.github.io/js/scratchblocks-v3-min.js"></script>
     <script>
         scratchblocks.renderMatching('pre.blocks');
-        scratchblocks.renderMatching("code.b", {inline: true});
+        scratchblocks.renderMatching("code.b", {inline: false});
         scratchblocks.renderMatching("code.a", {inline: true});
+        scratchblocks.renderMatching("code.c", {inline: false});
+        scratchblocks.renderMatching("code.d", {inline: false});
+        scratchblocks.renderMatching("code.conditional1", {inline: false});
+        scratchblocks.renderMatching("code.conditional2", {inline: false});
+        scratchblocks.renderMatching("code.conditional3", {inline: false});
+        scratchblocks.renderMatching("code.conditional4", {inline: false});
     </script>
 </html>
 

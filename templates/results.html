@@ -60,14 +60,36 @@
                 </div>
             </div>
         </div>
-<!-- 
-        {% if results %}
-            <p class="block"> {{results}}</h1>
-        {% else %}
-            <p class="block"> No data was loaded!</p>
-        {% endif %} -->
+        <p class="block" style="text-align: center"> In your project, you used 
+            {% if results["categories"]["control"] > 1 %}
+                multiple control blocks! Nice!        
+            {% elif results["categories"]["control"] == 1 %}
+                one control block. 
+            {% else %}
+                zero control blocks. 
+            {% endif %}
+        </p>
 
-        {% for result in results %}
+        {% if results["categories"]["control"] >= 1 %}
+            <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
+        {% endif %}
+        
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
+                </div>
+                <div class="col-sm">
+                    <code class="surround">
+                        {% for block in surround%}
+                            {{ block }}
+                        {% endfor %}
+                    </code>
+                </div>
+            </div>
+        </div> 
+
+        {% for result in block_names["blocks"] %}
             {% if result == "When Flag Clicked"%}
                 <p class="block" style = "text-align: center"> We noticed you used the <code class="d">When Green Flag Clicked</code> block! 
                     That's a great way to start your project.</p>
@@ -78,7 +100,7 @@
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-sm">
-                    <h1>{{ results["When Flag Clicked"] }}</h1>
+                    <h1>{{ block_names["When Flag Clicked"] }}</h1>
                 </div>
                 <div class="col-sm">
                     <h1>9</h1>
@@ -109,7 +131,18 @@
             </div>
         </div>
         <br><br><br><br><br>
-        <p class="block">
+        <!-- Other things here: 
+        {{ block }}
+
+
+        Results:
+        {{ results }}
+
+        <br><br>Child:
+        {{ child }}
+
+        Sprite: {{sprite}} -->
+        <!-- <p class="block">
             Some additional examples of vertical stacking: <br>
             We noticed you used the <code class="b">if <<mouse down?> and <(costume #) = [1]>> 
                 then
@@ -127,13 +160,14 @@
                 end
             </code>
 
-        </p>
+        </p> -->
     <script src="https://scratchblocks.github.io/js/scratchblocks-v3-min.js"></script>
     <script>
         scratchblocks.renderMatching('pre.blocks');
-        scratchblocks.renderMatching("code.b", {inline: false});
-        scratchblocks.renderMatching("code.a", {inline: true});
-        scratchblocks.renderMatching("code.c", {inline: false});
+        scratchblocks.renderMatching('code.surround', {inline:false});
+        // scratchblocks.renderMatching("code.b", {inline: false});
+        // scratchblocks.renderMatching("code.a", {inline: true});
+        // scratchblocks.renderMatching("code.c", {inline: false});
         scratchblocks.renderMatching("code.d", {inline: false});
         scratchblocks.renderMatching("code.conditional1", {inline: false});
         scratchblocks.renderMatching("code.conditional2", {inline: false});

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Getting Unstuck 2020</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a href="#" class="navbar-left"><img class="logo" src="static/img/getting-unstuck-logo.png"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="#">Challenges <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link active" href="#">Strategies</a>
+                    <a class="nav-item nav-link active" href="#">About</a>
+                </div>
+                </div>
+            </div>
+        </nav>
+        <h1 class="block">
+            Studio {{ sid }}
+        </h1>
+        <ul class="block">
+            {% for project in projects: %}
+            <li><a href="/project/{{ project['project_id']}}">{{ project["title"] }}</a> by {{ project["author"] }}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

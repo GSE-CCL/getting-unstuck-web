@@ -1,10 +1,9 @@
-from flask import Flask
-from flask import request
-from flask import render_template
-from blockify import * 
+import threading
+from flask import Flask, redirect, render_template, request
 from ccl_scratch_tools import Parser 
 from ccl_scratch_tools import Scraper
 
+from lib import scrape
 
 app = Flask(__name__)
 
@@ -35,7 +34,28 @@ def project_form_post():
     if project_id != "":
         return render_template("results.html", username=project_id, data=downloaded_project, results=results, block_names=block_names, child=child, sprite=sprite, surround=block_list)
 
+@app.route("/studio", methods=["GET", "POST"])
+def studio():
+    if request.method == "GET":
+        return render_template("studio.html")
+    else:
+        scraper = Scraper()
+        sid = scraper.get_id(request.form["studio"])
 
+        if sid is not None:
+            studio_thread = threading.Thread(target=scrape.add_studio, args=(sid,))
+            studio_thread.start()
+
+            return redirect("/studio/{0}".format(sid))
+        else:
+            return render_template("studio.html", message="Please enter a valid studio ID or URL.")
+
+@app.route("/studio/<sid>")
+def studio_id(sid):
+    scrape.connect_db()
+    projects = list(scrape.Project.objects(studio_id = sid))
+
+    return render_template("studio_id.html", projects=projects, sid=sid)
 
 if __name__ == "__main__":
     app.run()

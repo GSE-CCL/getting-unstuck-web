@@ -47,12 +47,13 @@ def connect_db(credentials_file="secure/db.json"):
                          username=credentials["username"],
                          password=credentials["password"])
 
-def get_projects_with_block(opcode, project_id=0, credentials_file="secure/db.json"):
+def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
     
     Args:
         opcode (str): the Scratch opcode for the block type.
         project_id (int): exclude this project from the search.
+        studio_id (int): limit to projects in this studio.
         credentials_file (str): path to the database credentials file.
 
     Returns:
@@ -68,6 +69,9 @@ def get_projects_with_block(opcode, project_id=0, credentials_file="secure/db.js
             "stats.blocks.{0}".format(opcode): {"$exists": True},
             "project_id": {"$ne": project_id}
         }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+            
         opcode_present = Project.objects(__raw__ = query)
 
     return list(opcode_present)

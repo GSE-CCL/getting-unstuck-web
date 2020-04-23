@@ -8,15 +8,15 @@ from ccl_scratch_tools import Scraper
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def homepage():
     return render_template("index.html") 
 
-@app.route('/', methods=['POST'])
+@app.route("/", methods=["POST"])
 def project_form_post():
     scraper = Scraper()
     parser = Parser()
-    project_url = request.form['project_url']
+    project_url = request.form["project_url"]
     project_id = scraper.get_id(project_url)
     downloaded_project = scraper.download_project(project_id)
     results = blockify(downloaded_project)
@@ -37,5 +37,5 @@ def project_form_post():
 
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

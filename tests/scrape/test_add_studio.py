@@ -18,6 +18,8 @@ def test_add_studio_nonexistent(tmp_path, credentials):
                   password=credentials["password"])
 
     assert len(scrape.Project.objects()) == 0
+    assert len(scrape.Comment.objects()) == 0
+    assert len(scrape.Studio.objects()) == 0
 
 def test_add_studio(tmp_path, credentials):
     scrape.add_studio(26211962, cache_directory=tmp_path, credentials_file=credentials)
@@ -41,5 +43,8 @@ def test_add_studio(tmp_path, credentials):
 
     assert len(scrape.Comment.objects(project_id=383948574)) >= 3
     assert len(scrape.Comment.objects(content="I love this project!")) >= 1
+
+    assert len(scrape.Studio.objects(studio_id=26211962)) == 1
+    assert len(scrape.Studio.objects(title="Test_Studio")) == 1
 
     db.drop_database("test_db")

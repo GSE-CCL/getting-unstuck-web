@@ -1,12 +1,17 @@
 import threading
-from flask import Flask, redirect, render_template, request
-from ccl_scratch_tools import Parser 
+import urllib
+from flask import Flask, redirect, render_template, request, session
+from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 
 from lib import scrape
+from lib.authentication import admin_required, login_required
 
 app = Flask(__name__)
 
+# TODO: Authentication
+
+# Studios, projects
 @app.route("/")
 def homepage():
     return render_template("index.html") 
@@ -34,7 +39,13 @@ def project_form_post():
     if project_id != "":
         return render_template("results.html", username=project_id, data=downloaded_project, results=results, block_names=block_names, child=child, sprite=sprite, surround=block_list)
 
+@app.route("/redirect", methods=["GET"])
+def redirect_to():
+    if request.args.get("username") is not None:
+        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
+
 @app.route("/studio", methods=["GET", "POST"])
+#@admin_required
 def studio():
     if request.method == "GET":
         return render_template("studio.html")
@@ -53,9 +64,21 @@ def studio():
 @app.route("/studio/<sid>")
 def studio_id(sid):
     scrape.connect_db()
+    studio = scrape.Studio.objects(studio_id = sid).first()
     projects = list(scrape.Project.objects(studio_id = sid))
 
-    return render_template("studio_id.html", projects=projects, sid=sid)
+    return render_template("studio_id.html", projects=projects, studio=studio)
+
+@app.route("/user/<username>")
+def user_id(username):
+    scrape.connect_db()
+    projects = list(scrape.Project.objects(author = username))
+    studios = dict()
+    for project in projects:
+        if project["studio_id"] not in studios:
+            studios[project["studio_id"]] = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+
+    return render_template("username.html", projects=projects, studios=studios, username=username)
 
 if __name__ == "__main__":
     app.run()

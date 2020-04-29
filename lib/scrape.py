@@ -4,6 +4,14 @@ import json
 import mongoengine as mongo
 import os
 
+class Comment(mongo.Document):
+    comment_id = mongo.IntField(required=True)
+    project_id = mongo.IntField(required=True)
+    date = mongo.DateTimeField(required=True)
+    author = mongo.StringField(required=True, max_length=50)
+    recipient = mongo.StringField(required=True, max_length=50)
+    content = mongo.StringField(required=True, max_length=10000)
+
 class Project(mongo.Document):
     project_id = mongo.IntField(required=True, unique=True)
     title = mongo.StringField(required=True, max_length=200)
@@ -16,13 +24,10 @@ class Project(mongo.Document):
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
 
-class Comment(mongo.Document):
-    comment_id = mongo.IntField(required=True)
-    project_id = mongo.IntField(required=True)
-    date = mongo.DateTimeField(required=True)
-    author = mongo.StringField(required=True, max_length=50)
-    recipient = mongo.StringField(required=True, max_length=50)
-    content = mongo.StringField(required=True, max_length=10000)
+class Studio(mongo.Document):
+    studio_id = mongo.IntField(required=True, unique=True)
+    title = mongo.StringField(required=True, max_length=200)
+    description = mongo.StringField(max_length=5000)
 
 def connect_db(credentials_file="secure/db.json"):
     """Connects to MongoDB using credentials.
@@ -194,10 +199,30 @@ def add_studio(studio_id, cache_directory=None, credentials_file="secure/db.json
         IOError: if couldn't write the JSON file to the given cache_directory.
     """
     
-    # Get project IDs
+    # Load scraper class
     scraper = Scraper()
-    project_ids = scraper.get_projects_in_studio(studio_id)
 
-    # Add all the projects
-    for project in project_ids:
-        add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+    # Add individual studio to DB    
+    studio_info = scraper.get_studio_meta(studio_id)
+    if studio_info is not None:
+        connect_db(credentials_file=credentials_file)
+
+        preexisting = Studio.objects(studio_id=studio_id).first()
+        if preexisting:
+            # Update a few fields
+            doc = preexisting
+            doc.title = studio_info["title"]
+            doc.description = studio_info["description"]
+        else:
+            # New studio altogether
+            doc = Studio(
+                studio_id = studio_id,
+                title = studio_info["title"],
+                description = studio_info["description"]
+            )
+        doc.save()
+
+        # Add all the projects
+        project_ids = scraper.get_projects_in_studio(studio_id)
+        for project in project_ids:
+            add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}Getting Unstuck</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a href="/" class="navbar-left navbar-brand">
+                    <img class="logo" src="{{ url_for('static', filename='img/getting-unstuck-logo.png') }}">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
+                    <div class="navbar-nav ml-auto">
+                        <a class="nav-item nav-link" href="/challenges">Challenges</a>
+                        <a class="nav-item nav-link" href="/strategies">Strategies</a>
+                        <a class="nav-item nav-link" href="/about">About</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="container mt-3">
+            {% if message: %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-primary" role="alert">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% block main_content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

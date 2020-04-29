@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}{{ username }} &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            {{ username }}
+        </h1>
+        <p><a href="https://scratch.mit.edu/users/{{ username }}">View user on Scratch</a></p>
+
+        {% if projects == []: %}
+        <p>
+            Looks like this user didn&rsquo;t add any projects to
+            the Getting Unstuck Studios!
+        </p>
+
+        {% else: %}
+        <h5>Getting Unstuck projects by {{ username }}:</h5>
+        <ul>
+            {% for project in projects: %}
+            <li>
+                <a href="/project/{{ project['project_id']}}">{{ project["title"] }}</a>
+                in studio <a href="/studio/{{ project['studio_id']}}">{{ studios[project["studio_id"]]["title"] }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

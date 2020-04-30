@@ -80,10 +80,11 @@
                     <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
                 </div>
                 <div class="col-sm">
+                    {{ surround }}
                     <code class="surround">
-                        {% for block in surround%}
-                            {{ block }}
-                        {% endfor %}
+
+                        
+                        {{ text }}
                     </code>
                 </div>
             </div>
@@ -132,9 +133,6 @@
         </div>
         <br><br><br><br><br>
         <!-- Other things here: 
-        {{ block }}
-
-
         Results:
         {{ results }}
 
@@ -161,18 +159,18 @@
             </code>
 
         </p> -->
-    <script src="https://scratchblocks.github.io/js/scratchblocks-v3-min.js"></script>
+    <script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
     <script>
         scratchblocks.renderMatching('pre.blocks');
-        scratchblocks.renderMatching('code.surround', {inline:false});
+        scratchblocks.renderMatching('code.surround', {inline: false, style:"scratch3"});
         // scratchblocks.renderMatching("code.b", {inline: false});
         // scratchblocks.renderMatching("code.a", {inline: true});
         // scratchblocks.renderMatching("code.c", {inline: false});
         scratchblocks.renderMatching("code.d", {inline: false});
-        scratchblocks.renderMatching("code.conditional1", {inline: false});
-        scratchblocks.renderMatching("code.conditional2", {inline: false});
-        scratchblocks.renderMatching("code.conditional3", {inline: false});
-        scratchblocks.renderMatching("code.conditional4", {inline: false});
+        scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional4", {inline: false, style:"scratch3"});
     </script>
 </html>
 

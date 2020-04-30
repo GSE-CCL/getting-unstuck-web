@@ -31,3 +31,12 @@ img.sprite {
   width:50%
 }
 
+.scratchblocks {
+  zoom: 0.675;
+}
+.markItUp .scratchblocks-button ul a {
+  padding: 0;
+  height: auto;
+  margin: 0 0 -12px;
+}
+

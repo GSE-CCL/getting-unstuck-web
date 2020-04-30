@@ -25,6 +25,27 @@
                 </div>
             </div>
         </nav>
+        {% if user: %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="navbar-left">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="#">Hi, {{ user["first_name"] }}.</a>
+                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link" href="/account">Account</a>
+                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link" href="/admin">Manage:</a>
+                        <a class="nav-item nav-link" href="/admin/challenges">Challenges</a>
+                        <a class="nav-item nav-link" href="/admin/users">Users</a>
+                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link" href="/studio">Download a studio</a>
+                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
         <div class="container mt-3">
             {% if message: %}
             <div class="row">

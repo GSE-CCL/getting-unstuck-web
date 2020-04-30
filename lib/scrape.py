@@ -1,4 +1,5 @@
 from ccl_scratch_tools import Parser, Scraper
+from . import common as common
 from datetime import datetime, timedelta
 from flask_socketio import emit
 from math import inf
@@ -6,6 +7,8 @@ import json
 import mongoengine as mongo
 import os
 import threading
+
+connect_db = common.connect_db
 
 class Comment(mongo.Document):
     comment_id = mongo.IntField(required=True)
@@ -33,29 +36,6 @@ class Studio(mongo.Document):
     description = mongo.StringField(max_length=5000)
     status = mongo.StringField(max_length=100, default="complete")
     stats = mongo.DictField()
-
-def connect_db(credentials_file="secure/db.json"):
-    """Connects to MongoDB using credentials.
-    
-    Args:
-        credentials_file (str): path to the credentials file,
-            or the Python dictionary containing the contents thereof.
-
-    Returns:
-        A MongoEngine connection instance.
-    """
-    
-    if type(credentials_file) == str:
-        with open(credentials_file) as f:
-            credentials = json.load(f)
-    elif type(credentials_file) == dict:
-        credentials = credentials_file
-
-    return mongo.connect(credentials["database"],
-                         host=credentials["host"],
-                         port=credentials["port"],
-                         username=credentials["username"],
-                         password=credentials["password"])
 
 def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.

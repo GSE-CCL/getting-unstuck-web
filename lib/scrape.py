@@ -1,8 +1,11 @@
 from ccl_scratch_tools import Parser, Scraper
 from datetime import datetime, timedelta
+from flask_socketio import emit
+from math import inf
 import json
 import mongoengine as mongo
 import os
+import threading
 
 class Comment(mongo.Document):
     comment_id = mongo.IntField(required=True)
@@ -28,6 +31,8 @@ class Studio(mongo.Document):
     studio_id = mongo.IntField(required=True, unique=True)
     title = mongo.StringField(required=True, max_length=200)
     description = mongo.StringField(max_length=5000)
+    status = mongo.StringField(max_length=100, default="complete")
+    stats = mongo.DictField()
 
 def connect_db(credentials_file="secure/db.json"):
     """Connects to MongoDB using credentials.
@@ -126,7 +131,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         credentials_file (str): path to the database credentials file.
     
     Returns:
-        True, if a new insertion. False, if updated a record.
+        True, if a new insertion. False, if updated a record. False if Scratch 2.
 
     Raises:
         IOError: if couldn't write the JSON file to the given cache_directory.
@@ -148,6 +153,8 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     # Parse the project using the parser class
     parser = Parser()
     stats = parser.blockify(scratch_data = scratch_data)
+    if not stats:
+        return False
 
     # Check database for existing project with project_id
     connect_db(credentials_file=credentials_file)
@@ -213,16 +220,124 @@ def add_studio(studio_id, cache_directory=None, credentials_file="secure/db.json
             doc = preexisting
             doc.title = studio_info["title"]
             doc.description = studio_info["description"]
+            doc.status = "in_progress"
         else:
             # New studio altogether
             doc = Studio(
                 studio_id = studio_id,
                 title = studio_info["title"],
-                description = studio_info["description"]
+                description = studio_info["description"],
+                status = "in_progress"
             )
         doc.save()
 
-        # Add all the projects
-        project_ids = scraper.get_projects_in_studio(studio_id)
-        for project in project_ids:
-            add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+        # Start a new thread so we can return a webpage
+        def add_projects():
+            # Add all the projects
+            project_ids = scraper.get_projects_in_studio(studio_id)
+            for project in project_ids:
+                add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+
+            stats = get_studio_stats(studio_id, credentials_file=credentials_file)
+
+            preexisting = Studio.objects(studio_id=studio_id).first()
+            preexisting.status = "complete"
+            preexisting.stats = stats
+            preexisting.save()
+        
+        studio_thread = threading.Thread(target=add_projects)
+        studio_thread.start()
+
+def get_studio_stats(studio_id, credentials_file="secure/db.json"):
+    """Returns a dictionary of statistics about a studio.
+    
+    Args:
+        studio_id (int): the ID of the studio to scrape.
+        credentials_file (str): path to the database credentials file.
+    
+    Returns:
+        A dictionary of statistics, including mean, min, and max.
+    """
+    
+    connect_db(credentials_file=credentials_file)
+    projects = Project.objects(studio_id=studio_id)
+    
+    stats = {
+        "mean": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0,
+            "number_projects": len(projects)
+        },
+        "min": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0,
+            "number_projects": len(projects)
+        },
+        "max": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0,
+            "number_projects": len(projects)
+        }
+    }
+
+    # Calculate mean values
+    no_direct_average = ["blocks", "block_categories", "number_projects"]
+    top_level = ["description", "instructions"]
+    for project in projects:
+        for key in stats["mean"]:
+            if key not in no_direct_average:
+                if key in top_level:
+                    stats["mean"][key] += len(project[key])
+                    stats["min"][key] = min(stats["min"][key], len(project[key]))
+                    stats["max"][key] = max(stats["max"][key], len(project[key]))
+                else:
+                    stats["mean"][key] += len(project["stats"][key])
+                    stats["min"][key] = min(stats["min"][key], len(project["stats"][key]))
+                    stats["max"][key] = max(stats["max"][key], len(project["stats"][key]))
+
+        for block in project["stats"]["blocks"]:
+            if block not in stats["mean"]["blocks"]:
+                stats["mean"]["blocks"][block] = 0
+                stats["min"]["blocks"][block] = inf
+                stats["max"]["blocks"][block] = - inf
+
+            stats["mean"]["blocks"][block] += len(project["stats"]["blocks"][block])
+            stats["min"]["blocks"][block] = min(stats["min"]["blocks"][block], len(project["stats"]["blocks"][block]))
+            stats["max"]["blocks"][block] = max(stats["max"]["blocks"][block], len(project["stats"]["blocks"][block]))
+        for cat in project["stats"]["categories"]:
+            if cat not in stats["mean"]["block_categories"]:
+                stats["mean"]["block_categories"][cat] = 0
+                stats["min"]["block_categories"][cat] = inf
+                stats["max"]["block_categories"][cat] = - inf
+
+            stats["mean"]["block_categories"][cat] += project["stats"]["categories"][cat]
+            stats["min"]["block_categories"][cat] = min(stats["min"]["block_categories"][cat], project["stats"]["categories"][cat])
+            stats["max"]["block_categories"][cat] = max(stats["max"]["block_categories"][cat], project["stats"]["categories"][cat])
+    
+    for key in stats["mean"]:
+        if key not in no_direct_average:
+            stats["mean"][key] /= len(projects)
+    for block in stats["mean"]["blocks"]:
+        stats["mean"]["blocks"][block] /= len(projects)
+    for cat in stats["mean"]["block_categories"]:
+        stats["mean"]["block_categories"][cat] /= len(projects)
+
+    return stats

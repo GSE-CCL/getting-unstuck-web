@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}{{ project["title"] }} &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            {{ project["title"] }}
+        </h1>
+        <h5>
+            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a> &diams;
+            part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
+        </h5>
+        <p>
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}">View project on Scratch</a>
+        </p>
+        
+    </div>
+</div>
+{% endblock %}

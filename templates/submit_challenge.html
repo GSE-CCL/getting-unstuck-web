@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Welcome &minus; {% endblock %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>What did you make?</h1>
+        <h1>What did you learn?</h1>
+        <p>
+            
+            See your progress by typing in your Scratch link below.
+        </p>
+
+        <form action="/challenges" method="POST">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="username">Scratch link</label>
+                    <input type="text" class="form-control" id="project-url" name="project-url" aria-describedby="usernameHelp" placeholder="Scratch project link">
+                    <small id="usernameHelp" class="form-text text-muted">
+                        Not sure? This should appear in the top right of your screen
+                        when you go to <a href="https://scratch.mit.edu">scratch.mit.edu</a>
+                        and are logged in. It&rsquo;s also the information you use
+                        to log into Scratch.
+                    </small>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">See progress!</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

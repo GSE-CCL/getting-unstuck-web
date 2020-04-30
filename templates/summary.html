@@ -4,3 +4,53 @@
 
 {% block main_content %}
 
+<div class="row">
+    <div class="col-12">
+        Hello, [username]! <br>
+        You participated in 11 out of the 15 challenges!
+    </div>
+    <div class="col-12">
+        <div id="date-chart"></div>
+    </div>
+    <div class="text-center">
+        <form action="/redirect" method="POST">
+            <button type="submit" class="btn btn-primary text-center" >Print participation certificate!</button>
+        </form>
+    </div>
+    <br><br>
+    <div class="col-12">
+        In Getting Unstuck, you used these blocks for the first time:
+    </div>
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <code class="b">set pen color to ()</code>
+            </div>
+            <div class="col-6">
+                <code class="c">pen down</code>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+<!-- Load JS libraries-->
+<script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
+<script src="static/js/jquery.min.js"></script>
+<script src="static/js/popper.min.js"></script>
+<script src="static/js/d3.min.js"></script>
+<script src="static/js/d3-tip.js"></script>
+<script src="static/js/summary_dates.js"></script>
+<script>
+    scratchblocks.renderMatching("code.b", {inline: false, style:"scratch3"});
+    scratchblocks.renderMatching("code.c", {inline: false, style:"scratch3"});
+
+</script>
+
+
+
+{% endblock %}

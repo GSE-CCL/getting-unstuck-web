@@ -176,5 +176,9 @@ def get_challenge():
             
         return render_template("results.html")
 
+@app.route("/summary", methods=["GET"])
+def summarize():
+    return render_template("summary.html")
+
 if __name__ == "__main__":
     app.run()

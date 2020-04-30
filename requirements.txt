@@ -1,0 +1,4 @@
+ccl-scratch-tools
+flask
+mongoengine
+pytest

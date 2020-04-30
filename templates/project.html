@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}{{ project["title"] }} &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            {{ project["title"] }}
+        </h1>
+        <h5>
+            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a> &diams;
+            part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
+        </h5>
+        <p>
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}">View project on Scratch</a>
+        </p>
+
+        <h5>Some quick stats about how your project compares within this studio:</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Block category</th>
+                    <th>Your project</th>
+                    <th>Mean</th>
+                    <th>Minimum</th>
+                    <th>Maximum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in project["stats"]["categories"] %}
+                <tr>
+                    <td>{{ cat }}</td>
+                    <td>{{ project["stats"]["categories"][cat] }}</td>
+                    <td>{{ studio["stats"]["mean"]["block_categories"][cat]|twodec }}</td>
+                    <td>{{ studio["stats"]["min"]["block_categories"][cat] }}</td>
+                    <td>{{ studio["stats"]["max"]["block_categories"][cat] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+{% endblock %}

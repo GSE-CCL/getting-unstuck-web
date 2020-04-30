@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Analyze a studio &minus; {% endblock %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Analyze a studio.
+        </h1>
+        <p>
+            Download and gather key statistics about a studio.
+        </p>
+        <form action="/studio" method="POST">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="studio">Studio ID or URL</label>
+                    <input type="text" class="form-control" id="studio" name="studio" aria-describedby="studioHelp" placeholder="https://scratch.mit.edu/studios/xxxxxxx/">
+                    <small id="studioHelp" class="form-text text-muted">Either a studio ID or URL will work.</small>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Start analysis!</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

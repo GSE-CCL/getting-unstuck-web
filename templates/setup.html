@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}Site setup &minus; {% endblock %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Site setup
+        </h1>
+        <p>
+            Hi there! Looks like this is a new install of this site.
+            Let&rsquo;s get started &mdash; don&rsquo;t wait; this
+            is a security risk until you finish the tiny form below.
+        </p>
+        <p>All fields are required.</p>
+        <form action="/register" method="POST">
+            <div class="form-row">
+                <div class="col">
+                    <label for="first_name">First name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="John" required>
+                </div>
+                <div class="col">
+                    <label for="last_name">Last name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Smith" required>
+                </div>
+            </div>
+            <div class="form-row mt-1">
+                <div class="col">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="username" required>
+                </div>
+                <div class="col">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="hi@harvard.edu" required>
+                </div>
+            </div>
+            <div class="form-row mt-1">
+                <div class="col-6">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
+                </div>
+            </div>
+            <input type="hidden" name="user_role" value="site_admin">
+            <button type="submit" class="btn btn-primary mt-3">Finish setting up site admin</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

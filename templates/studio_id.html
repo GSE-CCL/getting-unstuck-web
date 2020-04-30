@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}{{ studio["title"] }} &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            {{ studio["title"] }}
+        </h1>
+        <p>
+            <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}">View studio on Scratch</a>
+        </p>
+        <h5>Projects in studio:</h5>
+        {% if projects == []: %}
+        <p>No Scratch 3 projects so far!</p>
+        {% endif %}
+        <ul>
+            {% for project in projects: %}
+            <li>
+                <a href="/project/{{ project['project_id']}}">{{ project["title"] }}</a>
+                by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

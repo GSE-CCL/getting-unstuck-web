@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Admin &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Admin tools
+        </h1>
+        <ul>
+            {% for page in valid_admin_pages: %}
+            <li>
+                <a href="/admin/{{ page }}">{{ page|capitalize }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

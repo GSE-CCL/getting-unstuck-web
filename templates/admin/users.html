@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block title %}Users &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Users
+        </h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usr in info["users"] %}
+                <tr data-identifier="{{ usr['username'] }}">
+                    <td data-field="first_name">{{ usr["first_name"] }}</td>
+                    <td data-field="last_name">{{ usr["last_name"] }}</td>
+                    <td data-field="username">{{ usr["username"] }}</td>
+                    <td data-field="email">{{ usr["email"] }}</td>
+                    <td data-field="role">{{ usr["role"] }}</td>
+                    <td data-field="actions">
+                        <a href="#" data-action="edit" data-identifier="{{ usr['username'] }}">Edit</a>
+                        {% if usr["username"] != user["username"] %}
+                        <a href="#" data-action="delete" data-identifier="{{ usr['username'] }}">Edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>
+                        <a href="#" data-action="add">Add</a>
+                    </td>
+                    <td>
+                        <a href="#" data-action="password_reset">Reset password</a>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <script src="/static/js/table_edit.js"></script>
+        <script>
+            // Field types
+            let fields = {
+                "first_name": {"type": "text"},
+                "last_name": {"type": "text"},
+                "username": {"type": "text"},
+                "email": {"type": "email"},
+                "password": {"type": "password"},
+                "role": {"type": "select", "options": ["site_admin", "site_viewer"]},
+                "__url__": "/admin/users",
+                "__identifer__": "username"
+            };
+
+            setEvents(fields);
+        </script>
+    </div>
+</div>
+{% endblock %}

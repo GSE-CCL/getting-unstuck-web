@@ -16,6 +16,7 @@ class User(mongo.Document):
     password = mongo.StringField(required=True, max_length=1000)
     role = mongo.StringField(default="site_viewer")
     joined = mongo.DateTimeField(default=datetime.now())
+    deleted = mongo.BooleanField(default=False)
 
 def admin_required(f):
     """

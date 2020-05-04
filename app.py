@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 import urllib
@@ -8,6 +9,7 @@ from ccl_scratch_tools import Scraper
 from lib import common
 from lib import scrape
 from lib import authentication
+from lib import admin
 from lib.authentication import admin_required, login_required
 
 app = Flask(__name__)
@@ -55,11 +57,7 @@ def register():
     )
 
     if res:
-        res = authentication.login_user(request.form["username"], request.form["password"])
-        if res:
-            return redirect("/")
-        else:
-            return redirect("/login")
+        return redirect("/login")
     else:
         return render_template("index.html", message="One or several of your inputs were invalid.")
 
@@ -72,6 +70,25 @@ def setup():
         return render_template("setup.html")
     else:
         return redirect("/")
+
+# Admin pages
+@app.route("/admin")
+@admin_required
+def admin_index():
+    return render_template("admin/index.html", valid_admin_pages=admin.VALID_ADMIN_PAGES, user=authentication.get_login_info())
+
+@app.route("/admin/<page>", methods=["GET", "POST"])
+@admin_required
+def admin_page(page):
+    if page in admin.VALID_ADMIN_PAGES:
+        if request.method == "GET":
+            info = admin.get_info(page)
+            return render_template("admin/{0}.html".format(page), info=info, user=authentication.get_login_info())
+        else:
+            result = admin.set_info(page, request.form)
+            return json.dumps(result)
+    else:
+        return redirect("/admin")
 
 # Studios, projects
 @app.route("/")

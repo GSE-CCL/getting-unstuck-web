@@ -12,6 +12,8 @@ from lib import authentication
 from lib import admin
 from lib.authentication import admin_required, login_required
 
+CACHE_DIRECTORY = "cache"
+
 app = Flask(__name__)
 
 def twodec(value):
@@ -120,7 +122,7 @@ def studio():
         sid = scraper.get_id(request.form["studio"])
 
         if sid is not None:
-            scrape.add_studio(sid)
+            scrape.add_studio(sid, cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.", user=authentication.get_login_info())

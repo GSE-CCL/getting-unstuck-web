@@ -14,7 +14,7 @@
         <p>
             <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}">View project on Scratch</a>
         </p>
-
+        {% if "stats" in studio and "max" in studio["stats"]: %}
         <h5>Some quick stats about how your project compares within this studio:</h5>
         <table class="table">
             <thead>
@@ -38,7 +38,9 @@
                 {% endfor %}
             </tbody>
         </table>
-        
+        {% else: %}
+        <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -16,6 +16,70 @@
         </p>
 
         <h5>Some quick stats about how your project compares within this studio:</h5>
+
+        <p class="block">The Day 15 Prompt was: </p>
+        <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
+
+        <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
+            conditional Control blocks, which can be used when a conditions has been met:</p>
+        
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <code class="conditional1 nobreak">
+                        if <> then
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional2 nobreak">
+                        if <> then
+                        else
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional3 nobreak">
+                        repeat until <>
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional4 nobreak">
+                        wait until <>
+                    </code>
+                </div>
+            </div>
+        </div>
+
+        <p class="block" style="text-align: center"> In your project, you used 
+            {% if project["stats"]["categories"]["control"] > 1 %}
+                multiple control blocks! Nice!        
+            {% elif project["stats"]["categories"]["control"] == 1 %}
+                one control block. 
+            {% else %}
+                zero control blocks. 
+            {% endif %}
+        </p>
+        {% if results["categories"]["control"] >= 1 %}
+            <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
+        {% endif %}
+
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
+                </div>
+                <div class="col-sm">
+                    <code class="surround">
+
+                        
+                        {{ text }}
+                    </code>
+                </div>
+            </div>
+        </div> 
+
         <table class="table">
             <thead>
                 <tr>
@@ -41,4 +105,18 @@
         
     </div>
 </div>
+
+<script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
+    <script>
+        scratchblocks.renderMatching('pre.blocks');
+        scratchblocks.renderMatching('code.surround', {inline: false, style:"scratch3"});
+        // scratchblocks.renderMatching("code.b", {inline: false});
+        // scratchblocks.renderMatching("code.a", {inline: true});
+        // scratchblocks.renderMatching("code.c", {inline: false});
+        scratchblocks.renderMatching("code.d", {inline: false});
+        scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional4", {inline: false, style:"scratch3"});
+    </script>
 {% endblock %}

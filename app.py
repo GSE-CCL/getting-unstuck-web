@@ -9,6 +9,8 @@ from lib import common
 from lib import scrape
 from lib import authentication
 from lib.authentication import admin_required, login_required
+from draw_blocks import *
+
 
 app = Flask(__name__)
 
@@ -84,7 +86,28 @@ def project_id(pid):
     project = scrape.Project.objects(project_id=pid).first()
     studio = scrape.Studio.objects(studio_id=project["studio_id"]).first()
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info())
+    scraper = Scraper()
+    parser = Parser()
+    downloaded_project = scraper.download_project(pid)
+    results = parser.blockify(scratch_data=downloaded_project)
+    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever"]
+    child = ''
+    sprite = ''
+    surround = ''
+    print("SPRITE1", results["blocks"])
+    for interest in blocks_of_interest:
+        if interest in results["blocks"].keys():
+            child = parser.get_child_blocks(results["blocks"][interest][0], downloaded_project)
+            sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
+            print("SPRITE", sprite)
+            surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
+
+    print_blocks = generate_scratchblocks(downloaded_project)
+    text = block_string(print_blocks)
+    # text2 = 
+    # print(text2)
+
+    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, surround=surround, text=text)
 
 @app.route("/redirect", methods=["GET"])
 def redirect_to():
@@ -171,7 +194,7 @@ def get_challenge():
             block_list.append((blockname, info))
 
         if project_id != "":
-            return render_template("results.html", username=project_id, data=downloaded_project, results=results, block_names=block_names, child=child, sprite=sprite, surround=block_list, text=text)
+            return render_template("results.html", username=project_id, data=downloaded_project, results=results, child=child, sprite=sprite, surround=block_list, text=text)
 
             
         return render_template("results.html")

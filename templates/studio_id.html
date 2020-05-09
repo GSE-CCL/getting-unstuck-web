@@ -3,13 +3,10 @@
 
 {% block main_content %}
 <div class="row">
-    <div class="col-12">
+    <div class="col-8">
         <h1>
             {{ studio["title"] }}
         </h1>
-        <p>
-            {{ studio["description"] }}
-        </p>
         <p>
             <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}">View studio on Scratch</a>
         </p>
@@ -25,6 +22,11 @@
             </li>
             {% endfor %}
         </ul>
+    </div>
+    <div class="col-4">
+        <p>
+            {{ studio["description"] }}
+        </p>
     </div>
 </div>
 {% endblock %}

@@ -38,6 +38,7 @@ class Studio(mongo.Document):
     description = mongo.StringField(max_length=5000)
     status = mongo.StringField(max_length=100, default="complete")
     stats = mongo.DictField()
+    challenge_id = mongo.ObjectIdField()
 
 def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.

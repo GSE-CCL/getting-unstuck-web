@@ -1,12 +1,13 @@
 from . import common as common
 from . import authentication as authentication
+from . import scrape as scrape
 from flask import session
 import mongoengine as mongo
 from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
-VALID_ADMIN_PAGES = ["users"]
+VALID_ADMIN_PAGES = ["studios", "users"]
 
 def get_info(page):
     """Gets the relevant information that would be used on a given admin page.
@@ -24,6 +25,9 @@ def get_info(page):
         if page == "users":
             connect_db()
             info["users"] = authentication.User.objects(deleted=False).exclude("password")
+        elif page == "studios":
+            connect_db()
+            info["studios"] = scrape.Studio.objects()
 
     return info
 
@@ -81,3 +85,14 @@ def set_info(page, form):
                 return False
         except:
             return False
+    elif page == "studios":
+        connect_db()
+        if form["action"] == "delete":
+            try:
+                doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+                doc.delete()
+                return True
+            except:
+                return False
+    else:
+        return False

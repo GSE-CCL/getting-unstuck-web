@@ -50,6 +50,6 @@ let loaded = function() {
 };
 
 if (document.readyState === "complete")
-    loaded()
+    loaded();
 else
     document.addEventListener("DOMContentLoaded", loaded);

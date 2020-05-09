@@ -8,7 +8,7 @@
             {{ studio["title"] }}
         </h1>
         <p>
-            <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}">View studio on Scratch</a>
+            <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" target="_blank">View studio on Scratch</a>
         </p>
         <h5>{{ projects|length }} projects in studio:</h5>
         {% if projects == []: %}
@@ -24,6 +24,7 @@
         </ul>
     </div>
     <div class="col-4">
+        <h6 class="font-weight-bold">Description</h6>
         <p>
             {{ studio["description"] }}
         </p>

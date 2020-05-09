@@ -7,13 +7,28 @@
         <h1>
             Admin tools
         </h1>
-        <ul>
-            {% for page in valid_admin_pages: %}
-            <li>
-                <a href="/admin/{{ page }}">{{ page|capitalize }}</a>
-            </li>
-            {% endfor %}
-        </ul>
     </div>
 </div>
+{% for page in valid_admin_pages: %}
+
+{% if loop.index0 % 4 == 0: %}
+<div class="row mt-3">
+{% endif %}
+
+<div class="col-md-3">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ page|capitalize }}</h5>
+            <p class="card-text">Make changes to {{ page }}.</p>
+            <a href="/admin/{{ page }}">Go <i class="fa fa-angle-double-right"></i></a>
+        </div>
+    </div>
+</div>
+
+{% if loop.index0 % 4 == 3 or loop.index0 == valid_admin_pages|length - 1: %}
+</div>
+{% endif %}
+
+{% endfor %}
+
 {% endblock %}

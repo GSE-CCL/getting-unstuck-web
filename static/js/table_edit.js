@@ -343,8 +343,18 @@ let setEvents = function(fs) {
     });
 
     let modal_form = document.getElementById("modal_form");
-    modal_form.removeEventListener("submit", submit_modal_event);
-    modal_form.addEventListener("submit", submit_modal_event);
+    if (modal_form != null) {
+        modal_form.removeEventListener("submit", submit_modal_event);
+        modal_form.addEventListener("submit", submit_modal_event);
+    }
 
     document.dispatchEvent(page_events_event);
+
+    // Disable # links
+    let hash_links = document.querySelectorAll("a[href='#']");
+    hash_links.forEach(link => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+        });
+    });
 };

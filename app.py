@@ -22,6 +22,14 @@ def twodec(value):
 app.jinja_env.filters["twodec"] = twodec
 app.secret_key = "hithere"
 
+# Helper routes
+@app.route("/redirect", methods=["GET"])
+def redirect_to():
+    if request.args.get("username") is not None and request.args.get("username") != "":
+        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
+    else:
+        return render_template("index.html", message="Sorry! I wasn't able to do that.", user=authentication.get_login_info())
+
 # Authentication
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -92,7 +100,7 @@ def admin_page(page):
     else:
         return redirect("/admin")
 
-# Studios, projects
+# Studios, projects, users, challenges
 @app.route("/")
 def homepage():
     return render_template("index.html", user=authentication.get_login_info()) 
@@ -104,13 +112,6 @@ def project_id(pid):
     studio = scrape.Studio.objects(studio_id=project["studio_id"]).first()
 
     return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info())
-
-@app.route("/redirect", methods=["GET"])
-def redirect_to():
-    if request.args.get("username") is not None and request.args.get("username") != "":
-        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
-    else:
-        return render_template("index.html", message="Sorry! I wasn't able to do that.", user=authentication.get_login_info())
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

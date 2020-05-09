@@ -1,6 +1,8 @@
 from . import common as common
 from . import authentication as authentication
+from flask import session
 import mongoengine as mongo
+from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
@@ -35,12 +37,22 @@ def set_info(page, form):
     Returns:
         If successful, returns True. If not successful, returns False.
     """
-    if page not in VALID_ADMIN_PAGES:
+    if page not in VALID_ADMIN_PAGES or "action" not in form:
         return False
     
     if page == "users":
         connect_db()
+        if form["action"] == "add":
+            return authentication.register_user(form["username"], 
+                                                form["email"],
+                                                form["first_name"],
+                                                form["last_name"],
+                                                form["password"],
+                                                form["role"])
         try:
+            if "identifier" not in form and "username" in form:
+                form["identifier"] = form["username"]
+
             doc = authentication.User.objects(username=form["identifier"]).first()
 
             if form["action"] == "edit":
@@ -49,11 +61,23 @@ def set_info(page, form):
                 doc.last_name = form["last_name"]
                 doc.email = form["email"]
                 doc.role = form["role"]
-            elif form["action"] == "delete":
+            elif form["action"] == "delete" and form["identifier"] != session["user"]["username"]:
                 doc.deleted = True
+            elif form["action"] == "reset_password":
+                doc.password = generate_password_hash(form["password"])
+            else:
+                return False
             
             doc.save()
 
             return True
+        except mongo.errors.NotUniqueError as e:
+            e = str(e)
+            if "username" in e:
+                return "username is already in use"
+            elif "email" in e:
+                return "email is already in use"
+            else:
+                return False
         except:
             return False

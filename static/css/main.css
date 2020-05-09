@@ -1,42 +1,66 @@
 body {
-  font-family: 'gastromond', sans-serif;
-  font-style: normal;
-  font-weight: 400;
+    font-family: 'gastromond', sans-serif;
+    font-style: normal;
+    font-weight: 400;
 }
 
 .block {
     margin-left: 100px;
     margin-right: 100px;
-  }
+}
 
-  .block:before {
+.block:before {
     content: '';
     display: inline-block;
     height: 100%;
     vertical-align: middle;
     margin-right: -0.25em; /* Adjusts for spacing */
-  }
+}
 
-  .centered {
+.centered {
     display: inline-block;
     vertical-align: middle;
     width: 300px;
-  }
+}
 
 img.logo {
     width: 6%
 }
 
 img.sprite {
-  width:50%
+    width:50%
 }
 
 .scratchblocks {
-  zoom: 0.675;
-}
-.markItUp .scratchblocks-button ul a {
-  padding: 0;
-  height: auto;
-  margin: 0 0 -12px;
+    zoom: 0.675;
 }
 
+.markItUp .scratchblocks-button ul a {
+    padding: 0;
+    height: auto;
+    margin: 0 0 -12px;
+}
+
+/* Kind of ridiculous that the alternative to writing these lines of
+   CSS and a few lines of JavaScript is importing all of jQuery in
+   order to use Bootstrap's JS. */
+.modal.show {
+    display: block !important;
+}
+
+.modal.fade {
+    background: rgba(0, 0, 0, .2);
+}
+
+.modal-body.scrollable {
+    max-height: 24rem;
+    overflow-y: auto;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.modal-title:first-letter, .modal-footer button:first-letter {
+    text-transform: uppercase;
+}

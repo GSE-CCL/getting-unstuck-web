@@ -12,7 +12,7 @@ class User(mongo.Document):
     username = mongo.StringField(required=True, max_length=50, unique=True)
     first_name = mongo.StringField(required=True, max_length=200)
     last_name = mongo.StringField(required=True, max_length=200)
-    email = mongo.StringField(required=True, max_length=200, unique=True)
+    email = mongo.EmailField(required=True, max_length=200, unique=True)
     password = mongo.StringField(required=True, max_length=1000)
     role = mongo.StringField(default="site_viewer")
     joined = mongo.DateTimeField(default=datetime.now())
@@ -56,7 +56,8 @@ def register_user(username, email, first_name, last_name, password, role="site_v
             Optional; defaults to site_viewer.
     
     Returns:
-        True if user added successfully, else False.
+        True if user added successfully, else either False or a specific error message
+            to pass to the user.
     """
     site_roles = ["site_viewer", "site_admin"]
 
@@ -66,7 +67,7 @@ def register_user(username, email, first_name, last_name, password, role="site_v
         or first_name is None or first_name == ""
         or last_name is None or last_name == ""
         or role not in site_roles):
-       return False
+       return "all fields are required"
 
     connect_db()
     doc = User(
@@ -79,6 +80,14 @@ def register_user(username, email, first_name, last_name, password, role="site_v
     )
     try:
         doc.save()
+    except mongo.errors.NotUniqueError as e:
+        e = str(e)
+        if "username" in e:
+            return "username is already in use"
+        elif "email" in e:
+            return "email is already in use"
+        else:
+            return False
     except:
         return False
     return True
@@ -93,7 +102,7 @@ def login_user(username, password):
         True, if able to log in. Else False.
     """
     connect_db()
-    account = User.objects(Q(username = username) | Q(email = username)).first()
+    account = User.objects(Q(username = username) | Q(email = username), deleted=False).first()
     if account is None or not check_password_hash(account["password"], password):
         return False
     

@@ -58,7 +58,7 @@ def register():
         request.form["user_role"]
     )
 
-    if res:
+    if type(res) == bool and res:
         return redirect("/login")
     else:
         return render_template("index.html", message="One or several of your inputs were invalid.")

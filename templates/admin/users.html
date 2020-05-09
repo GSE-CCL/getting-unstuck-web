@@ -8,18 +8,18 @@
             Users
         </h1>
 
-        <table class="table">
+        <table class="table table-responsive-lg">
             <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                <tr data-identifier="__model__">
+                    <th data-field="first_name">First Name</th>
+                    <th data-field="last_name">Last Name</th>
+                    <th data-field="username">Username</th>
+                    <th data-field="email">Email</th>
+                    <th data-field="role">Role</th>
+                    <th data-field="actions" class="w-10">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="table_body">
                 {% for usr in info["users"] %}
                 <tr data-identifier="{{ usr['username'] }}">
                     <td data-field="first_name">{{ usr["first_name"] }}</td>
@@ -28,43 +28,48 @@
                     <td data-field="email">{{ usr["email"] }}</td>
                     <td data-field="role">{{ usr["role"] }}</td>
                     <td data-field="actions">
-                        <a href="#" data-action="edit" data-identifier="{{ usr['username'] }}">Edit</a>
+                        <a href="#" data-action="edit" data-identifier="{{ usr['username'] }}" title="Edit" class="fa fa-edit"></a>
+                        <a href="#" data-action="reset_password" data-identifier="{{ usr['username'] }}" title="Reset Password" class="fa fa-key"></a>
                         {% if usr["username"] != user["username"] %}
-                        <a href="#" data-action="delete" data-identifier="{{ usr['username'] }}">Edit</a>
+                        <a href="#" data-action="delete" data-identifier="{{ usr['username'] }}" title="Delete" class="fa fa-trash"></a>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    <td>
-                        <a href="#" data-action="add">Add</a>
-                    </td>
-                    <td>
-                        <a href="#" data-action="password_reset">Reset password</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </tbody>
         </table>
-        <script src="/static/js/table_edit.js"></script>
-        <script>
-            // Field types
-            let fields = {
-                "first_name": {"type": "text"},
-                "last_name": {"type": "text"},
-                "username": {"type": "text"},
-                "email": {"type": "email"},
-                "password": {"type": "password"},
-                "role": {"type": "select", "options": ["site_admin", "site_viewer"]},
-                "__url__": "/admin/users",
-                "__identifer__": "username"
-            };
-
-            setEvents(fields);
-        </script>
+        <p>
+            <a href="#" data-action="add">Add</a>&nbsp;&nbsp;
+            <a href="#" data-action="reset_password" data-identifier="">Reset password</a>
+        </p>
     </div>
 </div>
+{% endblock %}
+
+{% block end_file %}
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Modal title</h5>
+                <button type="button" class="close" data-action="close_modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="modal_form" id="modal_form">
+                <div class="modal-body scrollable" id="modal_body">
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-secondary" data-action="close_modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-action="submit_modal">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/table_edit.js"></script>
+<script src="/static/js/admin_user.js"></script>
+
 {% endblock %}

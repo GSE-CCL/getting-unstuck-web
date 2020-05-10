@@ -91,21 +91,13 @@ def project_id(pid):
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever"]
-    child = ''
-    sprite = ''
-    surround = ''
-    print("SPRITE1", results["blocks"])
     for interest in blocks_of_interest:
         if interest in results["blocks"].keys():
-            child = parser.get_child_blocks(results["blocks"][interest][0], downloaded_project)
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
-            print("SPRITE", sprite)
             surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
 
-    print_blocks = generate_scratchblocks(downloaded_project)
+    print_blocks = generate_scratchblocks(downloaded_project, surround)
     text = block_string(print_blocks)
-    # text2 = 
-    # print(text2)
 
     return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, surround=surround, text=text)
 

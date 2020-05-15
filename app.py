@@ -1,5 +1,6 @@
 import threading
 import time
+import random
 import urllib
 from flask import Flask, redirect, render_template, request, session
 from ccl_scratch_tools import Parser
@@ -103,7 +104,9 @@ def project_id(pid):
 
     # comparison project
     other_projects = scrape.get_projects_with_block("control_wait", studio_id=project["studio_id"], credentials_file="secure/db.json")
-    other_pid = other_projects[0].project_id
+    project_num = random.randint(0, len(other_projects) - 1)
+    other_pid = other_projects[project_num].project_id
+    other_user = other_projects[project_num].author
     other_download = scraper.download_project(other_pid)
     other_results = parser.blockify(scratch_data=other_download)
     for interest in blocks_of_interest:
@@ -113,7 +116,7 @@ def project_id(pid):
     other_blocks = generate_scratchblocks(other_download, other_surround)
     other_text = block_string(other_blocks)
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_sprite=other_sprite, comp_text=other_text)
+    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/redirect", methods=["GET"])
 def redirect_to():

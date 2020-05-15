@@ -21,29 +21,15 @@ def valid_required_text(param):
                     if type(item) != str:
                         raise mongo.ValidationError("required_text is a list of lists of strings")
 
-def valid_required_block_categories(param):
-    """Raises a ValidationError if doesn't meet format for required_block_categories."""
-    if type(param) != list:
-        raise mongo.ValidationError("required_block_categories is a list")
-    else:
-        for r in param:
-            if type(r) != dict or "name" not in r or "count" not in r or type(r["count"]) != int or type(r["name"]) != str:
-                raise mongo.ValidationError("required_block_categories is a list of dicts, each with a name (str) and count (int) key.")
-            
 def valid_required_blocks(param):
     """Raises a ValidationError if doesn't meet format for required_blocks."""
     if type(param) != list:
         raise mongo.ValidationError("required_blocks is a list")
     else:
         for r in param:
-            if type(r) != list:
-                raise mongo.ValidationError("required_blocks is a list of lists")
-            else:
-                for item in r:
-                    print(item)
-                    if type(item) != dict or "name" not in item or "count" not in item or type(item["count"]) != int or type(item["name"]) != str:
-                        raise mongo.ValidationError("required_blocks is a list of lists of dicts, each with a name (str) and count (int) key.")
-            
+            if type(r) != dict:
+                raise mongo.ValidationError("required_blocks is a list of dicts")
+
 # The part of the schema that can be found with blockify results
 class Blockify(mongo.EmbeddedDocument):
     comments = mongo.IntField(default=0)
@@ -61,10 +47,71 @@ class Challenge(mongo.Document):
     min_comments_made = mongo.IntField(default=0)
     min_blockify = mongo.EmbeddedDocumentField(Blockify, required=True)
     required_text = mongo.ListField(default=[[]], validation=valid_required_text)
-    required_block_categories = mongo.ListField(default=[], validation=valid_required_block_categories)
-    required_blocks = mongo.ListField(default=[[]], validation=valid_required_blocks)
+    required_block_categories = mongo.DictField(default={})
+    required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
 
 # Functions to actually work with this schema
+def add_schema(mins=None, min_blockify=None, required_text=[[]], required_block_categories={}, required_blocks=[], title=None, description=None, credentials_file="secure/db.json"):
+    """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
+    
+    Args:
+        mins (dict): a dictionary mapping meta names from the set
+            {"instructions_length", "description_length", "comments_made"} to minimum values.
+        min_blockify (dict): a dictionary mapping blockify names from the set
+            {"comments", "costumes", "sounds", "sprites", "variables" to minimum counts.
+        required_text (list): a list of lists. If thought about as a list of shape (i, j),
+            then required_text[i][j] is one option, along with required_text[i][j + 1] etc.,
+            to satisfy required_text[i]. All required_text[i] must be satisfied to pass overall.
+        required_block_categories (dict): a dict, mapping category name to minimum count
+            for respective category.
+        required_blocks (list): a list of dicts. Each dict maps opcode to minimum count.
+            To satisfy overall requirement, at least one requirement in each dict must be
+            satisfied. (That is, the list functions as "AND"; the dict functions as "OR".)
+        title (str): the title of the challenge schema.
+        description (str): the description of the challenge.
+        credentials_file (str): path to the database credentials file.
+    Returns:
+        The object ID of the new challenge schema in the database. False if the arguments
+        violate the validation schema.
+    """
+
+    connect_db(credentials_file)
+
+    # Minimum blockify object
+    new_min_blockify = Blockify()
+    if type(min_blockify) == dict:
+        if "comments" in min_blockify:
+            new_min_blockify.comments = min_blockify["comments"]
+        if "costumes" in min_blockify:
+            new_min_blockify.costumes = min_blockify["costumes"]
+        if "sounds" in min_blockify:
+            new_min_blockify.sounds = min_blockify["sounds"]
+        if "sprites" in min_blockify:
+            new_min_blockify.sprites = min_blockify["sprites"]
+        if "variables" in min_blockify:
+            new_min_blockify.variables = min_blockify["variables"]
+
+    # Challenge object
+    challenge = Challenge(title = title,
+                          description = description,
+                          min_blockify = new_min_blockify,
+                          required_text = required_text,
+                          required_block_categories = required_block_categories,
+                          required_blocks = required_blocks)
+
+    if type(mins) == dict:
+        if "instructions_length" in mins:
+            challenge.min_instructions_length = mins["instructions_length"]
+        if "description_length" in mins:
+            challenge.min_description_length = mins["description_length"]
+        if "comments_made" in mins:
+            challenge.min_comments_made = mins["comments_made"]
+
+    try:
+        return challenge.save()
+    except:
+        return False
+
 def validate_project(schema, project, studio_id):
     """Determines if the project meets the standards of a given schema.
     
@@ -101,7 +148,7 @@ def validate_project(schema, project, studio_id):
             
     # Compare left comment counts
     project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")
-    comments_left = scrape.Comment.objects(project_id__in=project_ids, author=project["author"]).count_docu()
+    comments_left = scrape.Comment.objects(project_id__in=project_ids, author=project["author"]).count_documents()
 
     result["min_comments_made"] = comments_left >= schema["min_comments_made"]
 
@@ -120,20 +167,20 @@ def validate_project(schema, project, studio_id):
                 break
 
     # Check for required categories
-    result["required_block_categories"] = [False] * len(schema["required_block_categories"])
     rc = schema["required_block_categories"]
-    for i in range(len(rc)):
-        if project["stats"]["categories"][rc[i]["name"]] >= rc[i]["count"]:
-            rc[i] = True
-            break
+    result["required_block_categories"] = dict.fromkeys(rc)
+    for category in rc:
+        if project["stats"]["categories"][category] >= rc[category]:
+            result[category] = True
 
     # Check for required blocks
     result["required_blocks"] = [-1] * len(schema["required_blocks"])
     rb = schema["required_blocks"]
     for i in range(len(rb)):
-        for j in range(len(rb[i])):
-            if rb[i][j]["name"] in project["stats"]["blocks"] \
-               and len(project["stats"]["blocks"][rb[i][j]["name"]]) >= rb[i][j]["count"]:
-                result[i] = j
+        for opcode in rb[i]:
+            if opcode in project["stats"]["blocks"] \
+               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]:
+                result[i] = opcode
+                break
 
     return result

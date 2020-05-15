@@ -30,8 +30,8 @@ def test_schema_object_correct(credentials):
                                  min_comments_made = 1,
                                  min_blockify = min_blockify,
                                  required_text = [["hello", "world"]],
-                                 required_block_categories = [{"name": "motion", "count": 1}],
-                                 required_blocks = [[{"name": "event_whenflagclicked", "count": 1}]])
+                                 required_block_categories = {"motion": 1},
+                                 required_blocks = [{"event_whenflagclicked": 1}])
     challenge.save()
 
     assert schema.Challenge.objects(title = "Test challenge - CORRECT").count() == 1
@@ -50,13 +50,13 @@ def test_schema_object_incorrect_rt(credentials):
 
 def test_schema_object_incorrect_rc(credentials):
     schema.connect_db(credentials)
-    challenge = schema.Challenge(min_blockify=schema.Blockify(), required_block_categories=[{"name": "motion"}])
+    challenge = schema.Challenge(min_blockify=schema.Blockify(), required_block_categories=[])
     with pytest.raises(mongo.ValidationError):
         challenge.save()
 
 def test_schema_object_incorrect_rb(credentials):
     db = schema.connect_db(credentials)
-    challenge = schema.Challenge(min_blockify=schema.Blockify(), required_block_categories=[[{"name": "event_whenflagclicked"}]])
+    challenge = schema.Challenge(min_blockify=schema.Blockify(), required_blocks={"name": "event_whenflagclicked"})
     with pytest.raises(mongo.ValidationError):
         challenge.save()
 

@@ -185,7 +185,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             studio_id = studio_id,
             stats = stats
         )
-    
+
     doc.save()
     add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
 

@@ -71,14 +71,25 @@
                     <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
                 </div>
                 <div class="col-sm">
-                    <code class="surround">
-
-                        
+                    <code class="surround">        
                         {{ text }}
                     </code>
                 </div>
             </div>
         </div> 
+        <p class="block" style="text-align: center">Check out how someone else used conditionals for this project!</p>
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img>
+                </div>
+                <div class="col-sm">
+                    <code class="comparison">
+                        {{ comp_text }}
+                    </code>
+                </div>
+            </div>
+        </div>
 
         <table class="table">
             <thead>
@@ -108,12 +119,8 @@
 
 <script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
     <script>
-        scratchblocks.renderMatching('pre.blocks');
         scratchblocks.renderMatching('code.surround', {inline: false, style:"scratch3"});
-        // scratchblocks.renderMatching("code.b", {inline: false});
-        // scratchblocks.renderMatching("code.a", {inline: true});
-        // scratchblocks.renderMatching("code.c", {inline: false});
-        scratchblocks.renderMatching("code.d", {inline: false});
+        scratchblocks.renderMatching('code.comparison', {inline: false, style:"scratch3"});
         scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
         scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
         scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});

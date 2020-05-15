@@ -11,6 +11,8 @@ from lib import authentication
 from lib.authentication import admin_required, login_required
 from draw_blocks import *
 
+CACHE_DIRECTORY = "cache"
+
 
 app = Flask(__name__)
 
@@ -90,7 +92,7 @@ def project_id(pid):
     parser = Parser()
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
-    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever"]
+    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
     for interest in blocks_of_interest:
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
@@ -99,7 +101,19 @@ def project_id(pid):
     print_blocks = generate_scratchblocks(downloaded_project, surround)
     text = block_string(print_blocks)
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, surround=surround, text=text)
+    # comparison project
+    other_projects = scrape.get_projects_with_block("control_wait", studio_id=project["studio_id"], credentials_file="secure/db.json")
+    other_pid = other_projects[0].project_id
+    other_download = scraper.download_project(other_pid)
+    other_results = parser.blockify(scratch_data=other_download)
+    for interest in blocks_of_interest:
+        if interest in other_results["blocks"].keys():
+            other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
+            other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
+    other_blocks = generate_scratchblocks(other_download, other_surround)
+    other_text = block_string(other_blocks)
+
+    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/redirect", methods=["GET"])
 def redirect_to():
@@ -118,7 +132,7 @@ def studio():
         sid = scraper.get_id(request.form["studio"])
 
         if sid is not None:
-            scrape.add_studio(sid)
+            scrape.add_studio(sid, cache_directory="cache")
             return redirect("/studio/{0}".format(sid))
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.", user=authentication.get_login_info())

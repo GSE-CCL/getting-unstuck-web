@@ -27,9 +27,10 @@ img.logo {
     width: 6%;
 }
 
+/* Custom settings for sprite images */
 img.sprite {
   width: 100%;
-  min-width: 80px;
+  min-width: 130px;
   max-width: 150px;
   height: auto;
   border: 2px solid black;
@@ -37,6 +38,7 @@ img.sprite {
   margin: 20px;
 }
 
+/* For ScratchBlocks */
 .scratchblocks {
   zoom: 0.675;
 }

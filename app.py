@@ -5,6 +5,7 @@ import urllib
 from flask import Flask, redirect, render_template, request, session
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
+from ccl_scratch_tools import Visualizer
 
 from lib import common
 from lib import scrape
@@ -91,6 +92,8 @@ def project_id(pid):
 
     scraper = Scraper()
     parser = Parser()
+    visualizer = Visualizer()
+
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
@@ -103,7 +106,7 @@ def project_id(pid):
     text = block_string(print_blocks)
 
     # comparison project
-    other_projects = scrape.get_projects_with_block("control_wait", studio_id=project["studio_id"], credentials_file="secure/db.json")
+    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author

@@ -24,11 +24,17 @@ body {
   }
 
 img.logo {
-    width: 6%
+    width: 6%;
 }
 
 img.sprite {
-  width:50%
+  width: 100%;
+  min-width: 80px;
+  max-width: 150px;
+  height: auto;
+  border: 2px solid black;
+  padding: 5px;
+  margin: 20px;
 }
 
 .scratchblocks {

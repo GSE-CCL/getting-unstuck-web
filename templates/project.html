@@ -68,29 +68,29 @@
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
                 </div>
                 <div class="col-4 d-flex justify-content-center">
-                    <code class="surround">        
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="surround">        
                         {{ text }}
-                    </code>
+                    </code></a>
                 </div>
             </div>
         </div> 
-       <br><br><p class="block" style="text-align: center">Check out how @{{ comp_user }} used conditionals for this project!</p><br><br>
+       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img>
+                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
                 </div>
                 <div class="col-4 d-flex justify-content-center">
-                    <code class="comparison">
+                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
                         {{ comp_text }}
-                    </code>
+                    </code></a>
                 </div>
             </div>
         </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way @{{ comp_user }} used conditionals in their project? 
+        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used conditionals in their project? 
             Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
 
         <p class="block">Control blocks used: </p>

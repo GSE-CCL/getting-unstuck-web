@@ -289,6 +289,7 @@ def generate_scratchblocks(project, surround):
     # Check each target for a new script
     for target in targets:
         for block_id, block in target["blocks"].items():
+            print("BLOCK", block_id, block)
             is_start = (
                 isinstance(block, dict) and block["parent"] is None
                 and block["opcode"] in BLOCKS

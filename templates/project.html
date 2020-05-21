@@ -62,8 +62,9 @@
             {% endif %}
         </p>
         {% if results["categories"]["control"] >= 1 %}
+
             <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
-        {% endif %}
+        
 
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
@@ -77,6 +78,11 @@
                 </div>
             </div>
         </div> 
+        {% elif results["categories"]["control"] == 0 %}
+        <p class="block">In this project, we were looking for the use of conditional blocks, such as the examples shown above. However, it's possible that you 
+            were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
+        </p>
+        {% endif %}
        <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">

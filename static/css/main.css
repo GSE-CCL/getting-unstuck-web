@@ -64,3 +64,12 @@ img.sprite {
 .modal-title:first-letter, .modal-footer button:first-letter {
     text-transform: uppercase;
 }
+
+/* The schema editor */
+.required_outer {
+    margin: .5rem 0;
+    padding: .5rem;
+    width: calc(100% - 1rem);
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+}

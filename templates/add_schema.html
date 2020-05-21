@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}Add a schema &minus; {% endblock %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Add a schema
+        </h1>
+        <p>
+            Schemas contain requirements for projects.
+        </p>
+        <form action="/admin/schema/add" method="POST">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="title">Title of schema</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="description">Description of schema</label>
+                    <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_instructions_length">Minimum instructions length</label>
+                    <input type="number" class="form-control" id="min_instructions_length" name="min_instructions_length" value="0">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_description_length">Minimum description length</label>
+                    <input type="number" class="form-control" id="min_description_length" name="min_description_length" value="0">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_comments_made">Minimum # comments made on other projects</label>
+                    <input type="number" class="form-control" id="min_comments_made" name="min_comments_made" value="0">
+                </div>
+            </div>
+            <h6 class="mt-3">PROJECT ANALYSIS</h6>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_comments">Minimum # code comments</label>
+                    <input type="number" class="form-control" id="min_blockify_comments" name="min_blockify_comments" value="0">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_costumes">Minimum # costumes</label>
+                    <input type="number" class="form-control" id="min_blockify_costumes" name="min_blockify_costumes" value="0">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_sounds">Minimum # sounds</label>
+                    <input type="number" class="form-control" id="min_blockify_sounds" name="min_blockify_sounds" value="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_sprites">Minimum # sprites</label>
+                    <input type="number" class="form-control" id="min_blockify_sprites" name="min_blockify_sprites" value="0">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_variables">Minimum # variables</label>
+                    <input type="number" class="form-control" id="min_blockify_variables" name="min_blockify_variables" value="0">
+                </div>
+            </div>
+            <div class="form-row mt-3">
+                <div class="form-group col-md-4">
+                    <label>Required text</label>
+                    <small class="form-text text-muted">
+                        Each of the boxes contains options. Each box must have one
+                        option fulfilled for the project to validate against the schema.
+                    </small>
+                    <div id="required_text">
+                    </div>
+                    <button type="button" id="add_tr_btn" class="btn btn-secondary mt-2" data-action="add_tr" data-max-rt-id="-1">Add requirement</button>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Required block categories</label>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Min # blocks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Motion</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_motion" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Control</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_control" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Event</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_event" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Looks</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_looks" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Operators</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_operators" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sensing</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_sensing" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sound</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_sound" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Data</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_data" value="0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>More blocks</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_more_blocks" value="0">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Required blocks</label>
+                    <small class="form-text text-muted">
+                        Each of the boxes contains a grouping of required blocks.
+                        One of the groupings must be fully present for the project to validate against the schema.
+                    </small>
+                    <div id="required_blocks">
+                    </div>
+                    <button type="button" id="add_br_btn" class="btn btn-secondary mt-2" data-action="add_br" data-max-rb-id="-1">Add option</button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add schema</button>
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/admin_schema_add.js"></script>
+
+{% endblock %}

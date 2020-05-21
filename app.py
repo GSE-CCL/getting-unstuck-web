@@ -100,6 +100,15 @@ def admin_page(page):
     else:
         return redirect("/admin")
 
+@app.route("/admin/schema/add", methods=["GET", "POST"])
+@admin_required
+def add_schema():
+    if request.method == "GET":
+        return render_template("add_schema.html")
+    else:
+        # TODO
+        return redirect("/")
+
 # Studios, projects, users, challenges
 @app.route("/")
 def homepage():

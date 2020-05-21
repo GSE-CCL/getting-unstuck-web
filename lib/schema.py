@@ -58,7 +58,7 @@ def add_schema(mins=None, min_blockify=None, required_text=[[]], required_block_
         mins (dict): a dictionary mapping meta names from the set
             {"instructions_length", "description_length", "comments_made"} to minimum values.
         min_blockify (dict): a dictionary mapping blockify names from the set
-            {"comments", "costumes", "sounds", "sprites", "variables" to minimum counts.
+            {"comments", "costumes", "sounds", "sprites", "variables"} to minimum counts.
         required_text (list): a list of lists. If thought about as a list of shape (i, j),
             then required_text[i][j] is one option, along with required_text[i][j + 1] etc.,
             to satisfy required_text[i]. All required_text[i] must be satisfied to pass overall.
@@ -174,7 +174,7 @@ def validate_project(schema, project, studio_id):
             result[category] = True
 
     # Check for required blocks
-    result["required_blocks"] = [-1] * len(schema["required_blocks"])
+    result["required_blocks"] = [False] * len(schema["required_blocks"])
     rb = schema["required_blocks"]
     for i in range(len(rb)):
         for opcode in rb[i]:

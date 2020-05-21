@@ -105,7 +105,6 @@ def project_id(pid):
 
     print_blocks = generate_scratchblocks(downloaded_project, surround)
     text = block_string(print_blocks)
-    print("TEXT", text)
 
     # comparison project
     #other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")

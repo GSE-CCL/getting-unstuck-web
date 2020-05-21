@@ -96,30 +96,33 @@ def project_id(pid):
 
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
+    day2_interest = ["event_whenbackdropswitchesto", "event_whenthisspriteclicked", "event_whenstageclicked", "looks_show",  "looks_hide", "sensing_mousedown"]
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
-    for interest in blocks_of_interest:
+    for interest in day2_interest:
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
             surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
 
     print_blocks = generate_scratchblocks(downloaded_project, surround)
     text = block_string(print_blocks)
+    print("TEXT", text)
 
     # comparison project
-    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
+    #other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
+    other_projects = scrape.get_projects_with_block(day2_interest, studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author
     other_download = scraper.download_project(other_pid)
     other_results = parser.blockify(scratch_data=other_download)
-    for interest in blocks_of_interest:
+    for interest in day2_interest:
         if interest in other_results["blocks"].keys():
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
             other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
     other_blocks = generate_scratchblocks(other_download, other_surround)
     other_text = block_string(other_blocks)
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
+    return render_template("theme.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/redirect", methods=["GET"])
 def redirect_to():

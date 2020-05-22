@@ -73,3 +73,14 @@ img.sprite {
     border: 1px solid #e8e8e8;
     border-radius: 3px;
 }
+
+#block_input_helper {
+    display: none;
+    width: 20%;
+    position: absolute;
+    z-index: 15;
+    top: 0;
+    left: 0;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+}

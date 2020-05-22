@@ -103,8 +103,16 @@ def admin_page(page):
 @app.route("/admin/schema/add", methods=["GET", "POST"])
 @admin_required
 def add_schema():
+    parser = Parser()
     if request.method == "GET":
-        return render_template("add_schema.html")
+        blocks = parser.block_data
+        block_list = list()
+        block_dict = dict()
+        for cat in blocks:
+            block_list += blocks[cat].keys()
+            for block in blocks[cat]:
+                block_dict[blocks[cat][block].lower().replace(" ", "")] = block
+        return render_template("add_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), user=authentication.get_login_info())
     else:
         # TODO
         return redirect("/")

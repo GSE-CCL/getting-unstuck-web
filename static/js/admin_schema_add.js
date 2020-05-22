@@ -1,15 +1,21 @@
 // Add text option
 let add_topt = (event) => {
     let max_id = parseInt(event.target.dataset.maxToId) + 1;
-    let opt_code = '<div data-to-id="' + max_id + '" class="input-group mt-2"> \
-    <input type="text" class="form-control" placeholder="text option"> \
+
+    let element = document.createElement("DIV");
+    element.classList.add("input-group", "mt-2");
+    element.dataset.toId = max_id;
+
+    let opt_code = '<input type="text" class="form-control" placeholder="text option"> \
     <div class="input-group-append"> \
     <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';``
 
     event.target.dataset.maxToId = max_id;
 
+    element.innerHTML = opt_code;
+
     let list = event.target.parentNode.childNodes[3];
-    list.innerHTML += opt_code;
+    list.appendChild(element);
 
     events_remove_parent();
 };
@@ -18,7 +24,11 @@ let add_topt = (event) => {
 let add_treq = (event) => {
     let max_id = parseInt(event.target.dataset.maxRtId) + 1;
 
-    let req_code = '<div class="required_outer mt-2" data-tr-id="' + max_id + '">';
+    let element = document.createElement("DIV");
+    element.classList.add("required_outer", "mt-2");
+    element.dataset.trId = max_id;
+
+    let req_code = '';
     if (max_id > 0) {
         req_code += '<small><em>and one of these</em></small>';
     }
@@ -27,12 +37,14 @@ let add_treq = (event) => {
     }
     req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button> \
         <div class="required_inner"></div> \
-        <button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button></div>';
+        <button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button>';
 
     event.target.dataset.maxRtId = max_id;
 
+    element.innerHTML = req_code;
+
     let list = document.getElementById("required_text");
-    list.innerHTML += req_code;
+    list.appendChild(element);
 
     events_topt();
 };
@@ -40,24 +52,35 @@ let add_treq = (event) => {
 // Add block option
 let add_bopt = (event) => {
     let max_id = parseInt(event.target.dataset.maxBoId) + 1;
-    let opt_code = '<div data-bo-id="' + max_id + '" class="input-group mt-2"> \
-        <input type="text" class="form-control" placeholder="block requirement"> \
+
+    let element = document.createElement("DIV");
+    element.classList.add("input-group", "mt-2");
+    element.dataset.boId = max_id;
+
+    let opt_code = '<input type="text" class="form-control block_input" placeholder="block requirement"> \
         <div class="input-group-append"> \
-        <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';
+        <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div>';
 
     event.target.dataset.maxBoId = max_id;
 
+    element.innerHTML = opt_code;
+
     let list = event.target.parentNode.childNodes[3];
-    list.innerHTML += opt_code;
+    list.appendChild(element);
 
     events_remove_parent();
+    events_block_choose();
 };
 
 // Add block requirement
 let add_breq = (event) => {
     let max_id = parseInt(event.target.dataset.maxRbId) + 1;
 
-    let req_code = '<div class="required_outer mt-2" data-br-id="' + max_id + '">';
+    let element = document.createElement("DIV");
+    element.classList.add("required_outer", "mt-2");
+    element.dataset.brId = max_id;
+
+    let req_code = '';
     if (max_id > 0) {
         req_code += '<small><em>or all of these</em></small>';
     }
@@ -66,12 +89,14 @@ let add_breq = (event) => {
     }
     req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_br_btn;maxRbId">&times;</button> \
         <div class="required_inner"></div> \
-        <button type="button" class="btn btn-secondary mt-2" data-action="add_bo" data-max-bo-id="-1">Add requirement</button></div>';
+        <button type="button" class="btn btn-secondary mt-2" data-action="add_bo" data-max-bo-id="-1">Add requirement</button>';
 
     event.target.dataset.maxRbId = max_id;
 
+    element.innerHTML = req_code;
+
     let list = document.getElementById("required_blocks");
-    list.innerHTML += req_code;
+    list.appendChild(element);
 
     events_bopt();
 };
@@ -116,6 +141,92 @@ let remove_parent = (event) => {
     }
 };
 
+// Move and display block list
+let move_blocks = (event) => {
+    let obj = event.target;
+    let rect = obj.getBoundingClientRect();
+    let helper = document.getElementById("block_input_helper");
+    let scrollTop = (document.documentElement.scrollTop || document.body.scrollTop);
+
+    helper.style.top = (rect.y + scrollTop + obj.clientHeight + 8) + "px";
+    helper.style.left = rect.x + "px";
+    helper.style.display = "block";
+    helper.style.width = obj.clientWidth + "px";
+
+    helper.dataset.boId = obj.parentNode.dataset.boId;
+    helper.dataset.brId = obj.parentNode.parentNode.parentNode.dataset.brId;
+};
+
+// Hide block list
+let hide_blocks = (event=null) => {
+    if (event == null
+        || event.relatedTarget == null
+        || !("action" in event.relatedTarget.dataset)
+        || event.relatedTarget.dataset.action != "choose_block") {
+        let helper = document.getElementById("block_input_helper");
+        helper.style.display = "none";
+
+        let list_items = document.querySelectorAll("#block_input_helper .list-group-item");
+        list_items.forEach((list_item) => {
+            list_item.style.display = "block";
+        });
+    }
+};
+
+// Suggest blocks based on text
+let suggest_block = (event) => {
+    let value = event.target.value;
+    value = value.replace(/ /g, "");
+
+    let display_categories = new Set();
+
+    // Search
+    block_list.forEach((block) => {
+        if (block.includes(value)) {
+            document.querySelector("[data-action='choose_block'][data-opcode='" + block + "']").style.display = "block";
+            display_categories.add(block.split("_")[0]);
+        }
+        else {
+            document.querySelector("[data-action='choose_block'][data-opcode='" + block + "']").style.display = "none";
+            for (let key in block_dict) {
+                if (key.includes(value)) {
+                    document.querySelector("[data-action='choose_block'][data-opcode='" + block_dict[key] + "']").style.display = "block";
+                    display_categories.add(block_dict[key].split("_")[0]);
+                }
+            }
+        }
+    });
+
+    categories.forEach((category) => {
+        if (!display_categories.has(category)) {
+            document.querySelector("[data-block-category='" + category + "']").style.display = "none";
+        }
+        else {
+            document.querySelector("[data-block-category='" + category + "']").style.display = "block";
+        }
+    });
+};
+
+// Choose a block opcode and put it into focused text box
+let set_block = (event) => {
+    let promise = new Promise((resolve) => {
+        let opcode = event.target.dataset.opcode;
+        if (event.target.nodeName == "STRONG")
+            opcode = event.target.parentNode.dataset.opcode;
+            
+        let br_id = document.getElementById("block_input_helper").dataset.brId;
+        let bo_id = document.getElementById("block_input_helper").dataset.boId;
+
+        document.querySelector("[data-br-id='" + br_id + "'] [data-bo-id='" + bo_id + "'] input").value = opcode;
+
+        resolve();
+    }).then(() => {
+        hide_blocks();
+    }).catch(() => {
+        hide_blocks();
+    });
+};
+
 // Event setters
 let events_topt = () => {
     let add_tos = document.querySelectorAll("[data-action='add_to']");
@@ -139,7 +250,28 @@ let events_remove_parent = () => {
         rp.removeEventListener("click", remove_parent);
         rp.addEventListener("click", remove_parent);
     });
-}
+};
+
+let events_block_choose = () => {
+    let block_inputs = document.querySelectorAll(".block_input");
+    block_inputs.forEach((block_input) => {
+        block_input.removeEventListener("keyup", suggest_block);
+        block_input.addEventListener("keyup", suggest_block);
+
+        block_input.removeEventListener("focus", move_blocks);
+        block_input.addEventListener("focus", move_blocks);
+
+        block_input.removeEventListener("blur", hide_blocks);
+        block_input.addEventListener("blur", hide_blocks);
+    });
+};
+
+let events_block_selector = () => {
+    let buttons = document.querySelectorAll("[data-action='choose_block']");
+    buttons.forEach((button) => {
+        button.addEventListener("click", set_block);
+    });
+};
 
 let loaded = function() {
     // Required text
@@ -155,6 +287,9 @@ let loaded = function() {
     add_bts.forEach((add_br) => {
         add_br.addEventListener("click", add_breq);
     });
+
+    // Block selector
+    events_block_selector();
 };
 
 if (document.readyState === "complete")

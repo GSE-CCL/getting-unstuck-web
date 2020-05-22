@@ -16,11 +16,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="title">Title of schema</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="If blank, this will be the studio title.">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="description">Description of schema</label>
-                    <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                    <input type="text" class="form-control" id="description" name="description" placeholder="If blank, this will be the studio description.">
                 </div>
             </div>
             <div class="form-row">
@@ -83,60 +83,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for cat in blocks: %}
                             <tr>
-                                <td>Motion</td>
+                                <td>{{ cat }}</td>
                                 <td>
-                                    <input type="number" class="form-control" name="min_categories_motion" value="0">
+                                    <input type="number" class="form-control" name="min_categories_{{ cat }}" value="0">
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Control</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_control" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Event</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_event" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Looks</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_looks" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Operators</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_operators" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sensing</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_sensing" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Sound</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_sound" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Data</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_data" value="0">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>More blocks</td>
-                                <td>
-                                    <input type="number" class="form-control" name="min_categories_more_blocks" value="0">
-                                </td>
-                            </tr>
+                            {% endfor %}
+                                
                         </tbody>
                     </table>
                 </div>
@@ -155,6 +110,26 @@
         </form>
     </div>
 </div>
+
+<div id="block_input_helper">
+    <div class="list-group list-group-flush">
+        {% for cat in blocks: %}
+            <div class="list-group-item list-group-item-secondary" data-block-category="{{ cat }}">{{ cat }}</div>
+
+            {% for block in blocks[cat]: %}
+            <button type="button" class="list-group-item" data-action="choose_block" data-opcode="{{ block }}">
+                <strong>{{ blocks[cat][block] }}</strong> - {{ block }}
+            </button>
+            {% endfor %}
+        {% endfor%}
+    </div>
+</div>
+
+<script>
+    let block_list = {{ block_list|safe }};
+    let block_dict = {{ block_dict|safe }};
+    let categories = {{ categories|safe }};
+</script>
 
 <script src="/static/js/admin_schema_add.js"></script>
 

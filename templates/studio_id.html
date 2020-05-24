@@ -3,16 +3,16 @@
 
 {% block main_content %}
 <div class="row">
-    <div class="col-12">
+    <div class="col-8">
         <h1>
             {{ studio["title"] }}
         </h1>
         <p>
-            <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}">View studio on Scratch</a>
+            <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" target="_blank">View studio on Scratch</a>
         </p>
-        <h5>Projects in studio:</h5>
+        <h5>{{ projects|length }} projects in studio:</h5>
         {% if projects == []: %}
-        <p>No Scratch 3 projects so far!</p>
+        <p>No Scratch projects so far!</p>
         {% endif %}
         <ul>
             {% for project in projects: %}
@@ -22,6 +22,12 @@
             </li>
             {% endfor %}
         </ul>
+    </div>
+    <div class="col-4">
+        <h6 class="font-weight-bold">Description</h6>
+        <p>
+            {{ studio["description"] }}
+        </p>
     </div>
 </div>
 {% endblock %}

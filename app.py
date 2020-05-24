@@ -1,10 +1,12 @@
 import json
 import threading
 import time
+import random
 import urllib
 from flask import Flask, redirect, render_template, request, session
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
+from ccl_scratch_tools import Visualizer
 
 from lib import common
 from lib import schema
@@ -12,6 +14,10 @@ from lib import scrape
 from lib import authentication
 from lib import admin
 from lib.authentication import admin_required, login_required
+from draw_blocks import *
+
+CACHE_DIRECTORY = "cache"
+
 
 CACHE_DIRECTORY = "cache"
 
@@ -157,7 +163,36 @@ def project_id(pid):
     project = scrape.Project.objects(project_id=pid).first()
     studio = scrape.Studio.objects(studio_id=project["studio_id"]).first()
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info())
+    scraper = Scraper()
+    parser = Parser()
+    visualizer = Visualizer()
+
+    downloaded_project = scraper.download_project(pid)
+    results = parser.blockify(scratch_data=downloaded_project)
+    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
+    for interest in blocks_of_interest:
+        if interest in results["blocks"].keys():
+            sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
+            surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
+
+    print_blocks = generate_scratchblocks(downloaded_project, surround)
+    text = block_string(print_blocks)
+
+    # comparison project
+    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
+    project_num = random.randint(0, len(other_projects) - 1)
+    other_pid = other_projects[project_num].project_id
+    other_user = other_projects[project_num].author
+    other_download = scraper.download_project(other_pid)
+    other_results = parser.blockify(scratch_data=other_download)
+    for interest in blocks_of_interest:
+        if interest in other_results["blocks"].keys():
+            other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
+            other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
+    other_blocks = generate_scratchblocks(other_download, other_surround)
+    other_text = block_string(other_blocks)
+
+    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required
@@ -199,6 +234,52 @@ def user_id(username):
             studios[project["studio_id"]] = scrape.Studio.objects(studio_id = project["studio_id"]).first()
 
     return render_template("username.html", projects=projects, studios=studios, username=username, user=authentication.get_login_info())
+
+@app.route("/challenges", methods=["GET", "POST"])
+def get_challenge():
+    if request.method == "GET":
+        return render_template("submit_challenge.html")
+    else:
+        scraper = Scraper()
+        parser = Parser()
+        project_url = request.form['project-url']
+        project_id = scraper.get_id(project_url)
+        downloaded_project = scraper.download_project(project_id)
+        results = parser.blockify(scratch_data=downloaded_project)
+
+        block_of_interest = "operator_random"
+
+        child = parser.get_child_blocks(results["blocks"][block_of_interest][0], downloaded_project)
+        sprite = parser.get_sprite(results["blocks"][block_of_interest][0], downloaded_project)
+        surround = parser.get_surrounding_blocks(results["blocks"][block_of_interest][0], downloaded_project, 7)
+
+        block_list = []
+        text = ""
+        for b in surround:
+            info = parser.get_block(b, downloaded_project)
+            blockname = parser.get_block_name(info["opcode"])
+            inputs = info["inputs"]
+            text += blockname
+            if inputs:
+                for each in inputs:
+                    if each == "MESSAGE":
+                        text += " [" + inputs[each][1][1] +"]"
+                    elif each == "SECS" or each == "DURATION" or each == "FROM" or each == "TO":
+                        text += " (" + inputs[each][1][1] + ")"
+
+            text += "\n"
+
+            block_list.append((blockname, info))
+
+        if project_id != "":
+            return render_template("results.html", username=project_id, data=downloaded_project, results=results, child=child, sprite=sprite, surround=block_list, text=text)
+
+            
+        return render_template("results.html")
+
+@app.route("/summary", methods=["GET"])
+def summarize():
+    return render_template("summary.html")
 
 if __name__ == "__main__":
     app.run()

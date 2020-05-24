@@ -16,6 +16,120 @@
         </p>
         {% if "stats" in studio and "max" in studio["stats"]: %}
         <h5>Some quick stats about how your project compares within this studio:</h5>
+
+        <p class="block">The Day 15 Prompt was: </p>
+        <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
+
+        <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
+            conditional Control blocks, which can be used when a conditions has been met:</p>
+        
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <code class="conditional1 nobreak">
+                        if <> then
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional2 nobreak">
+                        if <> then
+                        else
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional3 nobreak">
+                        repeat until <>
+                        end
+                    </code>
+                </div>
+                <div class="col-sm">
+                    <code class="conditional4 nobreak">
+                        wait until <>
+                    </code>
+                </div>
+            </div>
+        </div>
+
+        <p class="block" style="text-align: center"> In your project, you used 
+            {% if project["stats"]["categories"]["control"] > 1 %}
+                multiple control blocks! Nice!        
+            {% elif project["stats"]["categories"]["control"] == 1 %}
+                one control block. 
+            {% else %}
+                zero control blocks. 
+            {% endif %}
+        </p>
+        {% if results["categories"]["control"] >= 1 %}
+            <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
+        {% endif %}
+
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img>
+                </div>
+                <div class="col-sm">
+                    <code class="surround">        
+                        {{ text }}
+                    </code>
+                </div>
+            </div>
+        </div> 
+       <br><br><p class="block" style="text-align: center">Check out how @{{ comp_user }} used conditionals for this project!</p><br><br>
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img>
+                </div>
+                <div class="col-sm">
+                    <code class="comparison">
+                        {{ comp_text }}
+                    </code>
+                </div>
+            </div>
+        </div>
+        <br><br><p class="block"style="text-align: center">Did you like the way @{{ comp_user }} used conditionals in their project? 
+            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
+
+        <p class="block">Control blocks used: </p>
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <h1>{{ project["stats"]["categories"]["control"] }}</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>{{ studio["stats"]["mean"]["block_categories"]["control"]|twodec }}</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>{{ studio["stats"]["max"]["block_categories"]["control"] }}</h1>
+                </div>
+                <div class="col-sm">
+                    <h1>{{ studio["stats"]["min"]["block_categories"]["control"] }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="margin-left: 100px; margin-right: 100px">
+            <div class="row">
+                <div class="col-sm">
+                    <p>In your project</p>
+                </div>
+                <div class="col-sm">
+                    <p>In others' projects <br>(on average)</p>
+                </div>
+                <div class="col-sm">
+                    <p>In the project with <br> the largest number</p>
+                </div>
+                <div class="col-sm">
+                    <p>In the project with <br> the fewest number</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="block" style="text-align: center">Great job today! How might you apply what you learned today for tomorrow?</p>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -43,4 +157,14 @@
         {% endif %}
     </div>
 </div>
+
+<script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
+    <script>
+        scratchblocks.renderMatching('code.surround', {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching('code.comparison', {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.conditional4", {inline: false, style:"scratch3"});
+    </script>
 {% endblock %}

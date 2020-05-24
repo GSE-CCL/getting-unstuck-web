@@ -16,10 +16,9 @@ def valid_required_text(param):
         for r in param:
             if type(r) != list:
                 raise mongo.ValidationError("required_text is a list of lists")
-            else:
-                for item in r:
-                    if type(item) != str:
-                        raise mongo.ValidationError("required_text is a list of lists of strings")
+            for item in r:
+                if type(item) != str:
+                    raise mongo.ValidationError("required_text is a list of lists of strings")
 
 def valid_required_blocks(param):
     """Raises a ValidationError if doesn't meet format for required_blocks."""
@@ -51,7 +50,7 @@ class Challenge(mongo.Document):
     required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
 
 # Functions to actually work with this schema
-def add_schema(mins=None, min_blockify=None, required_text=[[]], required_block_categories={}, required_blocks=[], title=None, description=None, credentials_file="secure/db.json"):
+def add_schema(mins=None, min_blockify=None, required_text=[], required_block_categories={}, required_blocks=[], title=None, description=None, credentials_file="secure/db.json"):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
     Args:

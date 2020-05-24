@@ -6,16 +6,19 @@ let add_topt = (event) => {
     element.classList.add("input-group", "mt-2");
     element.dataset.toId = max_id;
 
-    let opt_code = '<input type="text" class="form-control" placeholder="text option"> \
-    <div class="input-group-append"> \
-    <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';``
+    let opt_code = '<input type="text" class="form-control" placeholder="text option">'
+                 +  '<div class="input-group-append">'
+                 + '<button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';
 
     event.target.dataset.maxToId = max_id;
 
     element.innerHTML = opt_code;
 
-    let list = event.target.parentNode.childNodes[3];
-    list.appendChild(element);
+    event.target.parentNode.childNodes.forEach((child) => {
+        if (child.classList && child.classList.contains("required_inner")) {
+            child.appendChild(element);
+        }
+    });
 
     events_remove_parent();
 };
@@ -35,9 +38,9 @@ let add_treq = (event) => {
     else {
         req_code += '<small><em>one of these</em></small>';
     }
-    req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button> \
-        <div class="required_inner"></div> \
-        <button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button>';
+    req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button>'
+              + '<div class="required_inner"></div>'
+              + '<button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button>';
 
     event.target.dataset.maxRtId = max_id;
 
@@ -57,16 +60,20 @@ let add_bopt = (event) => {
     element.classList.add("input-group", "mt-2");
     element.dataset.boId = max_id;
 
-    let opt_code = '<input type="text" class="form-control block_input" placeholder="block requirement"> \
-        <div class="input-group-append"> \
-        <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div>';
+    let opt_code = '<input type="text" class="form-control block_input" placeholder="block requirement">'
+                 + '<input type="number" class="form-control col-3" placeholder="min" required>'
+                 + '<div class="input-group-append">'
+                 + '<button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div>';
 
     event.target.dataset.maxBoId = max_id;
 
     element.innerHTML = opt_code;
 
-    let list = event.target.parentNode.childNodes[3];
-    list.appendChild(element);
+    event.target.parentNode.childNodes.forEach((child) => {
+        if (child.classList && child.classList.contains("required_inner")) {
+            child.appendChild(element);
+        }
+    });
 
     events_remove_parent();
     events_block_choose();
@@ -87,9 +94,9 @@ let add_breq = (event) => {
     else {
         req_code += '<small><em>all of these</em></small>';
     }
-    req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_br_btn;maxRbId">&times;</button> \
-        <div class="required_inner"></div> \
-        <button type="button" class="btn btn-secondary mt-2" data-action="add_bo" data-max-bo-id="-1">Add requirement</button>';
+    req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_br_btn;maxRbId">&times;</button>'
+              + '<div class="required_inner"></div>'
+              + '<button type="button" class="btn btn-secondary mt-2" data-action="add_bo" data-max-bo-id="-1">Add requirement</button>';
 
     event.target.dataset.maxRbId = max_id;
 
@@ -143,7 +150,7 @@ let remove_parent = (event) => {
 
 // Move and display block list
 let move_blocks = (event) => {
-    let obj = event.target;
+    let obj = event.target.parentNode;
     let rect = obj.getBoundingClientRect();
     let helper = document.getElementById("block_input_helper");
     let scrollTop = (document.documentElement.scrollTop || document.body.scrollTop);
@@ -153,8 +160,8 @@ let move_blocks = (event) => {
     helper.style.display = "block";
     helper.style.width = obj.clientWidth + "px";
 
-    helper.dataset.boId = obj.parentNode.dataset.boId;
-    helper.dataset.brId = obj.parentNode.parentNode.parentNode.dataset.brId;
+    helper.dataset.boId = obj.dataset.boId;
+    helper.dataset.brId = obj.parentNode.parentNode.dataset.brId;
 };
 
 // Hide block list
@@ -227,6 +234,93 @@ let set_block = (event) => {
     });
 };
 
+// Grab nested values into a list
+let get_nested = (id, adjacent_dict=false) => {
+    let data = [];
+    let requirements = document.querySelectorAll("#" + id + " .required_outer");
+    requirements.forEach((req) => {
+        let values = [];
+        if (adjacent_dict) {
+            values = {};
+        }
+
+        req.childNodes.forEach((c) => {
+            if (c.classList && c.classList.contains("required_inner")) {
+                c.childNodes.forEach((cr) => {
+                    if (cr.classList && cr.classList.contains("input-group")) {
+                        let v = [];
+                        cr.childNodes.forEach((n) => {
+                            if (n.nodeName == "INPUT" && n.value.replace(/ /g, "") != "") {
+                                v.push(n.value);
+                            }
+                        });
+                        if (adjacent_dict && v.length > 1) {
+                            values[v[0]] = v[1];
+                        }
+                        else if (!adjacent_dict) {
+                            values.push(v[0]);
+                        }
+                    }
+                });
+            }
+        });
+        
+        if (values.length > 0 || (!Array.isArray(values) && Object.keys(values).length > 0)) {
+            data.push(values);
+        }
+    });
+
+    return data;
+};
+
+// Submit form
+let submit_schema = (event) => {
+    event.preventDefault();
+
+    // Grab the data from the form
+    let data = {
+        id: event.target.dataset.schemaId,
+        action: "edit",
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        mins: {
+            instructions_length: document.getElementById("min_instructions_length").value,
+            description_length: document.getElementById("min_description_length").value,
+            comments_made: document.getElementById("min_comments_made").value,
+        },
+        min_blockify: {
+            comments: document.getElementById("min_blockify_comments").value,
+            costumes: document.getElementById("min_blockify_costumes").value,
+            sounds: document.getElementById("min_blockify_sounds").value,
+            sprites: document.getElementById("min_blockify_sprites").value,
+            variables: document.getElementById("min_blockify_variables").value
+        },
+        required_block_categories: {},
+        required_blocks: get_nested("required_blocks", true),
+        required_text: get_nested("required_text")
+    };
+
+    // Grab minimum of each category
+    let promise = new Promise((resolve) => {
+        categories.forEach((category) => {
+            data["required_block_categories"][category] = parseInt(document.getElementById("min_categories_" + category).value);
+        });
+        resolve();
+    }).then(() => {
+        // Submit form
+        handle_ajax("POST", "/admin/schemas", data, (result) => {
+            if (result.response == "true") {
+                window.location = "/admin/schemas";
+            }
+            else {
+                alert("Couldn't save the schema.")
+            }
+        }, "json");
+    }).catch(() => {
+        alert("Couldn't save schema.");
+    });    
+};
+
 // Event setters
 let events_topt = () => {
     let add_tos = document.querySelectorAll("[data-action='add_to']");
@@ -290,6 +384,10 @@ let loaded = function() {
 
     // Block selector
     events_block_selector();
+    events_block_choose();
+
+    // Form submission
+    document.getElementById("schema_form").addEventListener("submit", submit_schema);
 };
 
 if (document.readyState === "complete")

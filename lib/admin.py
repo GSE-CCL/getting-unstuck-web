@@ -1,13 +1,14 @@
 from . import common as common
 from . import authentication as authentication
 from . import scrape as scrape
+from . import schema as schema
 from flask import session
 import mongoengine as mongo
 from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
-VALID_ADMIN_PAGES = ["studios", "users"]
+VALID_ADMIN_PAGES = ["schemas", "studios", "users"]
 
 def get_info(page):
     """Gets the relevant information that would be used on a given admin page.
@@ -28,6 +29,9 @@ def get_info(page):
         elif page == "studios":
             connect_db()
             info["studios"] = scrape.Studio.objects()
+        elif page == "schemas":
+            connect_db()
+            info["schemas"] = schema.Challenge.objects()
 
     return info
 
@@ -94,5 +98,61 @@ def set_info(page, form):
                 return True
             except:
                 return False
+    elif page == "schemas":
+        connect_db()
+        if form["action"] == "delete":
+            try:
+                doc = schema.Challenge.objects(id=form["identifier"]).first()
+                doc.delete()
+                return True
+            except:
+                return False
+        elif form["action"] == "edit":
+            # Handle title, etc.
+            if form["title"].replace(" ", "") == "":
+                title = None
+            else:
+                title = form["title"]
+            if form["description"].replace(" ", "") == "":
+                description = None
+            else:
+                description = form["description"]
+
+            # If inserting a new schema
+            if form["id"] == "__new__":
+                result = schema.add_schema(mins=form["mins"],
+                                           min_blockify=form["min_blockify"],
+                                           required_text=form["required_text"],
+                                           required_block_categories=form["required_block_categories"],
+                                           required_blocks=form["required_blocks"],
+                                           title=title,
+                                           description=description)
+                if not result:
+                    return False
+                else:
+                    return True
+            else:
+                try:
+                    doc = schema.Challenge.objects(id = form["id"]).first()
+                    doc.title = title
+                    doc.description = description
+                    doc.min_instructions_length = form["mins"]["instructions_length"]
+                    doc.min_description_length = form["mins"]["description_length"]
+                    doc.min_comments_made = form["mins"]["comments_made"]
+                    doc.min_blockify = schema.Blockify(comments=form["min_blockify"]["comments"],
+                                                    costumes=form["min_blockify"]["costumes"],
+                                                    sounds=form["min_blockify"]["sounds"],
+                                                    sprites=form["min_blockify"]["sprites"],
+                                                    variables=form["min_blockify"]["variables"])
+                    doc.required_block_categories = form["required_block_categories"]
+                    doc.required_blocks = form["required_blocks"]
+                    doc.required_text = form["required_text"]
+
+                    doc.save()
+                    return True
+                except:
+                    return False
+        else:
+            return False
     else:
         return False

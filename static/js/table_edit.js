@@ -36,19 +36,6 @@
     of that row.
 **/
 
-// Post AJAX
-let handle_ajax = function(method, url, data, callback) {
-    let datas = new URLSearchParams(data)
-
-    var http = new XMLHttpRequest();
-    http.onreadystatechange = function() {
-        callback(this);
-    };
-    http.open(method, url, true);
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.send(datas.toString());
-}
-
 // Generate a form element
 let generateFormElement = function(field, fields, defaultValue="", label) {
     let html = "";

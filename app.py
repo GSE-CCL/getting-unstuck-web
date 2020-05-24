@@ -7,6 +7,7 @@ from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 
 from lib import common
+from lib import schema
 from lib import scrape
 from lib import authentication
 from lib import admin
@@ -21,6 +22,7 @@ def twodec(value):
 
 app.jinja_env.filters["twodec"] = twodec
 app.secret_key = "hithere"
+app.url_map.strict_slashes = False
 
 # Helper routes
 @app.route("/redirect", methods=["GET"])
@@ -95,27 +97,54 @@ def admin_page(page):
             info = admin.get_info(page)
             return render_template("admin/{0}.html".format(page), info=info, user=authentication.get_login_info())
         else:
-            result = admin.set_info(page, request.form)
+            if request.is_json:
+                form = request.get_json()
+            else:
+                form = request.form
+            result = admin.set_info(page, form)
             return json.dumps(result)
     else:
         return redirect("/admin")
 
-@app.route("/admin/schema/add", methods=["GET", "POST"])
+def schema_editor(id):
+    data = {
+        "min_instructions_length": 0,
+        "min_description_length": 0,
+        "min_comments_made": 0,
+        "min_blockify": {
+            "comments": 0,
+            "costumes": 0,
+            "sounds": 0,
+            "sprites": 0,
+            "variables": 0
+        },
+        "required_text": [],
+        "required_block_categories": {},
+        "required_blocks": []
+    }
+    if id != "__new__":
+        common.connect_db()
+        data = schema.Challenge.objects(id = id).first().to_mongo()
+
+    parser = Parser()
+    blocks = parser.block_data
+    block_list = list()
+    block_dict = dict()
+    for cat in blocks:
+        block_list += blocks[cat].keys()
+        for block in blocks[cat]:
+            block_dict[blocks[cat][block].lower().replace(" ", "")] = block
+    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, user=authentication.get_login_info())
+
+@app.route("/admin/schemas/edit", methods=["GET"])
 @admin_required
 def add_schema():
-    parser = Parser()
-    if request.method == "GET":
-        blocks = parser.block_data
-        block_list = list()
-        block_dict = dict()
-        for cat in blocks:
-            block_list += blocks[cat].keys()
-            for block in blocks[cat]:
-                block_dict[blocks[cat][block].lower().replace(" ", "")] = block
-        return render_template("add_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), user=authentication.get_login_info())
-    else:
-        # TODO
-        return redirect("/")
+    return schema_editor("__new__")
+
+@app.route("/admin/schemas/edit/<id>", methods=["GET"])
+@admin_required
+def edit_schema(id):
+    return schema_editor(id)
 
 # Studios, projects, users, challenges
 @app.route("/")

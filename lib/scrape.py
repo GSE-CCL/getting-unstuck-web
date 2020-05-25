@@ -1,7 +1,6 @@
 from ccl_scratch_tools import Parser, Scraper
 from . import common as common
 from datetime import datetime, timedelta
-from flask_socketio import emit
 from math import inf
 import json
 import mongoengine as mongo

@@ -125,6 +125,8 @@ def set_info(page, form):
                                            required_text=form["required_text"],
                                            required_block_categories=form["required_block_categories"],
                                            required_blocks=form["required_blocks"],
+                                           required_blocks_failure=form["required_blocks_failure"],
+                                           required_text_failure=form["required_text_failure"],
                                            title=title,
                                            description=description)
                 if not result:
@@ -147,6 +149,8 @@ def set_info(page, form):
                     doc.required_block_categories = form["required_block_categories"]
                     doc.required_blocks = form["required_blocks"]
                     doc.required_text = form["required_text"]
+                    doc.required_text_failure = form["required_text_failure"]
+                    doc.required_blocks_failure = form["required_blocks_failure"]
 
                     doc.save()
                     return True

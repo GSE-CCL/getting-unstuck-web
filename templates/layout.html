@@ -41,13 +41,15 @@
 
                         {% if user["role"] == "site_admin": %}
                         <a class="nav-item nav-link" href="/admin">Manage:</a>
-                        <a class="nav-item nav-link" href="/admin/challenges">Challenges</a>
-                        <a class="nav-item nav-link" href="/admin/studios">Studios</a>
-                        <a class="nav-item nav-link" href="/admin/users">Users</a>
+                        {% for page in valid_admin_pages: %}
+                        <a class="nav-item nav-link" href="/admin/{{ page }}">{{ page|capitalize }}</a>
+                        
+                        {% endfor %}
+                        {% endif %}
+
                         <a class="nav-item nav-link" href="#">&diams;</a>
                         <a class="nav-item nav-link" href="/studio">Download a studio</a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
-                        {% endif %}
 
                         <a class="nav-item nav-link" href="/logout">Logout</a>
                     </div>

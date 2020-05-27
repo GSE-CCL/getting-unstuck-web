@@ -30,13 +30,18 @@ app.jinja_env.filters["twodec"] = twodec
 app.secret_key = "hithere"
 app.url_map.strict_slashes = False
 
+# Pass things to all templates
+@app.context_processor
+def inject_vars():
+    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES)
+
 # Helper routes
 @app.route("/redirect", methods=["GET"])
 def redirect_to():
     if request.args.get("username") is not None and request.args.get("username") != "":
         return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
     else:
-        return render_template("index.html", message="Sorry! I wasn't able to do that.", user=authentication.get_login_info())
+        return render_template("index.html", message="Sorry! I wasn't able to do that.")
 
 # Authentication
 @app.route("/login", methods=["GET", "POST"])
@@ -93,7 +98,7 @@ def setup():
 @app.route("/admin")
 @admin_required
 def admin_index():
-    return render_template("admin/index.html", valid_admin_pages=admin.VALID_ADMIN_PAGES, user=authentication.get_login_info())
+    return render_template("admin/index.html")
 
 @app.route("/admin/<page>", methods=["GET", "POST"])
 @admin_required
@@ -101,7 +106,7 @@ def admin_page(page):
     if page in admin.VALID_ADMIN_PAGES:
         if request.method == "GET":
             info = admin.get_info(page)
-            return render_template("admin/{0}.html".format(page), info=info, user=authentication.get_login_info())
+            return render_template("admin/{0}.html".format(page), info=info)
         else:
             if request.is_json:
                 form = request.get_json()
@@ -140,7 +145,7 @@ def schema_editor(id):
         block_list += blocks[cat].keys()
         for block in blocks[cat]:
             block_dict[blocks[cat][block].lower().replace(" ", "")] = block
-    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, user=authentication.get_login_info())
+    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
 
 @app.route("/admin/schemas/edit", methods=["GET"])
 @admin_required
@@ -155,7 +160,7 @@ def edit_schema(id):
 # Studios, projects, users, challenges
 @app.route("/")
 def homepage():
-    return render_template("index.html", user=authentication.get_login_info()) 
+    return render_template("index.html") 
 
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
@@ -192,13 +197,13 @@ def project_id(pid):
     other_blocks = generate_scratchblocks(other_download, other_surround)
     other_text = block_string(other_blocks)
 
-    return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
+    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required
 def studio():
     if request.method == "GET":
-        return render_template("studio.html", user=authentication.get_login_info())
+        return render_template("studio.html")
     else:
         scraper = Scraper()
         sid = scraper.get_id(request.form["studio"])
@@ -207,7 +212,7 @@ def studio():
             scrape.add_studio(sid, cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
-            return render_template("studio.html", message="Please enter a valid studio ID or URL.", user=authentication.get_login_info())
+            return render_template("studio.html", message="Please enter a valid studio ID or URL.")
 
 @app.route("/studio/<sid>")
 def studio_id(sid):
@@ -222,7 +227,7 @@ def studio_id(sid):
     if studio["status"] == "in_progress":
         message = "This studio is currently in the process of being downloaded and analyzed. <a href=''>Refresh page.</a>"
 
-    return render_template("studio_id.html", projects=projects, studio=studio, message=message, user=authentication.get_login_info())
+    return render_template("studio_id.html", projects=projects, studio=studio, message=message)
 
 @app.route("/user/<username>")
 def user_id(username):
@@ -233,7 +238,7 @@ def user_id(username):
         if project["studio_id"] not in studios:
             studios[project["studio_id"]] = scrape.Studio.objects(studio_id = project["studio_id"]).first()
 
-    return render_template("username.html", projects=projects, studios=studios, username=username, user=authentication.get_login_info())
+    return render_template("username.html", projects=projects, studios=studios, username=username)
 
 @app.route("/challenges", methods=["GET", "POST"])
 def get_challenge():

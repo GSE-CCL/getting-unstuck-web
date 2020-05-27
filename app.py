@@ -101,9 +101,10 @@ def project_id(pid):
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
             surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
-
-    print_blocks = generate_scratchblocks(downloaded_project, surround)
-    text = block_string(print_blocks)
+    
+    target = parser.get_target(surround[0], downloaded_project)
+    test_blocks = visualizer.generate_script(surround[0], target[0]["blocks"], surround)
+    text = block_string([test_blocks])
 
     # comparison project
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")

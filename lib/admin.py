@@ -30,6 +30,13 @@ def get_info(page):
         elif page == "studios":
             connect_db()
             info["studios"] = scrape.Studio.objects()
+
+            schemas = schema.Challenge.objects.only("id", "title", "modified").order_by("-modified")
+            info["schemas"] = dict()
+            for s in schemas:
+                info["schemas"][str(s["id"])] = str(s["modified"])
+                if "title" in s:
+                    info["schemas"][str(s["id"])] = s["title"]
         elif page == "schemas":
             connect_db()
             info["schemas"] = schema.Challenge.objects()
@@ -100,13 +107,21 @@ def set_info(page, form):
             except:
                 return False
         elif form["action"] == "set_public_show":
-            #try:
-            doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
-            doc.public_show = not doc.public_show
-            doc.save()
-            return True
-            #except:
-                #return False
+            try:
+                doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+                doc.public_show = not doc.public_show
+                doc.save()
+                return True
+            except:
+                return False
+        elif form["action"] == "choose_schema":
+            try:
+                doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+                doc.challenge_id = form["challenge_id"]
+                doc.save()
+                return True
+            except:
+                return False
     elif page == "schemas":
         connect_db()
         if form["action"] == "delete":

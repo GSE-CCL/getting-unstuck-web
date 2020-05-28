@@ -59,15 +59,27 @@ let generateFormElement = function(field, fields, defaultValue="", label) {
     }
     else if (fields[field]["type"] == "select") {
         html += '<select name="' + field + '" class="form-control mb-2" '
-                + fields[field]["required"] + '>';
-        fields[field]["options"].forEach(option => {
-            html += '<option value="' + option + '"';
+                + fields[field]["required"] + ' id="' + field + '">';
+        if (Array.isArray(fields[field]["options"])) {
+            fields[field]["options"].forEach(option => {
+                html += '<option value="' + option + '"';
 
-            if (option == defaultValue)
-                html += " selected";
+                if (option == defaultValue)
+                    html += " selected";
 
-            html += '>' + option + '</option>';
-        });
+                html += '>' + option + '</option>';
+            });
+        }
+        else {
+            for (let [key, value] of Object.entries(fields[field]["options"])) {
+                html += '<option value="' + key + '"';
+
+                if (key == defaultValue)
+                    html += " selected";
+                
+                html += '>' + value + '</option>';
+            }
+        }
         html += '</select>';
     }
 

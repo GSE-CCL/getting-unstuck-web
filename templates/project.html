@@ -12,9 +12,9 @@
             part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
         </h5>
         <p>
-            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}">View project on Scratch</a>
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">View project on Scratch</a>
         </p>
-
+        {% if "stats" in studio and "max" in studio["stats"]: %}
         <h5>Some quick stats about how your project compares within this studio:</h5>
 
         <p class="block">The Day 15 Prompt was: </p>
@@ -63,7 +63,7 @@
         </p>
         {% if results["categories"]["control"] >= 1 %}
 
-            <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
+            <p class="block">For example, you programmed the sprite <span class="sprite-color"> {{ sprite["name"] }} </span>to do the following:</p>
         
 
         <div class="container" style="margin-left: 100px; margin-right: 100px">
@@ -83,7 +83,8 @@
             were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
         </p>
         {% endif %}
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project!</p><br><br>
+       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project 
+        with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
@@ -158,7 +159,9 @@
                 {% endfor %}
             </tbody>
         </table>
-        
+        {% else: %}
+        <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
+        {% endif %}
     </div>
 </div>
 

@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit schema &minus; {% endblock %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Edit schema
+        </h1>
+        <p>
+            Schemas contain requirements for projects.
+        </p>
+        <form action="/admin/schema/edit" method="POST" data-schema-id="{{ schema_id }}" id="schema_form">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="title">Title of schema</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                    {% if "title" in data: %}value="{{ data['title']}}"{% endif %}
+                    placeholder="If blank, this will be the studio title.">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="description">Description of schema</label>
+                    <input type="text" class="form-control" id="description" name="description"
+                    {% if "description" in data: %}value="{{ data['description']}}"{% endif %}
+                    placeholder="If blank, this will be the studio description.">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_instructions_length">Minimum instructions length</label>
+                    <input type="number" class="form-control" id="min_instructions_length" name="min_instructions_length" value="{{ data['min_instructions_length'] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_description_length">Minimum description length</label>
+                    <input type="number" class="form-control" id="min_description_length" name="min_description_length" value="{{ data['min_description_length'] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_comments_made">Minimum # comments made on other projects</label>
+                    <input type="number" class="form-control" id="min_comments_made" name="min_comments_made" value="{{ data['min_comments_made'] }}">
+                </div>
+            </div>
+            <h6 class="mt-3">PROJECT ANALYSIS</h6>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_comments">Minimum # code comments</label>
+                    <input type="number" class="form-control" id="min_blockify_comments" name="min_blockify_comments" value="{{ data['min_blockify']['comments'] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_costumes">Minimum # costumes</label>
+                    <input type="number" class="form-control" id="min_blockify_costumes" name="min_blockify_costumes" value="{{ data['min_blockify']['costumes'] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_sounds">Minimum # sounds</label>
+                    <input type="number" class="form-control" id="min_blockify_sounds" name="min_blockify_sounds" value="{{ data['min_blockify']['sounds'] }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_sprites">Minimum # sprites</label>
+                    <input type="number" class="form-control" id="min_blockify_sprites" name="min_blockify_sprites" value="{{ data['min_blockify']['sprites'] }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="min_blockify_variables">Minimum # variables</label>
+                    <input type="number" class="form-control" id="min_blockify_variables" name="min_blockify_variables" value="{{ data['min_blockify']['variables'] }}">
+                </div>
+            </div>
+            <div class="form-row mt-3">
+                <div class="form-group col-md-4">
+                    <label>Required text</label>
+                    <small class="form-text text-muted">
+                        Each of the boxes contains options. Each box must have one
+                        option fulfilled for the project to validate against the schema.
+                    </small>
+                    <div id="required_text">
+                        {% for req in data["required_text"]: %}
+                        <div class="required_outer mt-2" data-tr-id="{{ loop.index0 }}">
+                            {% if loop.index0 == 0: %}
+                            <small><em>one of these</em></small>
+                            {% else: %}
+                            <small><em>and one of these</em></small>
+                            {% endif %}
+                            <button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button>
+                            <div class="required_inner">
+                                {% for opt in req: %}
+                                <div class="input-group mt-2" data-to-id="{{ loop.index0 }}">
+                                    <input type="text" class="form-control" placeholder="text option" value="{{ opt }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="{{ (req|length - 1) }}">Add option</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add_tr_btn" class="btn btn-secondary mt-2" data-action="add_tr" data-max-rt-id="{{ (data['required_text']|length - 1) }}">Add requirement</button>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Required block categories</label>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Min # blocks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cat in blocks: %}
+                            <tr>
+                                <td>{{ cat }}</td>
+                                <td>
+                                    <input type="number" class="form-control" name="min_categories_{{ cat }}" id="min_categories_{{ cat }}" value="0">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Required blocks</label>
+                    <small class="form-text text-muted">
+                        Each of the boxes contains a grouping of required blocks.
+                        One of the groupings must be fully present for the project to validate against the schema.
+                    </small>
+                    <div id="required_blocks">
+                    {% for req in data["required_blocks"]: %}
+                        <div class="required_outer mt-2" data-br-id="{{ loop.index0 }}">
+                            {% if loop.index0 == 0: %}
+                            <small><em>all of these</em></small>
+                            {% else: %}
+                            <small><em>or all of these</em></small>
+                            {% endif %}
+
+                            <button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_br_btn;maxRbId">&times;</button>
+                            <div class="required_inner">
+                                {% for opt in req: %}
+                                <div class="input-group mt-2" data-bo-id="{{ loop.index0 }}">
+                                    <input type="text" class="form-control block_input" placeholder="block requirement" value="{{ opt }}">
+                                    <input type="number" class="form-control col-3" placeholder="min" required value="{{ req[opt] }}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="btn btn-secondary mt-2" data-action="add_bo" data-max-bo-id="{{ (req|length - 1) }}">Add requirement</button>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <button type="button" id="add_br_btn" class="btn btn-secondary mt-2" data-action="add_br" data-max-rb-id="{{ (data['required_blocks']|length - 1) }}">Add option</button>
+                </div>
+            </div>
+            <div class="form-row mt-2 mb-3">
+                <div class="form-group col-12">
+                    <button type="submit" class="btn btn-primary float-right">Submit schema</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="block_input_helper">
+    <div class="list-group list-group-flush">
+        {% for cat in blocks: %}
+            <div class="list-group-item list-group-item-secondary" data-block-category="{{ cat }}">{{ cat }}</div>
+
+            {% for block in blocks[cat]: %}
+            <button type="button" class="list-group-item" data-action="choose_block" data-opcode="{{ block }}">
+                <strong>{{ blocks[cat][block] }}</strong> - {{ block }}
+            </button>
+            {% endfor %}
+        {% endfor%}
+    </div>
+</div>
+
+<script>
+    let block_list = {{ block_list|safe }};
+    let block_dict = {{ block_dict|safe }};
+    let categories = {{ categories|safe }};
+</script>
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/admin_schema_add.js"></script>
+
+{% endblock %}

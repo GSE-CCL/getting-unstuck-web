@@ -177,15 +177,17 @@ def validate_project(schema, project, studio_id):
     for category in rc:
         if project["stats"]["categories"][category] >= rc[category]:
             result[category] = True
+        else:
+            result[category] = False
 
     # Check for required blocks
-    result["required_blocks"] = [False] * len(schema["required_blocks"])
+    result["required_blocks"] = [True] * len(schema["required_blocks"])
     rb = schema["required_blocks"]
-    for i in range(len(rb)):
-        for opcode in rb[i]:
-            if opcode in project["stats"]["blocks"] \
-               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]:
-                result[i] = opcode
+    for opt in range(len(rb)):
+        for opcode in rb[opt]:
+            if not (opcode in project["stats"]["blocks"] \
+               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]):
+                result[opt] = False
                 break
 
     return result

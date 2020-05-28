@@ -14,8 +14,39 @@ let loaded = function() {
         "__actions__": actions
     };
 
-    // Set the events!
+    // Set the events
     setEvents(fields);
+
+    // Toggle challenge page visibility.
+    let togglers = document.querySelectorAll("[data-action='toggle_publicity']");
+    togglers.forEach((toggler) => {
+        toggler.addEventListener("click", (event) => {
+            let data = {
+                action: "set_public_show",
+                identifier: event.target.parentNode.parentNode.dataset.identifier
+            };
+
+            handle_ajax("POST", fields["__url__"], data, (res) => {
+                if (res.response == "true") {
+                    let was_true = event.target.dataset.to == "True";
+                    event.target.dataset.to = was_true ? "False" : "True";
+                    let span = document.querySelector("tr[data-identifier='" + data["identifier"] + "'] [data-field='public_show'] span");
+                    
+                    if (was_true) {
+                        span.classList.remove("fa-times");
+                        span.classList.add("fa-check");
+                    }
+                    else {
+                        span.classList.remove("fa-check");
+                        span.classList.add("fa-times");
+                    }
+                }
+                else {
+                    alert("I couldn't toggle the publicity for this.");
+                }
+            });
+        });
+    });
 };
 
 if (document.readyState === "complete")

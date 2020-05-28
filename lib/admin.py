@@ -99,6 +99,14 @@ def set_info(page, form):
                 return True
             except:
                 return False
+        elif form["action"] == "set_public_show":
+            #try:
+            doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+            doc.public_show = not doc.public_show
+            doc.save()
+            return True
+            #except:
+                #return False
     elif page == "schemas":
         connect_db()
         if form["action"] == "delete":

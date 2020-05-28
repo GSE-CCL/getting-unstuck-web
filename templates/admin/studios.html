@@ -14,8 +14,9 @@
                     <th data-field="studio_id">Studio ID</th>
                     <th data-field="title">Title</th>
                     <th data-field="description">Description</th>
-                    <th data-field="challenge">Challenge schema</th>
-                    <th data-field="status">Download status</th>
+                    <th data-field="challenge">Schema</th>
+                    <th data-field="public_show">Show</th>
+                    <th data-field="status">Status</th>
                     <th data-field="actions" class="w-10">Actions</th>
                 </tr>
             </thead>
@@ -29,13 +30,21 @@
                         {% if "challenge_id" not in studio: %}
                         None
                         {% else: %}
-                        <a href="/admin/schemas/edit/{{ studio['challenge_id'] }}">View here</a>
+                        <a href="/admin/schemas/edit/{{ studio['challenge_id'] }}">View</a>
+                        {% endif %}
+                    </td>
+                    <td data-field="public_show">
+                        {% if studio["public_show"]: %}
+                        <span class="fa fa-check"></span>
+                        {% else: %}
+                        <span class="fa fa-times"></span>
                         {% endif %}
                     </td>
                     <td data-field="status">{{ studio["status"] }}</td>
-                    <td data-field="actions">
+                    <td data-field="actions" class="col-2">
                         <a href="/studio/{{ studio['studio_id'] }}" title="More" class="fa fa-info"></a>&nbsp;
                         <a href="#" title="Link to challenge" class="fa fa-link"></a>&nbsp;
+                        <a href="#" title="Toggle public visibility" class="fa fa-globe" data-action="toggle_publicity" data-to="{{ not studio['public_show'] }}"></a>&nbsp;
                         <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" title="View on Scratch" class="fa fa-external-link" target="_blank"></a>&nbsp;
                         <a href="#" data-action="delete" data-identifier="{{ studio['studio_id'] }}" title="Delete" class="fa fa-trash"></a>
                     </td>

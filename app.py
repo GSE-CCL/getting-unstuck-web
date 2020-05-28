@@ -96,18 +96,18 @@ def project_id(pid):
 
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
-    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
+    # validation 
+    validation_results = validated
     sprite = None
     surround = None
-    for interest in blocks_of_interest:
-        if interest in results["blocks"].keys():
+    for interest in validation_results["required_blocks"]:
+        if interest is not False:
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
             surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
     
     if surround is not None and sprite is not None:
         target = parser.get_target(surround[0], downloaded_project)
-        print_blocks = visualizer.generate_script(surround[0], target[0]["blocks"], surround)
-        text = block_string([print_blocks])
+        text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
     else:
         text = "No blocks found!"
     # comparison project
@@ -117,13 +117,16 @@ def project_id(pid):
     other_user = other_projects[project_num].author
     other_download = scraper.download_project(other_pid)
     other_results = parser.blockify(scratch_data=other_download)
-    for interest in blocks_of_interest:
-        if interest in other_results["blocks"].keys():
+    # validation
+    validation_comp = validated2
+    other_sprite = None
+    other_surround = None
+    for interest in validation_comp["required_blocks"]:
+        if interest is not False:
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
             other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
     other_target = parser.get_target(other_surround[0], other_download)
-    print_comp_blocks = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround)
-    other_text = block_string([print_comp_blocks])
+    other_text = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround, text=True)
 
     return render_template("project.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 

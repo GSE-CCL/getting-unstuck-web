@@ -99,7 +99,7 @@
                     <button type="button" id="add_tr_btn" class="btn btn-secondary mt-2" data-action="add_tr" data-max-rt-id="{{ (data['required_text']|length - 1) }}">Add requirement</button>
 
                     <div class="form-group mt-3">
-                        <label for="required_text_failure">Failure message (if requirement not met)</label>
+                        <label for="required_text_failure">Message (if requirement not met)</label>
                         <input type="text" class="form-control" id="required_text_failure" name="required_text_failure" value="{{ data['required_text_failure'] }}">
                     </div>
                 </div>
@@ -158,7 +158,7 @@
                     <button type="button" id="add_br_btn" class="btn btn-secondary mt-2" data-action="add_br" data-max-rb-id="{{ (data['required_blocks']|length - 1) }}">Add option</button>
                     
                     <div class="form-group mt-3">
-                        <label for="required_blocks_failure">Failure message (if requirement not met)</label>
+                        <label for="required_blocks_failure">Message (if requirement not met)</label>
                         <input type="text" class="form-control" id="required_blocks_failure" name="required_blocks_failure" value="{{ data['required_blocks_failure'] }}">
                     </div>
                 </div>

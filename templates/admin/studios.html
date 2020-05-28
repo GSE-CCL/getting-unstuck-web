@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Studios &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Studios
+        </h1>
+
+        <table class="table table-responsive-lg">
+            <thead>
+                <tr data-identifier="__model__">
+                    <th data-field="studio_id">Studio ID</th>
+                    <th data-field="title">Title</th>
+                    <th data-field="description">Description</th>
+                    <th data-field="challenge">Challenge</th>
+                    <th data-field="status">Download status</th>
+                    <th data-field="actions" class="w-10">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                {% for studio in info["studios"] %}
+                <tr data-identifier="{{ studio['studio_id'] }}">
+                    <td data-field="studio_id">{{ studio["studio_id"] }}</td>
+                    <td data-field="title">{{ studio["title"] }}</td>
+                    <td data-field="description">{{ studio["description"] }}</td>
+                    <td data-field="challenge">
+                        {% if "challenge" not in studio: %}
+                        None
+                        {% else: %}
+                        {{ studio["challenge"] }}
+                        {% endif %}
+                    </td>
+                    <td data-field="status">{{ studio["status"] }}</td>
+                    <td data-field="actions">
+                        <a href="/studio/{{ studio['studio_id'] }}" title="More" class="fa fa-info"></a>&nbsp;
+                        <a href="#" title="Link to challenge" class="fa fa-link"></a>&nbsp;
+                        <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" title="View on Scratch" class="fa fa-external-link" target="_blank"></a>&nbsp;
+                        <a href="#" data-action="delete" data-identifier="{{ studio['studio_id'] }}" title="Delete" class="fa fa-trash"></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>
+            <a href="/studio" data-action="add">Add</a>&nbsp;&nbsp;
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/table_edit.js"></script>
+<script src="/static/js/admin_studio.js"></script>
+
+{% endblock %}

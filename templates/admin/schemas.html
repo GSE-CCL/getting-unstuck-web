@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% block title %}Schemas &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Studios
+        </h1>
+
+        <table class="table table-responsive-lg">
+            <thead>
+                <tr data-identifier="__model__">
+                    <th data-field="title">Title</th>
+                    <th data-field="description">Description</th>
+                    <th data-field="requirements">Requirements</th>
+                    <th data-field="actions" class="w-10">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                {% for schema in info["schemas"]: %}
+                <tr data-identifier="{{ schema['id'] }}">
+                    <td data-field="schema_id" class="hide">{{ schema["id"] }}</td>
+                    <td data-field="title">
+                        {% if "title" not in schema: %}
+                        <em>Pulls from studio</em>
+                        {% else: %}
+                        {{ schema["title"] }}
+                        {% endif %}
+                    </td>
+                    <td data-field="description">
+                        {% if "description" not in schema: %}
+                        <em>Pulls from studio</em>
+                        {% else: %}
+                        {{ schema["description"] }}
+                        {% endif %}
+                    </td>
+                    <td class="col-md-6">
+                        <a href="#" data-action="show" data-action-id="details_{{ schema['id'] }}" data-current="hide">Show</a>
+                        <div id="details_{{ schema['id'] }}" class="hide mt-2">
+                            <h6>Metadata</h6>
+                            <ul>
+                                <li>Min instructions length: {{ schema["min_instructions_length"] }}</li>
+                                <li>Min description length: {{ schema["min_description_length"] }}</li>
+                                <li>Min comments made on other projects: {{ schema["min_comments_made"] }}</li>
+                            </ul>
+                            <h6>Project Analysis</h6>
+                            <ul>
+                                {% for bl in schema["min_blockify"]: %}
+                                <li>Min # {{ bl }}: {{ schema["min_blockify"][bl] }}</li>
+                                {% endfor %}
+                            </ul>
+                            <h6>Required block categories</h6>
+                            <ul>
+                                {% for cat in schema["required_block_categories"]: %}
+                                {% if schema["required_block_categories"][cat] > 0: %}
+                                <li>{{ cat }}: {{ schema["required_block_categories"][cat] }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <h6>Required text</h6>
+                            <ul>
+                                {% for outer in schema["required_text"]: %}
+                                <li>
+                                    <em>one of:</em> {{ outer|join("; ") }}
+                                    {% if loop.index < schema["required_text"]|length: %}
+                                    <strong>AND</strong>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <h6>Required blocks</h6>
+                            <ul>
+                                {% for outer in schema["required_blocks"]: %}
+                                <li>
+                                    <em>all of:</em>
+                                    {% for inner in outer: %}
+                                    {{ inner }} ({{ outer[inner] }}){% if loop.index < outer|length: %}; {% endif %}
+                                    {% endfor %}
+
+                                    {% if loop.index < schema["required_blocks"]|length: %}
+                                    <strong>OR</strong>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </td>
+                    <td data-field="actions">
+                        <a href="/admin/schemas/edit/{{ schema['id'] }}" title="Edit" class="fa fa-edit"></a>&nbsp;
+                        <a href="#" data-action="delete" data-identifier="{{ schema['id'] }}" title="Delete" class="fa fa-trash"></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>
+            <a href="/admin/schemas/edit" data-action="add">Add</a>&nbsp;&nbsp;
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/table_edit.js"></script>
+<script src="/static/js/admin_schema.js"></script>
+
+{% endblock %}

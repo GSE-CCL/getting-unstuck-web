@@ -24,13 +24,26 @@ body {
 }
 
 img.logo {
-    width: 6%
+    width: 6%;
 }
 
+/* Custom settings for sprite images */
 img.sprite {
-    width:50%
+  width: 100%;
+  min-width: 130px;
+  max-width: 150px;
+  height: auto;
+  border: 2px solid black;
+  padding: 5px;
+  margin: 20px;
 }
 
+.sprite-color {
+  color: #5dc7e4;
+  font-weight: bold;
+}
+
+/* For ScratchBlocks */
 .scratchblocks {
     zoom: 0.675;
 }

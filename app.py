@@ -14,7 +14,6 @@ from lib import scrape
 from lib import authentication
 from lib import admin
 from lib.authentication import admin_required, login_required
-from draw_blocks import *
 
 CACHE_DIRECTORY = "cache"
 
@@ -180,8 +179,7 @@ def project_id(pid):
     
     if surround is not None and sprite is not None:
         target = parser.get_target(surround[0], downloaded_project)
-        print_blocks = visualizer.generate_script(surround[0], target[0]["blocks"], surround)
-        text = block_string([print_blocks])
+        text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
     else:
         text = "No blocks found!"
     # comparison project
@@ -197,8 +195,7 @@ def project_id(pid):
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
             other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
     other_target = parser.get_target(other_surround[0], other_download)
-    print_comp_blocks = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround)
-    other_text = block_string([print_comp_blocks])
+    other_text = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround, text=True)
 
     return render_template("theme.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 

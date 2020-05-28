@@ -53,7 +53,7 @@
             {% endif %}
         </p>
         {% if results["categories"]["event"] >= 1 %}
-            <p class="block">For example, you programmed the sprite {{ sprite["name"] }} to do the following:</p>
+            <p class="block">For example, you programmed the sprite <span class="sprite-color">{{ sprite["name"] }}</span> to do the following:</p>
         {% endif %}
 
         <div class="container" style="margin-left: 100px; margin-right: 100px">
@@ -78,7 +78,7 @@
                   <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                   <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                 </ol>
-                <!--actuall 3 imgaes-->
+                <!--the three comparison projects-->
                 <div class="carousel-inner">
                   <div class="carousel-item active">
                     <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project!</p><br><br>
@@ -98,7 +98,7 @@
                         Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p><br><br>
                   </div>
                   <div class="carousel-item">
-                    <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project!</p><br><br>
+                    <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project with the sprite <span class="sprite-color">{{ comp_sprite["name"]}}</span>!</p><br><br>
                     <div class="container" style="margin-left: 100px; margin-right: 100px">
                         <div class="row">
                             <div class="col-4 d-flex justify-content-center">

@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 import random
@@ -8,13 +9,17 @@ from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
 
 from lib import common
+from lib import schema
 from lib import scrape
 from lib import authentication
+from lib import admin
 from lib.authentication import admin_required, login_required
 from draw_blocks import *
 
 CACHE_DIRECTORY = "cache"
 
+
+CACHE_DIRECTORY = "cache"
 
 app = Flask(__name__)
 
@@ -23,6 +28,15 @@ def twodec(value):
 
 app.jinja_env.filters["twodec"] = twodec
 app.secret_key = "hithere"
+app.url_map.strict_slashes = False
+
+# Helper routes
+@app.route("/redirect", methods=["GET"])
+def redirect_to():
+    if request.args.get("username") is not None and request.args.get("username") != "":
+        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
+    else:
+        return render_template("index.html", message="Sorry! I wasn't able to do that.", user=authentication.get_login_info())
 
 # Authentication
 @app.route("/login", methods=["GET", "POST"])
@@ -60,12 +74,8 @@ def register():
         request.form["user_role"]
     )
 
-    if res:
-        res = authentication.login_user(request.form["username"], request.form["password"])
-        if res:
-            return redirect("/")
-        else:
-            return redirect("/login")
+    if type(res) == bool and res:
+        return redirect("/login")
     else:
         return render_template("index.html", message="One or several of your inputs were invalid.")
 
@@ -79,7 +89,70 @@ def setup():
     else:
         return redirect("/")
 
-# Studios, projects
+# Admin pages
+@app.route("/admin")
+@admin_required
+def admin_index():
+    return render_template("admin/index.html", valid_admin_pages=admin.VALID_ADMIN_PAGES, user=authentication.get_login_info())
+
+@app.route("/admin/<page>", methods=["GET", "POST"])
+@admin_required
+def admin_page(page):
+    if page in admin.VALID_ADMIN_PAGES:
+        if request.method == "GET":
+            info = admin.get_info(page)
+            return render_template("admin/{0}.html".format(page), info=info, user=authentication.get_login_info())
+        else:
+            if request.is_json:
+                form = request.get_json()
+            else:
+                form = request.form
+            result = admin.set_info(page, form)
+            return json.dumps(result)
+    else:
+        return redirect("/admin")
+
+def schema_editor(id):
+    data = {
+        "min_instructions_length": 0,
+        "min_description_length": 0,
+        "min_comments_made": 0,
+        "min_blockify": {
+            "comments": 0,
+            "costumes": 0,
+            "sounds": 0,
+            "sprites": 0,
+            "variables": 0
+        },
+        "required_text": [],
+        "required_block_categories": {},
+        "required_blocks": []
+    }
+    if id != "__new__":
+        common.connect_db()
+        data = schema.Challenge.objects(id = id).first().to_mongo()
+
+    parser = Parser()
+    blocks = parser.block_data
+    block_list = list()
+    block_dict = dict()
+    for cat in blocks:
+        block_list += blocks[cat].keys()
+        for block in blocks[cat]:
+            block_dict[blocks[cat][block].lower().replace(" ", "")] = block
+    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, user=authentication.get_login_info())
+
+@app.route("/admin/schemas/edit", methods=["GET"])
+@admin_required
+def add_schema():
+    return schema_editor("__new__")
+
+@app.route("/admin/schemas/edit/<id>", methods=["GET"])
+@admin_required
+def edit_schema(id):
+    return schema_editor(id)
+
+# Studios, projects, users, challenges
 @app.route("/")
 def homepage():
     return render_template("index.html", user=authentication.get_login_info()) 
@@ -98,14 +171,19 @@ def project_id(pid):
     results = parser.blockify(scratch_data=downloaded_project)
     day2_interest = ["event_whenbackdropswitchesto", "event_whenthisspriteclicked", "event_whenstageclicked", "looks_show",  "looks_hide", "sensing_mousedown"]
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
-    for interest in day2_interest:
+    sprite = None
+    surround = None
+    for interest in blocks_of_interest:
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
             surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
-
-    print_blocks = generate_scratchblocks(downloaded_project, surround)
-    text = block_string(print_blocks)
-
+    
+    if surround is not None and sprite is not None:
+        target = parser.get_target(surround[0], downloaded_project)
+        print_blocks = visualizer.generate_script(surround[0], target[0]["blocks"], surround)
+        text = block_string([print_blocks])
+    else:
+        text = "No blocks found!"
     # comparison project
     #other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
     other_projects = scrape.get_projects_with_block(day2_interest, studio_id=project["studio_id"], credentials_file="secure/db.json")
@@ -118,17 +196,11 @@ def project_id(pid):
         if interest in other_results["blocks"].keys():
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
             other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
-    other_blocks = generate_scratchblocks(other_download, other_surround)
-    other_text = block_string(other_blocks)
+    other_target = parser.get_target(other_surround[0], other_download)
+    print_comp_blocks = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround)
+    other_text = block_string([print_comp_blocks])
 
     return render_template("theme.html", project=project, studio=studio, user=authentication.get_login_info(), results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
-
-@app.route("/redirect", methods=["GET"])
-def redirect_to():
-    if request.args.get("username") is not None and request.args.get("username") != "":
-        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
-    else:
-        return render_template("index.html", message="Sorry! I wasn't able to do that.", user=authentication.get_login_info())
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required
@@ -140,7 +212,7 @@ def studio():
         sid = scraper.get_id(request.form["studio"])
 
         if sid is not None:
-            scrape.add_studio(sid, cache_directory="cache")
+            scrape.add_studio(sid, cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.", user=authentication.get_login_info())

@@ -1,14 +1,15 @@
 from ccl_scratch_tools import Parser, Scraper
 from . import common as common
 from datetime import datetime, timedelta
-from flask_socketio import emit
 from math import inf
 import json
 import mongoengine as mongo
 import os
+import requests
 import threading
 
 connect_db = common.connect_db
+CONVERT_URL = "http://localhost:3000/convert"
 
 class Comment(mongo.Document):
     comment_id = mongo.IntField(required=True)
@@ -36,6 +37,7 @@ class Studio(mongo.Document):
     description = mongo.StringField(max_length=5000)
     status = mongo.StringField(max_length=100, default="complete")
     stats = mongo.DictField()
+    challenge_id = mongo.ObjectIdField()
 
 def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
@@ -133,7 +135,25 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     # Parse the project using the parser class
     parser = Parser()
-    stats = parser.blockify(scratch_data = scratch_data)
+
+    # Convert to SB3 if possible
+    if not parser.is_scratch3(scratch_data) and CONVERT_URL != "":
+        try:
+            r = requests.post(CONVERT_URL, json=scratch_data)
+            scratch_data = json.loads(r.json())
+        except:
+            pass
+
+    try:
+        if parser.is_scratch3(scratch_data):
+            stats = parser.blockify(scratch_data = scratch_data)
+            if stats["blocks"] == False or stats["categories"] == False:
+                stats = False
+        else:
+            stats = False
+    except:
+        stats = False
+
     if not stats:
         return False
 
@@ -165,7 +185,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             studio_id = studio_id,
             stats = stats
         )
-    
+
     doc.save()
     add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
 

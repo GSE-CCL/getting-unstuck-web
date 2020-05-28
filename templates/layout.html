@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}{% endblock %}Getting Unstuck</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -31,16 +32,23 @@
             <div class="container-fluid">
                 <div class="navbar-left">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#">Hi, {{ user["first_name"] }}.</a>
+                        <a class="nav-item nav-link" href="#" id="user_greeting" data-identifier="{{ user['username'] }}">
+                            Hi, {{ user["first_name"] }}.
+                        </a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
                         <a class="nav-item nav-link" href="/account">Account</a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
+
+                        {% if user["role"] == "site_admin": %}
                         <a class="nav-item nav-link" href="/admin">Manage:</a>
                         <a class="nav-item nav-link" href="/admin/challenges">Challenges</a>
+                        <a class="nav-item nav-link" href="/admin/studios">Studios</a>
                         <a class="nav-item nav-link" href="/admin/users">Users</a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
                         <a class="nav-item nav-link" href="/studio">Download a studio</a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
+                        {% endif %}
+
                         <a class="nav-item nav-link" href="/logout">Logout</a>
                     </div>
                 </div>
@@ -60,5 +68,8 @@
             {% block main_content %}
             {% endblock %}
         </div>
+
+        {% block end_file %}
+        {% endblock %}
     </body>
 </html>

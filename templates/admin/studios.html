@@ -14,7 +14,7 @@
                     <th data-field="studio_id">Studio ID</th>
                     <th data-field="title">Title</th>
                     <th data-field="description">Description</th>
-                    <th data-field="challenge">Challenge</th>
+                    <th data-field="challenge">Challenge schema</th>
                     <th data-field="status">Download status</th>
                     <th data-field="actions" class="w-10">Actions</th>
                 </tr>
@@ -26,10 +26,10 @@
                     <td data-field="title">{{ studio["title"] }}</td>
                     <td data-field="description">{{ studio["description"] }}</td>
                     <td data-field="challenge">
-                        {% if "challenge" not in studio: %}
+                        {% if "challenge_id" not in studio: %}
                         None
                         {% else: %}
-                        {{ studio["challenge"] }}
+                        <a href="/admin/schemas/edit/{{ studio['challenge_id'] }}">View here</a>
                         {% endif %}
                     </td>
                     <td data-field="status">{{ studio["status"] }}</td>

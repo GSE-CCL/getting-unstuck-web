@@ -2,6 +2,7 @@ from . import common as common
 from . import authentication as authentication
 from . import scrape as scrape
 from . import schema as schema
+from datetime import datetime
 from flask import session
 import mongoengine as mongo
 from werkzeug.security import generate_password_hash
@@ -151,6 +152,7 @@ def set_info(page, form):
                     doc.required_text = form["required_text"]
                     doc.required_text_failure = form["required_text_failure"]
                     doc.required_blocks_failure = form["required_blocks_failure"]
+                    doc.modified = datetime.now()
 
                     doc.save()
                     return True

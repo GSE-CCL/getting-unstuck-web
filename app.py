@@ -203,13 +203,18 @@ def project_id(pid):
 @admin_required
 def studio():
     if request.method == "GET":
-        return render_template("studio.html")
+        common.connect_db()
+        return render_template("studio.html", schemas=list(schema.Challenge.objects().order_by("-modified")))
     else:
         scraper = Scraper()
         sid = scraper.get_id(request.form["studio"])
 
+        s = None
+        if request.form["schema"] != "__none__":
+            s = request.form["schema"]
+
         if sid is not None:
-            scrape.add_studio(sid, cache_directory=CACHE_DIRECTORY)
+            scrape.add_studio(sid, schema=s, show=("show" in request.form), cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.")
@@ -217,7 +222,7 @@ def studio():
 @app.route("/studio/<sid>")
 def studio_id(sid):
     if sid == "":
-        return redirect("/studio")
+        return redirect("/challenges")
 
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
@@ -240,7 +245,22 @@ def user_id(username):
 
     return render_template("username.html", projects=projects, studios=studios, username=username)
 
-@app.route("/challenges", methods=["GET", "POST"])
+@app.route("/challenges", methods=["GET"])
+def challenges():
+    common.connect_db()
+    studios = list(scrape.Studio.objects(public_show=True))
+    schemas = dict()
+    for studio in studios:
+        if "challenge_id" not in studio:
+            studios.remove(studio)
+            break
+        schemas[studio["challenge_id"]] = schema.Challenge.objects(id=studio["challenge_id"]).first().to_mongo().to_dict()
+
+    return render_template("challenges.html",
+                           challenges=studios,
+                           schemas=schemas)
+
+@app.route("/challenges-amy", methods=["GET", "POST"])
 def get_challenge():
     if request.method == "GET":
         return render_template("submit_challenge.html")

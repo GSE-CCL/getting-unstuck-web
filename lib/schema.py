@@ -50,6 +50,7 @@ class Challenge(mongo.Document):
     required_block_categories = mongo.DictField(default={})
     required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
     required_blocks_failure = mongo.StringField(max_length=5000)
+    modified = mongo.DateTimeField(default=datetime.now())
 
 # Functions to actually work with this schema
 def add_schema(mins=None, min_blockify=None, required_text=[], required_block_categories={}, required_blocks=[], required_blocks_failure=None, required_text_failure=None, title=None, description=None, credentials_file="secure/db.json"):

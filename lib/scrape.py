@@ -38,6 +38,7 @@ class Studio(mongo.Document):
     status = mongo.StringField(max_length=100, default="complete")
     stats = mongo.DictField()
     challenge_id = mongo.ObjectIdField()
+    public_show = mongo.BooleanField(default=False)
 
 def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
@@ -191,11 +192,13 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     return not preexisting
 
-def add_studio(studio_id, cache_directory=None, credentials_file="secure/db.json"):
+def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file="secure/db.json"):
     """Scrapes a studio and inserts it into the database.
     
     Args:
         studio_id (int): the ID of the studio to scrape.
+        schema (str): the object ID of the schema associated with this studio.
+        show (bool): whether to show the studio on the public Challenges page.
         cache_directory (str): if set, will save this project
             JSON into the cache directory specified.
         credentials_file (str): path to the database credentials file.
@@ -222,13 +225,17 @@ def add_studio(studio_id, cache_directory=None, credentials_file="secure/db.json
             doc.title = studio_info["title"]
             doc.description = studio_info["description"]
             doc.status = "in_progress"
+            doc.challenge_id = schema
+            doc.public_show = show
         else:
             # New studio altogether
             doc = Studio(
                 studio_id = studio_id,
                 title = studio_info["title"],
                 description = studio_info["description"],
-                status = "in_progress"
+                status = "in_progress",
+                challenge_id = schema,
+                public_show = show
             )
         doc.save()
 

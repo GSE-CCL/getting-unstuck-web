@@ -115,7 +115,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         credentials_file (str): path to the database credentials file.
     
     Returns:
-        True, if a new insertion. False, if updated a record. False if Scratch 2.
+        True, if a new insertion or if updated a record. False if Scratch 2.
 
     Raises:
         IOError: if couldn't write the JSON file to the given cache_directory.
@@ -190,7 +190,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     doc.save()
     add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
 
-    return not preexisting
+    return True
 
 def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file="secure/db.json"):
     """Scrapes a studio and inserts it into the database.

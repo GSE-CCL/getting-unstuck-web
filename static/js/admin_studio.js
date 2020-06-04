@@ -8,7 +8,7 @@ let loaded = function() {
     // Field types
     let fields = {
         "studio_id": {"type": "text", "name": "Studio ID", "required": "required"},
-        "challenge_id": {"type": "select", "name": "Challenge Schema", "options": challenge_schemas, "required": ""},
+        "challenge_id": {"type": "select", "name": "Prompt Schema", "options": challenge_schemas, "required": ""},
         "__url__": "/admin/studios",
         "__identifier__": "studio_id",
         "__type__": "studio",

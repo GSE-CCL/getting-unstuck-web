@@ -222,7 +222,7 @@ def studio():
 @app.route("/studio/<sid>")
 def studio_id(sid):
     if sid == "":
-        return redirect("/challenges")
+        return redirect("/prompts")
 
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
@@ -245,8 +245,8 @@ def user_id(username):
 
     return render_template("username.html", projects=projects, studios=studios, username=username)
 
-@app.route("/challenges", methods=["GET"])
-def challenges():
+@app.route("/prompts", methods=["GET"])
+def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
     schemas = dict()
@@ -256,7 +256,7 @@ def challenges():
             break
         schemas[studio["challenge_id"]] = schema.Challenge.objects(id=studio["challenge_id"]).first().to_mongo().to_dict()
 
-    return render_template("challenges.html",
+    return render_template("prompts.html",
                            challenges=studios,
                            schemas=schemas)
 

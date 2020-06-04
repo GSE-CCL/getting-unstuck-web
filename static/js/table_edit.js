@@ -278,7 +278,12 @@ let submitModal = function(fields) {
                     else if (document.querySelector("[name='action']").value == "choose_schema") {
                         let item = document.querySelector("tr[data-identifier='" + data["identifier"] + "'] \
                                                            [data-field='challenge_id']");
-                        item.innerHTML = '<a href="' + data["challenge_id"] + '">View</a>';
+                        if (data["challenge_id"] == "__none__") {
+                            item.innerHTML = "None";
+                        }
+                        else {
+                            item.innerHTML = '<a href="' + data["challenge_id"] + '">View</a>';
+                        }
                     }
                 }
                 else if (e.responseText == "false")

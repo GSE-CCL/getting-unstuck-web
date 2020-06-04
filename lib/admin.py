@@ -32,7 +32,7 @@ def get_info(page):
             info["studios"] = scrape.Studio.objects()
 
             schemas = schema.Challenge.objects.only("id", "title", "modified").order_by("-modified")
-            info["schemas"] = dict()
+            info["schemas"] = {"__none__": "No schema"}
             for s in schemas:
                 info["schemas"][str(s["id"])] = str(s["modified"])
                 if "title" in s:
@@ -117,7 +117,12 @@ def set_info(page, form):
         elif form["action"] == "choose_schema":
             try:
                 doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
-                doc.challenge_id = form["challenge_id"]
+                
+                s = None
+                if form["challenge_id"] != "__none__":
+                    s = form["challenge_id"]
+                
+                doc.challenge_id = s
                 doc.save()
                 return True
             except:

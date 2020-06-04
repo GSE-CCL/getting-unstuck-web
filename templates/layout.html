@@ -23,6 +23,9 @@
                         <a class="nav-item nav-link" href="/summary">Summary</a>
                         <a class="nav-item nav-link" href="/strategies">Strategies</a>
                         <a class="nav-item nav-link" href="/about">About</a>
+                        {% if not user: %}
+                        <a class="nav-item nav-link" href="/login">Login</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

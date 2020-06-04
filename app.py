@@ -1,4 +1,5 @@
 import json
+import os
 import threading
 import time
 import random
@@ -18,16 +19,13 @@ from draw_blocks import *
 
 CACHE_DIRECTORY = "cache"
 
-
-CACHE_DIRECTORY = "cache"
-
 app = Flask(__name__)
 
 def twodec(value):
     return f"{value:,.2f}"
 
 app.jinja_env.filters["twodec"] = twodec
-app.secret_key = "hithere"
+app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
 # Pass things to all templates

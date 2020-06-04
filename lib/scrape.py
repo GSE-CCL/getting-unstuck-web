@@ -2,6 +2,7 @@ from ccl_scratch_tools import Parser, Scraper
 from . import common as common
 from datetime import datetime, timedelta
 from math import inf
+from .settings import CONVERT_URL
 import json
 import mongoengine as mongo
 import os
@@ -9,7 +10,6 @@ import requests
 import threading
 
 connect_db = common.connect_db
-CONVERT_URL = "http://localhost:3000/convert"
 
 class Comment(mongo.Document):
     comment_id = mongo.IntField(required=True)
@@ -225,8 +225,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             doc.title = studio_info["title"]
             doc.description = studio_info["description"]
             doc.status = "in_progress"
-            doc.challenge_id = schema
-            doc.public_show = show
+            if schema is not None:
+                doc.challenge_id = schema
+            if show is not None:
+                doc.public_show = show
         else:
             # New studio altogether
             doc = Studio(

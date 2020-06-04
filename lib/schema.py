@@ -46,11 +46,14 @@ class Challenge(mongo.Document):
     min_comments_made = mongo.IntField(default=0)
     min_blockify = mongo.EmbeddedDocumentField(Blockify, required=True)
     required_text = mongo.ListField(default=[[]], validation=valid_required_text)
+    required_text_failure = mongo.StringField(max_length=5000)
     required_block_categories = mongo.DictField(default={})
     required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
+    required_blocks_failure = mongo.StringField(max_length=5000)
+    modified = mongo.DateTimeField(default=datetime.now())
 
 # Functions to actually work with this schema
-def add_schema(mins=None, min_blockify=None, required_text=[], required_block_categories={}, required_blocks=[], title=None, description=None, credentials_file="secure/db.json"):
+def add_schema(mins=None, min_blockify=None, required_text=[], required_block_categories={}, required_blocks=[], required_blocks_failure=None, required_text_failure=None, title=None, description=None, credentials_file="secure/db.json"):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
     Args:
@@ -66,6 +69,8 @@ def add_schema(mins=None, min_blockify=None, required_text=[], required_block_ca
         required_blocks (list): a list of dicts. Each dict maps opcode to minimum count.
             To satisfy overall requirement, at least one requirement in each dict must be
             satisfied. (That is, the list functions as "AND"; the dict functions as "OR".)
+        require_blocks_failure (str): the failure message to show if block requirement isn't met.
+        require_text_failure (str): the failure message to show if text requirement isn't met.
         title (str): the title of the challenge schema.
         description (str): the description of the challenge.
         credentials_file (str): path to the database credentials file.
@@ -96,7 +101,9 @@ def add_schema(mins=None, min_blockify=None, required_text=[], required_block_ca
                           min_blockify = new_min_blockify,
                           required_text = required_text,
                           required_block_categories = required_block_categories,
-                          required_blocks = required_blocks)
+                          required_blocks = required_blocks,
+                          required_blocks_failure = required_blocks_failure,
+                          required_text_failure = required_text_failure)
 
     if type(mins) == dict:
         if "instructions_length" in mins:
@@ -171,15 +178,17 @@ def validate_project(schema, project, studio_id):
     for category in rc:
         if project["stats"]["categories"][category] >= rc[category]:
             result[category] = True
+        else:
+            result[category] = False
 
     # Check for required blocks
-    result["required_blocks"] = [False] * len(schema["required_blocks"])
+    result["required_blocks"] = [True] * len(schema["required_blocks"])
     rb = schema["required_blocks"]
-    for i in range(len(rb)):
-        for opcode in rb[i]:
-            if opcode in project["stats"]["blocks"] \
-               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]:
-                result[i] = opcode
+    for opt in range(len(rb)):
+        for opcode in rb[opt]:
+            if not (opcode in project["stats"]["blocks"] \
+               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]):
+                result[opt] = False
                 break
 
     return result

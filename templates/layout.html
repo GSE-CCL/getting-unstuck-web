@@ -19,10 +19,13 @@
                 </button>
                 <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
                     <div class="navbar-nav ml-auto">
-                        <a class="nav-item nav-link" href="/challenges">Challenges</a>
+                        <a class="nav-item nav-link" href="/prompts">Prompts</a>
                         <a class="nav-item nav-link" href="/summary">Summary</a>
                         <a class="nav-item nav-link" href="/strategies">Strategies</a>
                         <a class="nav-item nav-link" href="/about">About</a>
+                        {% if not user: %}
+                        <a class="nav-item nav-link" href="/login">Login</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -41,13 +44,15 @@
 
                         {% if user["role"] == "site_admin": %}
                         <a class="nav-item nav-link" href="/admin">Manage:</a>
-                        <a class="nav-item nav-link" href="/admin/challenges">Challenges</a>
-                        <a class="nav-item nav-link" href="/admin/studios">Studios</a>
-                        <a class="nav-item nav-link" href="/admin/users">Users</a>
+                        {% for page in valid_admin_pages: %}
+                        <a class="nav-item nav-link" href="/admin/{{ page }}">{{ page|capitalize }}</a>
+                        
+                        {% endfor %}
+                        {% endif %}
+
                         <a class="nav-item nav-link" href="#">&diams;</a>
                         <a class="nav-item nav-link" href="/studio">Download a studio</a>
                         <a class="nav-item nav-link" href="#">&diams;</a>
-                        {% endif %}
 
                         <a class="nav-item nav-link" href="/logout">Logout</a>
                     </div>

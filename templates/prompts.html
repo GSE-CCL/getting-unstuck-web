@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Prompts &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Prompts
+        </h1>
+    </div>
+</div>
+
+{% for challenge in challenges: %}
+<div class="row mt-2">
+    <div class="col-3">
+        {% if "title" in schemas[challenge["challenge_id"]]: %}
+        <h4>{{ schemas[challenge["challenge_id"]]["title"] }}</h4>
+        {% else: %}
+        <h4>{{ challenge["title"] }}</h4>
+        {% endif %}
+
+        <ul class="list-unstyled">
+            <li><a href="/studio/{{ challenge['studio_id'] }}">View studio analysis</a></li>
+            <li><a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">View studio on Scratch</a></li>
+        </ul>
+    </div>
+    <div class="col-9">
+        {% if "description" in schemas[challenge["challenge_id"]]: %}
+        <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
+        {% else: %}
+        <p>{{ challenge["description"] }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

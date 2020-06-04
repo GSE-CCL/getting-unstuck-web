@@ -59,15 +59,27 @@ let generateFormElement = function(field, fields, defaultValue="", label) {
     }
     else if (fields[field]["type"] == "select") {
         html += '<select name="' + field + '" class="form-control mb-2" '
-                + fields[field]["required"] + '>';
-        fields[field]["options"].forEach(option => {
-            html += '<option value="' + option + '"';
+                + fields[field]["required"] + ' id="' + field + '">';
+        if (Array.isArray(fields[field]["options"])) {
+            fields[field]["options"].forEach(option => {
+                html += '<option value="' + option + '"';
 
-            if (option == defaultValue)
-                html += " selected";
+                if (option == defaultValue)
+                    html += " selected";
 
-            html += '>' + option + '</option>';
-        });
+                html += '>' + option + '</option>';
+            });
+        }
+        else {
+            for (let [key, value] of Object.entries(fields[field]["options"])) {
+                html += '<option value="' + key + '"';
+
+                if (key == defaultValue)
+                    html += " selected";
+                
+                html += '>' + value + '</option>';
+            }
+        }
         html += '</select>';
     }
 
@@ -262,6 +274,16 @@ let submitModal = function(fields) {
 
                     if (document.querySelector("[name='action']").value == "add") {
                         addRow(fields, data);
+                    }
+                    else if (document.querySelector("[name='action']").value == "choose_schema") {
+                        let item = document.querySelector("tr[data-identifier='" + data["identifier"] + "'] \
+                                                           [data-field='challenge_id']");
+                        if (data["challenge_id"] == "__none__") {
+                            item.innerHTML = "None";
+                        }
+                        else {
+                            item.innerHTML = '<a href="' + data["challenge_id"] + '">View</a>';
+                        }
                     }
                 }
                 else if (e.responseText == "false")

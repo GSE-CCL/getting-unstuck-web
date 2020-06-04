@@ -297,7 +297,9 @@ let submit_schema = (event) => {
         },
         required_block_categories: {},
         required_blocks: get_nested("required_blocks", true),
-        required_text: get_nested("required_text")
+        required_text: get_nested("required_text"),
+        required_text_failure: document.getElementById("required_text_failure").value,
+        required_blocks_failure: document.getElementById("required_blocks_failure").value
     };
 
     // Grab minimum of each category

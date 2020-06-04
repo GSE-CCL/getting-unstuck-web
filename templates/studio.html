@@ -19,6 +19,24 @@
                     <input type="text" class="form-control" id="studio" name="studio" aria-describedby="studioHelp" placeholder="https://scratch.mit.edu/studios/xxxxxxx/">
                     <small id="studioHelp" class="form-text text-muted">Either a studio ID or URL will work.</small>
                 </div>
+                <div class="form-group col-md-6">
+                    <label for="schema">Schema</label>
+                    <select class="form-control" id="schema" name="schema">
+                        <option value="__none__">No schema</option>
+                        {% for schema in schemas: %}
+                        <option value="{{ schema['id'] }}">
+                            {% if "title" in schema: %}{{ schema["title"] }}
+                            {% else %}Schema modified {{ schema["modified"] }}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type="checkbox" name="show" id="show" value="true">
+                    <label for="show">Show this on the public Challenges page</label>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Start analysis!</button>
         </form>

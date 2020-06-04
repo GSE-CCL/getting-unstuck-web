@@ -2,6 +2,7 @@ from . import common as common
 from . import authentication as authentication
 from . import scrape as scrape
 from . import schema as schema
+from datetime import datetime
 from flask import session
 import mongoengine as mongo
 from werkzeug.security import generate_password_hash
@@ -29,6 +30,13 @@ def get_info(page):
         elif page == "studios":
             connect_db()
             info["studios"] = scrape.Studio.objects()
+
+            schemas = schema.Challenge.objects.only("id", "title", "modified").order_by("-modified")
+            info["schemas"] = {"__none__": "No schema"}
+            for s in schemas:
+                info["schemas"][str(s["id"])] = str(s["modified"])
+                if "title" in s:
+                    info["schemas"][str(s["id"])] = s["title"]
         elif page == "schemas":
             connect_db()
             info["schemas"] = schema.Challenge.objects()
@@ -98,6 +106,27 @@ def set_info(page, form):
                 return True
             except:
                 return False
+        elif form["action"] == "set_public_show":
+            try:
+                doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+                doc.public_show = not doc.public_show
+                doc.save()
+                return True
+            except:
+                return False
+        elif form["action"] == "choose_schema":
+            try:
+                doc = scrape.Studio.objects(studio_id=form["identifier"]).first()
+                
+                s = None
+                if form["challenge_id"] != "__none__":
+                    s = form["challenge_id"]
+                
+                doc.challenge_id = s
+                doc.save()
+                return True
+            except:
+                return False
     elif page == "schemas":
         connect_db()
         if form["action"] == "delete":
@@ -125,6 +154,8 @@ def set_info(page, form):
                                            required_text=form["required_text"],
                                            required_block_categories=form["required_block_categories"],
                                            required_blocks=form["required_blocks"],
+                                           required_blocks_failure=form["required_blocks_failure"],
+                                           required_text_failure=form["required_text_failure"],
                                            title=title,
                                            description=description)
                 if not result:
@@ -147,6 +178,9 @@ def set_info(page, form):
                     doc.required_block_categories = form["required_block_categories"]
                     doc.required_blocks = form["required_blocks"]
                     doc.required_text = form["required_text"]
+                    doc.required_text_failure = form["required_text_failure"]
+                    doc.required_blocks_failure = form["required_blocks_failure"]
+                    doc.modified = datetime.now()
 
                     doc.save()
                     return True

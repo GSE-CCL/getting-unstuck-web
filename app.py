@@ -171,6 +171,7 @@ def project_id(pid):
 
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
+    print("results", results)
     blocks_of_interest = ["motion_goto", "motion_sety", "motion_changeyby"]
     sprite = None
     surround = None
@@ -191,6 +192,8 @@ def project_id(pid):
     other_user = other_projects[project_num].author
     other_download = scraper.download_project(other_pid)
     other_results = parser.blockify(scratch_data=other_download)
+
+    print("other results", other_results)
     for interest in blocks_of_interest:
         if interest in other_results["blocks"].keys():
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)

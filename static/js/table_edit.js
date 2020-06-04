@@ -275,6 +275,11 @@ let submitModal = function(fields) {
                     if (document.querySelector("[name='action']").value == "add") {
                         addRow(fields, data);
                     }
+                    else if (document.querySelector("[name='action']").value == "choose_schema") {
+                        let item = document.querySelector("tr[data-identifier='" + data["identifier"] + "'] \
+                                                           [data-field='challenge_id']");
+                        item.innerHTML = '<a href="' + data["challenge_id"] + '">View</a>';
+                    }
                 }
                 else if (e.responseText == "false")
                     alert("Couldn't do that.");

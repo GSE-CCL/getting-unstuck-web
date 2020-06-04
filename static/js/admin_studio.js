@@ -20,7 +20,7 @@ let loaded = function() {
         let identifier = event.target.dataset.identifier;
         enableModal(fields, event, ["studio_id", "challenge_id"], "choose_schema", "Choose schema", {"studio_id": identifier});
         
-        if (identifier == "") 
+        if (identifier == "")
             document.querySelector(".modal-body #studio_id").focus();
         else
             document.querySelector(".modal-body #challenge_id").focus();

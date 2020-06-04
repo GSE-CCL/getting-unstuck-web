@@ -17,51 +17,42 @@
         {% if "stats" in studio and "max" in studio["stats"]: %}
         <h5>Some quick stats about how your project compares within this studio:</h5>
 
-        <p class="block">The Day 15 Prompt was: </p>
-        <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
+        <p class="block">The Day 7 Prompt was: </p>
+        <p class="block" style="text-align:center">Create a project where sprites jump.</p>
 
         <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
-            conditional Control blocks, which can be used when a conditions has been met:</p>
+            motion blocks, such as:</p>
         
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-sm">
-                    <code class="conditional1 nobreak">
-                        if <> then
-                        end
+                    <code class="motion1 nobreak">
+                        change y by (10)
                     </code>
                 </div>
                 <div class="col-sm">
-                    <code class="conditional2 nobreak">
-                        if <> then
-                        else
-                        end
+                    <code class="motion2 nobreak">
+                        go to ( random position v)
                     </code>
                 </div>
                 <div class="col-sm">
-                    <code class="conditional3 nobreak">
-                        repeat until <>
-                        end
-                    </code>
-                </div>
-                <div class="col-sm">
-                    <code class="conditional4 nobreak">
-                        wait until <>
+                    <code class="motion3 nobreak">
+                        set y to (10)
                     </code>
                 </div>
             </div>
         </div>
 
         <p class="block" style="text-align: center"> In your project, you used 
-            {% if project["stats"]["categories"]["control"] > 1 %}
-                multiple control blocks! Nice!        
-            {% elif project["stats"]["categories"]["control"] == 1 %}
-                one control block. 
+            {% if project["stats"]["categories"]["motion"] > 1 %}
+                multiple motion blocks! Nice!        
+            {% elif project["stats"]["categories"]["motion"] == 1 %}
+                one motion block. 
             {% else %}
-                zero control blocks. 
+                zero motion blocks. 
             {% endif %}
         </p>
-        {% if results["categories"]["control"] >= 1 %}
+        {% if results["categories"]["motion"] >= 1 %}
 
             <p class="block">For example, you programmed the sprite <span class="sprite-color"> {{ sprite["name"] }} </span>to do the following:</p>
         
@@ -79,11 +70,11 @@
             </div>
         </div> 
         {% elif results["categories"]["control"] == 0 %}
-        <p class="block">In this project, we were looking for the use of conditional blocks, such as the examples shown above. However, it's possible that you 
+        <p class="block">In this project, we were looking for the use of motion blocks that created a jumping effect, such as the examples shown above. However, it's possible that you 
             were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
         </p>
         {% endif %}
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project 
+       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used motion blocks for this project 
         with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
@@ -97,23 +88,23 @@
                 </div>
             </div>
         </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used conditionals in their project? 
+        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used motion blocks in their project? 
             Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
 
-        <p class="block">Control blocks used: </p>
+        <p class="block">Motion blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-sm">
-                    <h1>{{ project["stats"]["categories"]["control"] }}</h1>
+                    <h1>{{ project["stats"]["categories"]["motion"] }}</h1>
                 </div>
                 <div class="col-sm">
-                    <h1>{{ studio["stats"]["mean"]["block_categories"]["control"]|twodec }}</h1>
+                    <h1>{{ studio["stats"]["mean"]["block_categories"]["motion"]|twodec }}</h1>
                 </div>
                 <div class="col-sm">
-                    <h1>{{ studio["stats"]["max"]["block_categories"]["control"] }}</h1>
+                    <h1>{{ studio["stats"]["max"]["block_categories"]["motion"] }}</h1>
                 </div>
                 <div class="col-sm">
-                    <h1>{{ studio["stats"]["min"]["block_categories"]["control"] }}</h1>
+                    <h1>{{ studio["stats"]["min"]["block_categories"]["motion"] }}</h1>
                 </div>
             </div>
         </div>
@@ -143,13 +134,14 @@
     </div>
 </div>
 
+
 <script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
     <script>
         scratchblocks.renderMatching('code.project', {inline: false, style:"scratch3"});
         scratchblocks.renderMatching('code.comparison', {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional4", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.motion1", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.motion2", {inline: false, style:"scratch3"});
+        scratchblocks.renderMatching("code.motion3", {inline: false, style:"scratch3"});
     </script>
+
 {% endblock %}

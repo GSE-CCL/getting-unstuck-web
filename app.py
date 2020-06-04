@@ -171,7 +171,7 @@ def project_id(pid):
 
     downloaded_project = scraper.download_project(pid)
     results = parser.blockify(scratch_data=downloaded_project)
-    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
+    blocks_of_interest = ["motion_goto", "motion_sety", "motion_changeyby"]
     sprite = None
     surround = None
     for interest in blocks_of_interest:
@@ -185,7 +185,7 @@ def project_id(pid):
     else:
         text = "No blocks found!"
     # comparison project
-    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
+    other_projects = scrape.get_projects_with_block(blocks_of_interest, studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author
@@ -198,7 +198,7 @@ def project_id(pid):
     other_target = parser.get_target(other_surround[0], other_download)
     other_text = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround, text=True)
 
-    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
+    return render_template("jumping.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

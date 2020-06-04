@@ -170,10 +170,15 @@ def project_id(pid):
     visualizer = Visualizer()
 
     downloaded_project = scraper.download_project(pid)
+    print("downloaded project", downloaded_project)
+    check = parser.is_scratch3(downloaded_project)
+    print("RESULTSSS", check)
     results = parser.blockify(scratch_data=downloaded_project)
+    print("results", results)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
     sprite = None
     surround = None
+
     for interest in blocks_of_interest:
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)

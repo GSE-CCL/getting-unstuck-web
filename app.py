@@ -284,5 +284,14 @@ def get_challenge():
 def summarize():
     return render_template("summary.html")
 
+# Static pages -- About, Strategies
+@app.route("/about", methods=["GET"])
+def about():
+    return render_template("about.html")
+
+@app.route("/strategies", methods=["GET"])
+def strategies():
+    return render_template("strategies.html")
+
 if __name__ == "__main__":
     app.run()

@@ -15,9 +15,7 @@
             <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">View project on Scratch</a>
         </p>
         {% if "stats" in studio and "max" in studio["stats"]: %}
-        <h5>Some quick stats about how your project compares within this studio:</h5>
-
-        <p class="block">The Day 15 Prompt was: </p>
+        <h5>You made a project for {{ project["title"] }}! The Day 15 Prompt was: </h5>
         <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
 
         <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 

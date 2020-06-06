@@ -168,10 +168,9 @@ def project_id(pid):
     scraper = Scraper()
     parser = Parser()
     visualizer = Visualizer()
-
-    downloaded_project = scraper.download_project(pid)
+    with open("cache/" + pid + ".json") as cache_project:
+        downloaded_project = json.load(cache_project)
     results = parser.blockify(scratch_data=downloaded_project)
-    print("results", results)
     blocks_of_interest = ["motion_goto", "motion_sety", "motion_changeyby"]
     sprite = None
     surround = None
@@ -190,10 +189,9 @@ def project_id(pid):
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author
-    other_download = scraper.download_project(other_pid)
+    with open("cache/" + str(other_pid) + ".json") as cache_other_project:
+        other_download = json.load(cache_other_project)
     other_results = parser.blockify(scratch_data=other_download)
-
-    print("other results", other_results)
     for interest in blocks_of_interest:
         if interest in other_results["blocks"].keys():
             other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)

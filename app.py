@@ -169,10 +169,9 @@ def project_id(pid):
     parser = Parser()
     visualizer = Visualizer()
 
-    # downloaded_project = scraper.download_project(pid)
+    # open user's project
     with open("cache/" + pid + ".json") as cache_project:
         downloaded_project = json.load(cache_project)
-    check = parser.is_scratch3(downloaded_project)
     results = parser.blockify(scratch_data=downloaded_project)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
     sprite = None
@@ -188,6 +187,7 @@ def project_id(pid):
         text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
     else:
         text = "No blocks found!"
+        
     # comparison project
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)

@@ -126,6 +126,16 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     scratch_data = scraper.download_project(project_id)
     metadata = scraper.get_project_meta(project_id)
 
+    # Convert to SB3 if possible
+    parser = Parser()
+
+    if not parser.is_scratch3(scratch_data) and CONVERT_URL != "":
+        try:
+            r = requests.post(CONVERT_URL, json=scratch_data)
+            scratch_data = json.loads(r.json())
+        except:
+            pass
+
     # Save to cache if needed
     if cache_directory is not None:
         with open("{0}/{1}.json".format(cache_directory, project_id), "w") as f:
@@ -135,16 +145,6 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
                 raise IOError("Couldn't write the JSON file to directory {0}".format(cache_directory))
 
     # Parse the project using the parser class
-    parser = Parser()
-
-    # Convert to SB3 if possible
-    if not parser.is_scratch3(scratch_data) and CONVERT_URL != "":
-        try:
-            r = requests.post(CONVERT_URL, json=scratch_data)
-            scratch_data = json.loads(r.json())
-        except:
-            pass
-
     try:
         if parser.is_scratch3(scratch_data):
             stats = parser.blockify(scratch_data = scratch_data)

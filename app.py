@@ -169,11 +169,14 @@ def project_id(pid):
     parser = Parser()
     visualizer = Visualizer()
 
-    downloaded_project = scraper.download_project(pid)
+    # open user's project
+    with open("cache/" + pid + ".json") as cache_project:
+        downloaded_project = json.load(cache_project)
     results = parser.blockify(scratch_data=downloaded_project)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
     sprite = None
     surround = None
+
     for interest in blocks_of_interest:
         if interest in results["blocks"].keys():
             sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
@@ -184,12 +187,14 @@ def project_id(pid):
         text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
     else:
         text = "No blocks found!"
+        
     # comparison project
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author
-    other_download = scraper.download_project(other_pid)
+    with open("cache/" + str(other_pid) + ".json") as cache_other_project:
+        other_download = json.load(cache_other_project)
     other_results = parser.blockify(scratch_data=other_download)
     for interest in blocks_of_interest:
         if interest in other_results["blocks"].keys():

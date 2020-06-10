@@ -10,7 +10,28 @@
         <p>
             <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" target="_blank">View studio on Scratch</a>
         </p>
-        <h5>{{ projects|length }} projects in studio:</h5>
+        <h5>{{ projects|length }} projects in studio.</h5>
+   
+        {% if studio["status"] == "complete": %}
+        <form name="find_project" id="find_project" class="mt-3 mb-3">
+            <input type="hidden" name="studio_id" id="studio_id" value="{{ studio['studio_id'] }}">
+            <div class="form-row">
+                <div class="alert alert-warning hide w-100" id="find_project_alert"></div>
+            </div>
+            <div class="form-row">
+                <h5><strong>Find yours:</strong></h5>
+            </div>
+            <div class="form-row">
+                <label for="identifier">Type your Scratch username, Scratch project URL, or Scratch project title.</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="identifier" name="identifier" placeholder="My awesome project!">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+        {% if user: %}
         {% if projects == []: %}
         <p>No Scratch projects so far!</p>
         {% endif %}
@@ -22,6 +43,7 @@
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
     </div>
     <div class="col-4">
         <h6 class="font-weight-bold">Description</h6>
@@ -30,4 +52,14 @@
         </p>
     </div>
 </div>
+{% endblock %}
+
+{% block end_file %}
+<script>
+let authors = {{ info["authors"]|safe }};
+let project_ids = {{ info["project_ids"]|safe }};
+let titles = {{ info["titles"]|safe }};
+</script>
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/studio_id.js"></script>
 {% endblock %}

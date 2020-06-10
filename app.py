@@ -159,11 +159,36 @@ def edit_schema(id):
 def homepage():
     return render_template("index.html") 
 
+@app.route("/project/d", methods=["POST"])
+def project_download():
+    if request.form["sid"] is None or request.form["pid"] is None:
+        return "False"
+    sid = request.form["sid"]
+    pid = request.form["pid"]
+
+    scraper = Scraper()
+    try:
+        pid = int(pid)
+    except:
+        return "False"
+    
+    if pid in scraper.get_projects_in_studio(sid):
+        return str(scrape.add_project(pid, sid, CACHE_DIRECTORY))
+    else:
+        return "False"
+
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
     common.connect_db()
-    project = scrape.Project.objects(project_id=pid).first()
-    studio = scrape.Studio.objects(studio_id=project["studio_id"]).first()
+    project = scrape.Project.objects(project_id=pid)
+    if project.count() > 0:
+        project = project.first()
+
+        studio = scrape.Studio.objects(studio_id=project["studio_id"])
+        if studio is not None:
+            studio = studio.first()
+    else:
+        studio = None
 
     scraper = Scraper()
     parser = Parser()
@@ -233,12 +258,18 @@ def studio_id(sid):
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
     projects = list(scrape.Project.objects(studio_id = sid))
+    info = {"authors": list(), "project_ids": list(), "titles": list()}
+
+    for project in projects:
+        info["authors"].append(project["author"].lower())
+        info["project_ids"].append(project["project_id"])
+        info["titles"].append(project["title"].lower())
 
     message = None
     if studio["status"] == "in_progress":
         message = "This studio is currently in the process of being downloaded and analyzed. <a href=''>Refresh page.</a>"
 
-    return render_template("studio_id.html", projects=projects, studio=studio, message=message)
+    return render_template("studio_id.html", info=info, projects=projects, studio=studio, message=message)
 
 @app.route("/user/<username>")
 def user_id(username):

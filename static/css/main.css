@@ -103,7 +103,7 @@ img.sprite {
 .tabs {
     display: flex;
     flex-wrap: wrap;
-    max-width: 700px;
+    max-width: 1200px;
     background: #efefef;
     box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3);
   }

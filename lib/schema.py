@@ -124,7 +124,7 @@ def validate_project(schema, project, studio_id):
     Args:
         schema: The validation schema. Can be given by its ID in the
             database or with a dictionary representing its values.
-        project: The project. Given as either the Mongo object or its ID.
+        project: The project. Given as either the Mongo object or the project_id.
         studio_id (int): The studio ID.
 
     Returns:
@@ -132,21 +132,30 @@ def validate_project(schema, project, studio_id):
         False if couldn't successfully validate the project.
     """
     stat_types = ["block_comments", "blocks", "categories", "comments", "costumes", "sounds", "variables"]
+    delete_keys = ["description", "modified", "title", "required_text_failure", "required_blocks_failure"]
 
     # Get the schema in dictionary format
     if type(schema) != dict:
-        schema = scrape.Challenge.objects(_id = schema)
+        schema = Challenge.objects(id = schema).first().to_mongo().to_dict()
 
     # Get the project in dictionary format
     if type(project) != dict:
-        project = scrape.Project.objects(_id = project)
+        project = scrape.Project.objects(project_id = project).first().to_mongo().to_dict()
 
     # Start the result dictionary
     result = dict.fromkeys(schema)
-    del result["title"]
-    del result["description"]
+    for d in delete_keys:
+        if d in result:
+            del result[d]
+
+    if "title" in result:
+        del result["title"]
+    if "description" in result:
+        del result["description"]
 
     # Start off with the blockify comparisons
+    bc = schema["min_blockify"]
+    result["min_blockify"] = dict.fromkeys(bc)
     for key in schema["min_blockify"]:
         result["min_blockify"][key] = False
         if key in project["stats"] and len(project["stats"][key]) >= schema["min_blockify"][key]:
@@ -154,7 +163,7 @@ def validate_project(schema, project, studio_id):
             
     # Compare left comment counts
     project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")
-    comments_left = scrape.Comment.objects(project_id__in=project_ids, author=project["author"]).count_documents()
+    comments_left = scrape.Comment.objects(project_id__in=project_ids, author=project["author"]).count()
 
     result["min_comments_made"] = comments_left >= schema["min_comments_made"]
 
@@ -164,7 +173,7 @@ def validate_project(schema, project, studio_id):
 
     # Check for required text
     result["required_text"] = [-1] * len(schema["required_text"])
-    text_used = " ".join(project["block_text"])
+    text_used = " ".join(project["stats"]["block_text"])
     rt = schema["required_text"]
     for i in range(len(rt)):
         for j in range(len(rt[i])):
@@ -177,9 +186,9 @@ def validate_project(schema, project, studio_id):
     result["required_block_categories"] = dict.fromkeys(rc)
     for category in rc:
         if project["stats"]["categories"][category] >= rc[category]:
-            result[category] = True
+            result["required_block_categories"][category] = True
         else:
-            result[category] = False
+            result["required_block_categories"][category] = False
 
     # Check for required blocks
     result["required_blocks"] = [True] * len(schema["required_blocks"])

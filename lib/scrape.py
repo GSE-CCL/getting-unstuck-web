@@ -1,5 +1,6 @@
 from ccl_scratch_tools import Parser, Scraper
 from . import common as common
+from . import schema as schema
 from datetime import datetime, timedelta
 from math import inf
 from .settings import CONVERT_URL
@@ -28,6 +29,7 @@ class Project(mongo.Document):
     stats = mongo.DictField(required=True)
     history = mongo.DictField(required=True)
     remix = mongo.DictField(required=True)
+    validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
 
@@ -193,6 +195,15 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     doc.save()
     add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
+
+    # Validate against studio's schema, if available
+    if studio_id > 0:
+        challenge = Studio.objects(studio_id=studio_id).only("challenge_id").first()
+        if challenge is not None:
+            validation = schema.validate_project(challenge["challenge_id"], project_id, studio_id)
+            del validation["_id"]
+            doc.validation[str(challenge["challenge_id"])] = validation
+            doc.save()
 
     return True
 

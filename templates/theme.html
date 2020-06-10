@@ -54,95 +54,48 @@
         </p>
         {% if results["categories"]["event"] >= 1 %}
             <p class="block">For example, you programmed the sprite <span class="sprite-color">{{ sprite["name"] }}</span> to do the following:</p>
+        
+            <div class="container" style="margin-left: 100px; margin-right: 100px">
+                <div class="row">
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="surround">        
+                            {{ text }}
+                        </code></a>
+                    </div>
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
+                    </div>
+                </div>
+            </div> 
+        {% elif results["categories"]["event"] == 0 %}
+            <p class="block">In this project, we were looking for the use of event blocks, such as the examples shown above. However, it's possible that you 
+                were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
+            </p>
+
         {% endif %}
 
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="surround">        
-                        {{ text }}
-                    </code></a>
-                </div>
-            </div>
-        </div> 
-       
-        
 
-            <div id="carousel_section" class="carousel slide" data-ride="carousel">
-                <!--set up indicators-->
-                <ol class="carousel-indicators">
-                  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                </ol>
-                <!--the three comparison projects-->
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project!</p><br><br>
-                    <div class="container" style="margin-left: 100px; margin-right: 100px">
-                        <div class="row">
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                            </div>
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                                    {{ comp_text }}
-                                </code></a>
-                            </div>
-                        </div>
-                    </div>
-                    <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> created their project? 
-                        Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p><br><br>
+        {%  for number in range(3) %}
+        <br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }}</a> used conditionals for this project 
+          with the sprite <span class="sprite-color"> {{ comparisons[number]["sprite"]["name"] }}</span>!</p><br><br>
+          <div class="container" style="margin-left: 100px; margin-right: 100px">
+              <div class="row">
+                  <div class="col-4 d-flex justify-content-center">
+                      <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
+                          {{ comparisons[number]["text"] }}
+                      </code></a>
                   </div>
-                  <div class="carousel-item">
-                    <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project with the sprite <span class="sprite-color">{{ comp_sprite["name"]}}</span>!</p><br><br>
-                    <div class="container" style="margin-left: 100px; margin-right: 100px">
-                        <div class="row">
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                            </div>
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                                    {{ comp_text }}
-                                </code></a>
-                            </div>
-                        </div>
-                    </div>
-                    <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> created their project? 
-                        Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p><br><br>
+                  <div class="col-4 d-flex justify-content-center">
+                      <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><img src= "{{ comparisons[number]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
                   </div>
-                  <div class="carousel-item">
-                    <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> created a surprise for this project!</p><br><br>
-                    <div class="container" style="margin-left: 100px; margin-right: 100px">
-                        <div class="row">
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                            </div>
-                            <div class="col-4 d-flex justify-content-center">
-                                <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                                    {{ comp_text }}
-                                </code></a>
-                            </div>
-                        </div>
-                    </div>
-                    <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> created their project? 
-                        Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p><br><br>
-            
-                  </div>
-                </div>
-                <!--previous and next button-->
-                <a class="carousel-control-prev" href="#carousel_section" role="button" data-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carousel_section" role="button" data-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="sr-only">Next</span>
-                </a>
               </div>
+          </div>
+          <br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }} </a> used conditionals in their project? 
+              Leave them a <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}">comment here</a> to tell them what you think! </p>
+  
+          <p style="font-weight:600; text-align:center">----------------------------</p>
+        {% endfor %}
+
         <p class="block">Events blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">

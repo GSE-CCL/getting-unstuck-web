@@ -185,7 +185,7 @@ def project_id(pid):
         # display the comparison project
         temp_dict['sprite'], temp_dict['text'], temp_dict['results'] = display(str(temp_dict['pid']), blocks_of_interest)
         comparisons.append(temp_dict)
-    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
+    return render_template("theme.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

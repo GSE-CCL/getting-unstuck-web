@@ -67,12 +67,12 @@
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
                     <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="project">        
                         {{ text }}
                     </code></a>
+                </div>
+                <div class="col-4 d-flex justify-content-center">
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
                 </div>
             </div>
         </div> 
@@ -81,22 +81,67 @@
             were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
         </p>
         {% endif %}
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project 
-        with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
+
+        <!-- <div class="tabs">
+            <input name="tabs" type="radio" id="tab-1" checked="checked" class="input"/>
+            <label for="tab-1" class="label">Orange</label>
+            <div class="panel">
+              <h1>Orange</h1>
+              <p>The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × sinensis in the family Rutaceae</p>
+              <p>The fruit of the Citrus × sinensis is considered a sweet orange, whereas the fruit of the Citrus × aurantium is considered a bitter orange. The sweet orange reproduces asexually (apomixis through nucellar embryony); varieties of sweet orange arise through mutations.</p>
+            </div>
+          
+            <input name="tabs" type="radio" id="tab-2" class="input"/>
+            <label for="tab-2" class="label">Tangerine</label>
+            <div class="panel">
+              <h1>Tangerine</h1>
+              <p>The tangerine (Citrus tangerina) is an orange-colored citrus fruit that is closely related to, or possibly a type of, mandarin orange (Citrus reticulata).</p>
+              <p>The name was first used for fruit coming from Tangier, Morocco, described as a mandarin variety. Under the Tanaka classification system, Citrus tangerina is considered a separate species.</p>
+            </div>
+          
+            <input name="tabs" type="radio" id="tab-3" class="input"/>
+            <label for="tab-3" class="label">Clemantine</label>
+            <div class="panel">
+              <h1>Clemantine</h1>
+              <p>A clementine (Citrus ×clementina) is a hybrid between a mandarin orange and a sweet orange, so named in 1902. The exterior is a deep orange colour with a smooth, glossy appearance. Clementines can be separated into 7 to 14 segments. Similarly to tangerines, they tend to be easy to peel.</p>
+            </div>
+          </div> -->
+          {%  for number in range(3) %}
+          <br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }}</a> used conditionals for this project 
+            with the sprite <span class="sprite-color"> {{ comparisons[number]["sprite"]["name"] }}</span>!</p><br><br>
+            <div class="container" style="margin-left: 100px; margin-right: 100px">
+                <div class="row">
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
+                            {{ comparisons[number]["text"] }}
+                        </code></a>
+                    </div>
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><img src= "{{ comparisons[number]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
+                    </div>
+                </div>
+            </div>
+            <br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }} </a> used conditionals in their project? 
+                Leave them a <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}">comment here</a> to tell them what you think! </p>
+    
+            <p style="font-weight:600; text-align:center">----------------------------</p>
+          {% endfor %}
+       <!-- <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[0]['username'] }}/">@{{ comparisons[0]["username"] }}</a> used conditionals for this project 
+        with the sprite <span class="sprite-color"> {{ comparisons[0]["sprite"]["name"] }}</span>!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
+                    <a href="https://scratch.mit.edu/projects/{{ comparisons[0]['pid'] }}/editor"><code class="comparison">
+                        {{ comparisons[0]["text"] }}
+                    </code></a>
                 </div>
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                        {{ comp_text }}
-                    </code></a>
+                    <a href="https://scratch.mit.edu/projects/{{ comparisons[0]['pid'] }}/editor"><img src= "{{ comparisons[0]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
                 </div>
             </div>
         </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used conditionals in their project? 
-            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
+        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[0]['username'] }}/">@{{ comparisons[0]["username"] }} </a> used conditionals in their project? 
+            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p> -->
 
         <p class="block">Control blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
@@ -157,7 +202,7 @@
                 {% endfor %}
             </tbody>
         </table> -->
-        {% else: %}
+        {% else %}
         <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
         {% endif %}
     </div>

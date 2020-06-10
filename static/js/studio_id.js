@@ -56,7 +56,7 @@ let find_project = (event) => {
                     window.location = "/project/" + id;
                 }
                 else {
-                    msg.innerHTML = "Unfortunately, we couldn&rsquo;t download that project.";
+                    msg.innerHTML = "Unfortunately, we weren't able to download that project. Make sure it's in the right Getting Unstuck studio!";
                 }
             }, type="form")
         }

@@ -43,26 +43,26 @@
             <div class="container-fluid">
                 <div class="navbar-left">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#" id="user_greeting" data-identifier="{{ user['username'] }}">
+                        <a class="nav-item nav-link nav-color" href="#" id="user_greeting" data-identifier="{{ user['username'] }}">
                             Hi, {{ user["first_name"] }}.
                         </a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
-                        <a class="nav-item nav-link" href="/account">Account</a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="/account">Account</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
 
                         {% if user["role"] == "site_admin": %}
-                        <a class="nav-item nav-link" href="/admin">Manage:</a>
+                        <a class="nav-item nav-link nav-color" href="/admin">Manage:</a>
                         {% for page in valid_admin_pages: %}
-                        <a class="nav-item nav-link" href="/admin/{{ page }}">{{ page|capitalize }}</a>
+                        <a class="nav-item nav-link nav-color" href="/admin/{{ page }}">{{ page|capitalize }}</a>
                         
                         {% endfor %}
                         {% endif %}
 
-                        <a class="nav-item nav-link" href="#">&diams;</a>
-                        <a class="nav-item nav-link" href="/studio">Download a studio</a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="/studio">Download a studio</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
 
-                        <a class="nav-item nav-link" href="/logout">Logout</a>
+                        <a class="nav-item nav-link nav-color" href="/logout">Logout</a>
                     </div>
                 </div>
             </div>

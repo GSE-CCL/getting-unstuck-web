@@ -106,23 +106,42 @@
               <p>A clementine (Citrus ×clementina) is a hybrid between a mandarin orange and a sweet orange, so named in 1902. The exterior is a deep orange colour with a smooth, glossy appearance. Clementines can be separated into 7 to 14 segments. Similarly to tangerines, they tend to be easy to peel.</p>
             </div>
           </div> -->
-
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project 
-        with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
+          {%  for number in range(3) %}
+          <br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }}</a> used conditionals for this project 
+            with the sprite <span class="sprite-color"> {{ comparisons[number]["sprite"]["name"] }}</span>!</p><br><br>
+            <div class="container" style="margin-left: 100px; margin-right: 100px">
+                <div class="row">
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
+                            {{ comparisons[number]["text"] }}
+                        </code></a>
+                    </div>
+                    <div class="col-4 d-flex justify-content-center">
+                        <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><img src= "{{ comparisons[number]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
+                    </div>
+                </div>
+            </div>
+            <br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }} </a> used conditionals in their project? 
+                Leave them a <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}">comment here</a> to tell them what you think! </p>
+    
+            <p style="font-weight:600; text-align:center">----------------------------</p>
+          {% endfor %}
+       <!-- <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[0]['username'] }}/">@{{ comparisons[0]["username"] }}</a> used conditionals for this project 
+        with the sprite <span class="sprite-color"> {{ comparisons[0]["sprite"]["name"] }}</span>!</p><br><br>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                        {{ comp_text }}
+                    <a href="https://scratch.mit.edu/projects/{{ comparisons[0]['pid'] }}/editor"><code class="comparison">
+                        {{ comparisons[0]["text"] }}
                     </code></a>
                 </div>
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
+                    <a href="https://scratch.mit.edu/projects/{{ comparisons[0]['pid'] }}/editor"><img src= "{{ comparisons[0]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
                 </div>
             </div>
         </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used conditionals in their project? 
-            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
+        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[0]['username'] }}/">@{{ comparisons[0]["username"] }} </a> used conditionals in their project? 
+            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p> -->
 
         <p class="block">Control blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">

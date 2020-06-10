@@ -165,7 +165,6 @@ def project_id(pid):
     common.connect_db()
     project = scrape.Project.objects(project_id=pid).first()
     studio = scrape.Studio.objects(studio_id=project["studio_id"]).first()
-
     scraper = Scraper()
     parser = Parser()
     visualizer = Visualizer()
@@ -177,14 +176,17 @@ def project_id(pid):
         
     # randomly pick a comparison project with the blocks we want
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
-    project_num = random.randint(0, len(other_projects) - 1)
-    other_pid = other_projects[project_num].project_id
-    other_user = other_projects[project_num].author
+    project_num = random.sample(range(0, len(other_projects) - 1), 3)
+    comparisons = []
+    for i in range(3):
+        temp_dict = {}
+        temp_dict['pid'] = other_projects[project_num[i]].project_id
+        temp_dict['username'] = other_projects[project_num[i]].author
 
-    # display the comparison project
-    other_sprite, other_text, other_results = display(str(other_pid), blocks_of_interest)
-    
-    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
+        # display the comparison project
+        temp_dict['sprite'], temp_dict['text'], temp_dict['results'] = display(str(temp_dict['pid']), blocks_of_interest)
+        comparisons.append(temp_dict)
+    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

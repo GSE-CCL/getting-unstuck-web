@@ -169,10 +169,11 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         doc.description = metadata["description"]
         doc.instructions = metadata["instructions"]
         doc.history = metadata["history"]
+        doc.remix = metadata["remix"]
         doc.stats = stats
 
-        if cache_directory is not None:
-            doc.cache_expires = datetime.now() + timedelta(days=30)
+        if studio_id > 0:
+            doc.studio_id = studio_id
     else:
         # Create a new record
         doc = Project(

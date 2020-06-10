@@ -25,7 +25,8 @@ def display(pid, blocks_interest):
         target = parser.get_target(surround[0], downloaded_project)
         text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
     else:
-        text = "No blocks found!"
+        print("sprite surround", surround, sprite)
+        text = ""
 
     return (sprite, text, results)
 

@@ -169,13 +169,13 @@ def project_id(pid):
     parser = Parser()
     visualizer = Visualizer()
 
-    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
+    blocks_of_interest =  ["motion_goto", "motion_sety", "motion_changeyby"]
     
     # individual's project
     sprite, text, results = display(pid, blocks_of_interest)
         
     # randomly pick a comparison project with the blocks we want
-    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
+    other_projects = scrape.get_projects_with_block(blocks_of_interest, studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.sample(range(0, len(other_projects) - 1), 3)
     comparisons = []
     for i in range(3):
@@ -186,7 +186,7 @@ def project_id(pid):
         # display the comparison project
         temp_dict['sprite'], temp_dict['text'], temp_dict['results'] = display(str(temp_dict['pid']), blocks_of_interest)
         comparisons.append(temp_dict)
-    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
+    return render_template("jumping.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

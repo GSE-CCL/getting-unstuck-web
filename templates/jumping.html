@@ -60,37 +60,41 @@
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
                     <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="project">        
                         {{ text }}
                     </code></a>
                 </div>
+                <div class="col-4 d-flex justify-content-center">
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
+                </div>
             </div>
         </div> 
-        {% elif results["categories"]["control"] == 0 %}
+        {% elif results["categories"]["motion"] == 0 %}
         <p class="block">In this project, we were looking for the use of motion blocks that created a jumping effect, such as the examples shown above. However, it's possible that you 
             were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
         </p>
         {% endif %}
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used motion blocks for this project 
-        with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                        {{ comp_text }}
-                    </code></a>
-                </div>
-            </div>
-        </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used motion blocks in their project? 
-            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
 
+        {%  for number in range(3) %}
+        <br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }}</a> used conditionals for this project 
+          with the sprite <span class="sprite-color"> {{ comparisons[number]["sprite"]["name"] }}</span>!</p><br><br>
+          <div class="container" style="margin-left: 100px; margin-right: 100px">
+              <div class="row">
+                  <div class="col-4 d-flex justify-content-center">
+                      <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
+                          {{ comparisons[number]["text"] }}
+                      </code></a>
+                  </div>
+                  <div class="col-4 d-flex justify-content-center">
+                      <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><img src= "{{ comparisons[number]['sprite']['costume_asset_url'] }}" class="sprite"></img></a>
+                  </div>
+              </div>
+          </div>
+          <br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comparisons[number]['username'] }}/">@{{ comparisons[number]["username"] }} </a> used conditionals in their project? 
+              Leave them a <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}">comment here</a> to tell them what you think! </p>
+  
+          <p style="font-weight:600; text-align:center">----------------------------</p>
+        {% endfor %}
         <p class="block">Motion blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">

@@ -10,8 +10,12 @@ nav.bg-ccl {
   background-color: #5dc7e4;
 }
 
-a.nav-item.nav-link {
+a.nav-item.nav-link.nav-color {
     color: white !important;
+}
+
+a.nav-color {
+  color: black !important;
 }
 
 body {

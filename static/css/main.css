@@ -4,6 +4,34 @@ a {
     color: #5dc7e4;
 }
 
+body {
+    font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
+    line-height: 1.6;
+    font-family: 'p22-underground', Helvetica, 'sans-serif';
+    color: #222;
+}
+
+.page-title h4{
+    padding-top: 0.5em;
+      font-family: 'Gastromond', 'Futura PT Bold', 'serif';
+      text-align: center;
+      margin: 0;
+  }
+
+.page-img img{
+	width: 35%;
+	height: 50%;
+	display: block;
+	margin: 0 auto;
+
+}
+
+h5 {
+    margin-bottom: 0rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 /* nav bar */
 
 nav.bg-ccl {
@@ -12,12 +40,6 @@ nav.bg-ccl {
 
 a.nav-item.nav-link {
     color: white !important;
-}
-
-body {
-    font-family: 'Avenir Next', sans-serif;
-    font-style: normal;
-    font-weight: 400;
 }
 
 .block {

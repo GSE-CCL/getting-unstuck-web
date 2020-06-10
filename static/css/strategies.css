@@ -12,6 +12,12 @@
   width: 100%;
 }
 
+.s {
+  border-color: #f9d433;
+  border-style: solid;
+  border-width: thick;
+}
+
 /* Hover stuff is from this codepen: https://codepen.io/ArnaudBalland/pen/vGZKLr */
 
 .card-container .content-overlay {

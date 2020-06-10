@@ -14,6 +14,7 @@ from lib import schema
 from lib import scrape
 from lib import authentication
 from lib import admin
+from lib.project import display
 from lib.authentication import admin_required, login_required
 
 CACHE_DIRECTORY = "cache"
@@ -169,40 +170,20 @@ def project_id(pid):
     parser = Parser()
     visualizer = Visualizer()
 
-    # open user's project
-    with open("cache/" + pid + ".json") as cache_project:
-        downloaded_project = json.load(cache_project)
-    results = parser.blockify(scratch_data=downloaded_project)
     blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
-    sprite = None
-    surround = None
-
-    for interest in blocks_of_interest:
-        if interest in results["blocks"].keys():
-            sprite = parser.get_sprite(results["blocks"][interest][0], downloaded_project)
-            surround = parser.get_surrounding_blocks(results["blocks"][interest][0], downloaded_project, 7)
     
-    if surround is not None and sprite is not None:
-        target = parser.get_target(surround[0], downloaded_project)
-        text = visualizer.generate_script(surround[0], target[0]["blocks"], surround, text=True)
-    else:
-        text = "No blocks found!"
+    # individual's project
+    sprite, text, results = display(pid, blocks_of_interest)
         
-    # comparison project
+    # randomly pick a comparison project with the blocks we want
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
     project_num = random.randint(0, len(other_projects) - 1)
     other_pid = other_projects[project_num].project_id
     other_user = other_projects[project_num].author
-    with open("cache/" + str(other_pid) + ".json") as cache_other_project:
-        other_download = json.load(cache_other_project)
-    other_results = parser.blockify(scratch_data=other_download)
-    for interest in blocks_of_interest:
-        if interest in other_results["blocks"].keys():
-            other_sprite = parser.get_sprite(other_results["blocks"][interest][0], other_download)
-            other_surround = parser.get_surrounding_blocks(other_results["blocks"][interest][0], other_download, 11)
-    other_target = parser.get_target(other_surround[0], other_download)
-    other_text = visualizer.generate_script(other_surround[0], other_target[0]["blocks"], other_surround, text=True)
 
+    # display the comparison project
+    other_sprite, other_text, other_results = display(str(other_pid), blocks_of_interest)
+    
     return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
 @app.route("/studio", methods=["GET", "POST"])

@@ -1,9 +1,21 @@
+/* general */
+
+a {
+    color: #5dc7e4;
+}
+
+/* nav bar */
+
 nav.bg-ccl {
   background-color: #5dc7e4;
 }
 
+a.nav-item.nav-link {
+    color: white !important;
+}
+
 body {
-    font-family: 'gastromond', sans-serif;
+    font-family: 'Avenir Next', sans-serif;
     font-style: normal;
     font-weight: 400;
 }
@@ -27,8 +39,31 @@ body {
     width: 300px;
 }
 
+/* Image settings */
 img.logo {
     width: 6%;
+}
+
+img.bug {
+    width: 50%;
+}
+
+/* Index input */
+.button {
+    background-color: #5dc7e4;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 2px 2px;
+    cursor: pointer;
+}
+
+.round-btn {
+    border-radius: 12px;
 }
 
 /* Custom settings for sprite images */
@@ -57,6 +92,73 @@ img.sprite {
     height: auto;
     margin: 0 0 -12px;
 }
+
+/* Project comparisons */
+/* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 700px;
+    background: #efefef;
+    box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3);
+  }
+
+.input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .label {
+    width: 100%;
+    padding: 20px 30px;
+    background: #e5e5e5;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    color: #7f7f7f;
+    transition: background 0.1s, color 0.1s;
+  }
+  
+  .label:hover {
+    background: #d8d8d8;
+  }
+  
+  .label:active {
+    background: #ccc;
+  }
+  
+  .input:focus + .label {
+    box-shadow: inset 0px 0px 0px 3px #2aa1c0;
+    z-index: 1;
+  }
+  
+  .input:checked + .label {
+    background: #fff;
+    color: #000;
+  }
+  
+  @media (min-width: 600px) {
+    .label {
+      width: auto;
+    }
+  }
+
+  .panel {
+    display: none;
+    padding: 20px 30px 30px;
+    background: #fff;
+  }
+  
+  @media (min-width: 600px) {
+    .panel {
+      order: 99;
+    }
+  }
+  
+  .input:checked + .label + .panel {
+    display: block;
+  }
 
 /* Kind of ridiculous that the alternative to writing these lines of
    CSS and a few lines of JavaScript is importing all of jQuery in

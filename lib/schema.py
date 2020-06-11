@@ -136,7 +136,29 @@ def add_schema(mins=None,
     except:
         return False
 
-def validate_project(schema, project, studio_id):
+
+def get_schema(schema_id, credentials_file="secure/db.json"):
+    """Gets a schema from the database.
+    
+    Args:
+        schema_id (str): the ID of the schema.
+        credentials_file (str): path to the database credentials file.
+    
+    Returns:
+        A dictionary representation of the schema.
+    """
+
+    # Get the schema
+    connect_db(credentials_file=credentials_file)
+    try:
+        schema = Challenge.objects(id=schema_id).first().to_mongo().to_dict()
+    except:
+        schema = dict()
+    
+    return schema
+
+
+def validate_project(schema, project, studio_id, credentials_file="secure/db.json"):
     """Determines if the project meets the standards of a given schema.
     
     Args:
@@ -144,13 +166,17 @@ def validate_project(schema, project, studio_id):
             database or with a dictionary representing its values.
         project: The project. Given as either the Mongo object or the project_id.
         studio_id (int): The studio ID.
+        credentials_file (str): path to the database credentials file.
 
     Returns:
         A modified version of the validation schema, revealing whether each requirement was met.
         False if couldn't successfully validate the project.
     """
+
     stat_types = ["block_comments", "blocks", "categories", "comments", "costumes", "sounds", "variables"]
-    delete_keys = ["description", "modified", "title", "required_text_failure", "required_blocks_failure"]
+    delete_keys = ["description", "explanation", "modified", "required_text_failure", "required_blocks_failure", "title"]
+
+    connect_db(credentials_file=credentials_file)
 
     # Get the schema in dictionary format
     if type(schema) != dict:

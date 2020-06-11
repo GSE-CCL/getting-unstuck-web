@@ -173,6 +173,13 @@ def set_info(page, form):
                                                     sprites=form["min_blockify"]["sprites"],
                                                     variables=form["min_blockify"]["variables"])
                     doc.required_block_categories = form["required_block_categories"]
+
+                    # Required blocks
+                    required_blocks = form["required_blocks"]
+                    for i in range(len(required_blocks)):
+                        for key in required_blocks[i]:
+                            required_blocks[i][key] = int(required_blocks[i][key])
+
                     doc.required_blocks = form["required_blocks"]
                     doc.required_text = form["required_text"]
                     doc.required_text_failure = form["required_text_failure"]

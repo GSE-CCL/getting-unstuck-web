@@ -107,6 +107,11 @@ def add_schema(mins=None,
         if "variables" in min_blockify:
             new_min_blockify.variables = min_blockify["variables"]
 
+    # Required blocks
+    for i in range(len(required_blocks)):
+        for key in required_blocks[i]:
+            required_blocks[i][key] = int(required_blocks[i][key])
+
     # Challenge object
     challenge = Challenge(title = title,
                           description = description,
@@ -208,9 +213,9 @@ def validate_project(schema, project, studio_id):
     rb = schema["required_blocks"]
     for opt in range(len(rb)):
         for opcode in rb[opt]:
-            if not (opcode in project["stats"]["blocks"] \
-               and len(project["stats"]["blocks"][opcode]) >= rb[opcode]):
-                result[opt] = False
+            if (not (opcode in project["stats"]["blocks"]
+                and len(project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
+                result["required_blocks"][opt] = False
                 break
 
     return result

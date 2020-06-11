@@ -132,6 +132,19 @@ img.sprite {
     margin: 0 0 -12px;
 }
 
+/* Prompts */
+tbody th {
+    padding: 1px !important;
+    width: 450px;
+    text-align: center;
+    font-size: 3.0em;
+    font-family: 'Gastromond', 'Futura PT Bold', 'serif';
+  }
+
+#blue.table-bordered td, #blue.table-bordered th{
+    border: 2px #5dc7e4 !important;
+}
+
 /* Project comparisons */
 /* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
 

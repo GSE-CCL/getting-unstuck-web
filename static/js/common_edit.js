@@ -19,3 +19,10 @@ let handle_ajax = function(method, url, data, callback, type="form") {
         http.send(JSON.stringify(data));
     }
 }
+
+// Add JS to page
+let add_js = function(src) {
+    var script = document.createElement("script");
+    script.src = src;
+    document.head.appendChild(script);
+};

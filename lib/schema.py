@@ -41,6 +41,7 @@ class Blockify(mongo.EmbeddedDocument):
 class Challenge(mongo.Document):
     title = mongo.StringField(max_length=200)
     description = mongo.StringField(max_length=5000)
+    explanation = mongo.StringField(max_length=50000)
     min_instructions_length = mongo.IntField(default=0)
     min_description_length = mongo.IntField(default=0)
     min_comments_made = mongo.IntField(default=0)
@@ -53,7 +54,17 @@ class Challenge(mongo.Document):
     modified = mongo.DateTimeField(default=datetime.now())
 
 # Functions to actually work with this schema
-def add_schema(mins=None, min_blockify=None, required_text=[], required_block_categories={}, required_blocks=[], required_blocks_failure=None, required_text_failure=None, title=None, description=None, credentials_file="secure/db.json"):
+def add_schema(mins=None,
+               min_blockify=None,
+               required_text=[],
+               required_block_categories={},
+               required_blocks=[],
+               required_blocks_failure=None,
+               required_text_failure=None,
+               title=None,
+               description=None,
+               explanation=None,
+               credentials_file="secure/db.json"):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
     Args:
@@ -73,6 +84,7 @@ def add_schema(mins=None, min_blockify=None, required_text=[], required_block_ca
         require_text_failure (str): the failure message to show if text requirement isn't met.
         title (str): the title of the challenge schema.
         description (str): the description of the challenge.
+        explanation (str): the explanation to be used at the top of the project result page.
         credentials_file (str): path to the database credentials file.
     Returns:
         The object ID of the new challenge schema in the database. False if the arguments
@@ -98,6 +110,7 @@ def add_schema(mins=None, min_blockify=None, required_text=[], required_block_ca
     # Challenge object
     challenge = Challenge(title = title,
                           description = description,
+                          explanation = explanation,
                           min_blockify = new_min_blockify,
                           required_text = required_text,
                           required_block_categories = required_block_categories,

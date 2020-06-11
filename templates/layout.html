@@ -12,6 +12,9 @@
 
         <!-- Favicon-->
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+        {% block head %}
+        {% endblock %}
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-ccl">

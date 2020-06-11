@@ -154,6 +154,11 @@ img.sprite {
     border-radius: 3px;
 }
 
+.code {
+    min-height: 3rem;
+    resize: vertical;
+}
+
 .hide {
     display: none;
 }

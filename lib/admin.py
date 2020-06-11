@@ -138,14 +138,9 @@ def set_info(page, form):
                 return False
         elif form["action"] == "edit":
             # Handle title, etc.
-            if form["title"].replace(" ", "") == "":
-                title = None
-            else:
-                title = form["title"]
-            if form["description"].replace(" ", "") == "":
-                description = None
-            else:
-                description = form["description"]
+            title = None if form["title"].replace(" ", "") == "" else form["title"]
+            description = None if form["description"].replace(" ", "") == "" else form["description"]
+            explanation = None if form["explanation"].replace(" ", "") == "" else form["explanation"]
 
             # If inserting a new schema
             if form["id"] == "__new__":
@@ -157,7 +152,8 @@ def set_info(page, form):
                                            required_blocks_failure=form["required_blocks_failure"],
                                            required_text_failure=form["required_text_failure"],
                                            title=title,
-                                           description=description)
+                                           description=description,
+                                           explanation=explanation)
                 if not result:
                     return False
                 else:
@@ -167,6 +163,7 @@ def set_info(page, form):
                     doc = schema.Challenge.objects(id = form["id"]).first()
                     doc.title = title
                     doc.description = description
+                    doc.explanation = explanation
                     doc.min_instructions_length = form["mins"]["instructions_length"]
                     doc.min_description_length = form["mins"]["description_length"]
                     doc.min_comments_made = form["mins"]["comments_made"]

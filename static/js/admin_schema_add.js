@@ -1,3 +1,6 @@
+// Global editor variable
+let editor;
+
 // Add text option
 let add_topt = (event) => {
     let max_id = parseInt(event.target.dataset.maxToId) + 1;
@@ -283,6 +286,7 @@ let submit_schema = (event) => {
         action: "edit",
         title: document.getElementById("title").value,
         description: document.getElementById("description").value,
+        explanation: editor.getValue(),
         mins: {
             instructions_length: document.getElementById("min_instructions_length").value,
             description_length: document.getElementById("min_description_length").value,
@@ -321,6 +325,28 @@ let submit_schema = (event) => {
     }).catch(() => {
         alert("Couldn't save schema.");
     });    
+};
+
+// Disable the modal
+let disableModal = function() {
+    document.getElementById("modal").classList = "modal fade";
+};
+
+// Preview Markdown
+let preview_markdown = () => {
+    let data = {"text": editor.getValue()};
+    handle_ajax("POST", "/md", data, (result) => {
+        if (result.response == "False") {
+            alert("Couldn't load preview.");
+        }
+        else {
+            res = JSON.parse(result.response);
+            document.getElementById("modal_title").innerText = "Markdown preview";
+            document.getElementById("modal_body").innerHTML = res["html"];
+            document.getElementById("modal").classList = "modal fade show";
+            add_js(res["js"]);
+        }
+    });
 };
 
 // Event setters
@@ -390,6 +416,25 @@ let loaded = function() {
 
     // Form submission
     document.getElementById("schema_form").addEventListener("submit", submit_schema);
+
+    // Markdown editor
+    editor = ace.edit("explanation");
+    ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/");
+    editor.setHighlightActiveLine(false);
+    editor.setTheme("ace/theme/clouds");
+    editor.session.setUseWrapMode(true);
+    editor.session.setMode("ace/mode/markdown");
+
+    editor.on("change", () => {
+        editor.resize();
+    });
+
+    document.querySelector("[data-action='preview_markdown']").addEventListener("click", preview_markdown);
+
+    let modal_close_btns = document.querySelectorAll("[data-action='close_modal']");
+    modal_close_btns.forEach((mcb) => {
+        mcb.addEventListener("click", disableModal);
+    });
 };
 
 if (document.readyState === "complete")

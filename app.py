@@ -1,4 +1,5 @@
 import json
+import markdown
 import os
 import threading
 import time
@@ -158,6 +159,21 @@ def edit_schema(id):
 @app.route("/")
 def homepage():
     return render_template("index.html") 
+
+@app.route("/md", methods=["POST"])
+def md():
+    text = request.form["text"]
+    if text is not None:
+        text = text.replace("[sb]", '<code class="sb">')
+        text = text.replace("[/sb]", "</code>")
+
+        ret = {
+            "html": markdown.markdown(text),
+            "js": "/static/js/sb.js"
+        }
+
+        return json.dumps(ret)
+    return "False"
 
 @app.route("/project/d", methods=["POST"])
 def project_download():

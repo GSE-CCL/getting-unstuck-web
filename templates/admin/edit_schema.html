@@ -28,6 +28,19 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="explanation">Explanation</label>
+                    <small class="form-text text-muted">
+                        This text is used at the top of the project results page. It is written in Markdown.
+                        To display a block, type [sb]code[/sb] where code is the
+                        <a href="https://en.scratch-wiki.info/wiki/Block_Plugin/Syntax" target="_blank">Scratchblocks syntax</a>
+                        for the block(s) of choice.
+                    </small>
+                    <div class="form-control code" id="explanation" name="explanation" placeholder="This is used at the top of the project results page.">{% if "explanation" in data: %}{{ data['explanation'] }}{% endif %}</div>
+                    <a href="#" data-action="preview_markdown">Preview</a>
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="min_instructions_length">Minimum instructions length</label>
                     <input type="number" class="form-control" id="min_instructions_length" name="min_instructions_length" value="{{ data['min_instructions_length'] }}">
@@ -186,6 +199,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Modal title</h5>
+                <button type="button" class="close" data-action="close_modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="modal_form" id="modal_form">
+                <div class="modal-body scrollable" id="modal_body">
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-secondary" data-action="close_modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"></script>
 <script>
     let block_list = {{ block_list|safe }};
     let block_dict = {{ block_dict|safe }};

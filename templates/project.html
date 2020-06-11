@@ -4,9 +4,11 @@
 {% block main_content %}
 <div class="row">
     <div class="col-12">
-        <h1>
-            {{ project["title"] }}
-        </h1>
+        <div class="page-title login">
+            <h4>
+                {{ project["title"] }}
+            </h4>
+        </div>
         <h5>
             by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a> &diams;
             part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
@@ -66,7 +68,7 @@
 
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
-                <div class="col-4 d-flex justify-content-center">
+                <div class="col-4 d-flex justify-content-center code-gray">
                     <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="project">        
                         {{ text }}
                     </code></a>
@@ -91,7 +93,7 @@
                         <span class="sprite-color"> {{ comparisons[number]["sprite"]["name"] }}</span> to do the following: </p><br><br>
                         <div class="container" style="margin-left: 100px; margin-right: 100px">
                             <div class="row">
-                                <div class="col-4 d-flex justify-content-center">
+                                <div class="col-4 d-flex justify-content-center code-gray">
                                     <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
                                         {{ comparisons[number]["text"] }}
                                     </code></a>
@@ -106,6 +108,10 @@
                 </div>
             {% endfor %}
         </div><br><br>
+
+        <p> What is something interesting you saw in someone else's project? How might you incorporate what someone else did into your next project? In your own project, add an idea for tomorrow in the 
+            Notes and Credits!
+        </p>
         <p class="block">Control blocks used: </p>
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">

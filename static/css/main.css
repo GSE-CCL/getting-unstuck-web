@@ -4,7 +4,6 @@ a {
     color: #5dc7e4;
 }
 
-
 body {
     font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
     line-height: 1.6;
@@ -80,19 +79,19 @@ img.bug {
 }
 
 /*  Homepage */
-.container-splash{
+.container-splash {
     flex: 1;
     height: 100%;
   }
   
-.splash{
+.splash {
     padding: 1em 3em 1em 3em;
     font-size: 1.1em;
     display: flex;
     flex-wrap: wrap;
   }
 
-#header-img{
+#header-img {
     width: 105%;
     padding-top: 3em;
   }
@@ -121,7 +120,12 @@ img.sprite {
   font-weight: bold;
 }
 
-/* For ScratchBlocks */
+/* block display (ScratchBlocks)*/
+.code-gray {
+    border-radius: 25px;
+    background-color: #E9E9E9;
+}
+
 .scratchblocks {
     zoom: 0.675;
 }
@@ -141,8 +145,12 @@ tbody th {
     font-family: 'Gastromond', 'Futura PT Bold', 'serif';
   }
 
-#blue.table-bordered td, #blue.table-bordered th{
-    border: 2px #5dc7e4 !important;
+.table-bordered {
+    border: 2px solid #5dc7e4;
+}
+
+.table-bordered td, .table-bordered th{
+    border: 2px solid #5dc7e4;
 }
 
 /* Project comparisons */
@@ -164,7 +172,7 @@ tbody th {
   .label {
     width: 100%;
     padding: 20px 30px;
-    background: #e5e5e5;
+    background: #f9d344;
     cursor: pointer;
     font-weight: bold;
     font-size: 18px;

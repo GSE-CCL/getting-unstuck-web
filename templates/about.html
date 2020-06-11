@@ -2,9 +2,57 @@
 {% block title %}Welcome &minus; {% endblock %}
 
 {% block main_content %}
+<head>
+ <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Getting Unstuck - About</title>
+  <meta name="description" content="A project for learning to debug computer programs">
+  <meta name="author" content="Creative Computing Lab at the Harvard Graduate School of Education">
 
-<h1 style="text-align:center"">About</h1>
+ <!-- CSS
+ –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+ <link rel="stylesheet" href="https://use.typekit.net/lwk5jup.css">
 
-<img src="{{ url_for('static', filename='img/SIGCSE_Motivation.png') }}"> 
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+    <div class="page-title">
+        <h4>About</h4>
+      </div>
+
+       <div class="page-img">
+          <img src="static/img/SIGCSE_Motivation.png">
+     </div>
+
+       <div class="page-content">
+
+         <h5>What is this?</h5>
+         <p>Getting Unstuck is 21 days of small programming challenges in Scratch, delivered to your email inbox from July 5 until July 25, 2018.</p>
+
+         <h5>Who is this for?</h5>
+         <p>We designed this learning experience for K–12 teachers who are passionate or curious about supporting creative work with <a href="http://scratch.mit.edu" target="_blank">Scratch</a> (a graphical programming language and online community being used by millions of young people around the world) in the classroom. But anyone who enjoys programming puzzles and learning with others is welcome to participate. Supporting students in pursuing creative work, with all of the twists and turns that can entail, can be tricky. As a teacher, in addition to having an adventurous spirit and genuine curiosity, it can help to have greater familiarity and fluency with Scratch. Our goal for Getting Unstuck is supporting that familiarity and fluency—by inviting you into these daily programming challenges and connecting you with a supportive community of fellow learners.
+                           
+         <h5>What do I do now?</h5>
+         <p>First, <a href="signup.html" target="_blank">sign up for the daily newsletter</a>. Then, starting July 5, you'll receive a daily email with a pep talk and a creative programming challenge. Try out the challenge, share your work, and reflect on your learning. When you get stuck, find inspiration and support from the <a href="https://www.facebook.com/groups/TeachingwithScratch/" target="_blank"><i>Teaching with Scratch</i></a> Facebook group, our list of <a href="https://gettingunstuck.gse.harvard.edu/strategies.html" target="_blank">Getting Unstuck strategies</a>, or Twitter at <a href="https://twitter.com/search?f=tweets&vertical=default&q=%23CreativeComputing" target="_blank">#CreativeComputing</a>.</p>
+
+         <h5>What if I don't know anything about Scratch?</h5>
+         <p>That's totally fine! Before diving into the daily challenges, try out this <a href="https://scratch.mit.edu/projects/editor/?tip_bar=getStarted" target="_blank">interactive online Scratch tutorial</a> or explore this <a href="http://scratched.gse.harvard.edu/resources/new-scratch" target="_blank">collection of new-to-Scratch resources.</a></p>
+         
+         <h5>Who are you?</h5>
+         <p>We are Paulina Haduong (a doctoral student) and Karen Brennan (a faculty member). We work, learn, and play at the Harvard Graduate School of Education. We love designing learning experiences and helping people develop their creative computing confidence!</p>
+         
+         <div align="center"><p><iframe width="560" height="315" src="https://www.youtube.com/embed/c_AdWB1GkRw?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></p></div>
+         
+         <p></p>
+         <p></p>
+
+     </div>
+</body>
 
 {% endblock %}

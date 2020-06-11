@@ -6,7 +6,13 @@
         <title>{% block title %}{% endblock %}Getting Unstuck</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/strategies.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://use.typekit.net/lwk5jup.css">
+
+        <!-- Favicon-->
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-ccl">
@@ -35,26 +41,26 @@
             <div class="container-fluid">
                 <div class="navbar-left">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#" id="user_greeting" data-identifier="{{ user['username'] }}">
+                        <a class="nav-item nav-link nav-color" href="#" id="user_greeting" data-identifier="{{ user['username'] }}">
                             Hi, {{ user["first_name"] }}.
                         </a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
-                        <a class="nav-item nav-link" href="/account">Account</a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="/account">Account</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
 
                         {% if user["role"] == "site_admin": %}
-                        <a class="nav-item nav-link" href="/admin">Manage:</a>
+                        <a class="nav-item nav-link nav-color" href="/admin">Manage:</a>
                         {% for page in valid_admin_pages: %}
-                        <a class="nav-item nav-link" href="/admin/{{ page }}">{{ page|capitalize }}</a>
+                        <a class="nav-item nav-link nav-color" href="/admin/{{ page }}">{{ page|capitalize }}</a>
                         
                         {% endfor %}
                         {% endif %}
 
-                        <a class="nav-item nav-link" href="#">&diams;</a>
-                        <a class="nav-item nav-link" href="/studio">Download a studio</a>
-                        <a class="nav-item nav-link" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
+                        <a class="nav-item nav-link nav-color" href="/studio">Download a studio</a>
+                        <a class="nav-item nav-link nav-color" href="#">&diams;</a>
 
-                        <a class="nav-item nav-link" href="/logout">Logout</a>
+                        <a class="nav-item nav-link nav-color" href="/logout">Logout</a>
                     </div>
                 </div>
             </div>

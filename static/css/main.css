@@ -4,25 +4,52 @@ a {
     color: #5dc7e4;
 }
 
+
+body {
+    font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
+    line-height: 1.6;
+    font-family: 'p22-underground', Helvetica, 'sans-serif';
+    color: #222;
+}
+
+.page-title h4{
+    padding-top: 0.5em;
+    font-family: 'Gastromond', 'Futura PT Bold', 'serif';
+    text-align: center;
+    margin: 0;
+  }
+
+.login h4 {
+    text-align: left !important;
+}
+
+.page-img img{
+	width: 35%;
+	height: 50%;
+	display: block;
+	margin: 0 auto;
+}
+
+h5 {
+    margin-bottom: 0rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 /* nav bar */
 
 nav.bg-ccl {
   background-color: #5dc7e4;
 }
 
-a.nav-item.nav-link.nav-color {
+a.nav-item.nav-link {
     color: white !important;
 }
-
-a.nav-color {
-  color: black !important;
-}
-
-body {
-    font-family: 'Avenir Next', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-}
+  
+a.nav-item.nav-link.nav-color {
+    color: black !important;
+    opacity: 0.7;
+  }
 
 .block {
     margin-left: 100px;
@@ -52,20 +79,28 @@ img.bug {
     width: 50%;
 }
 
-/* Index input */
-.button {
-    background-color: #5dc7e4;
-    border: none;
-    color: white;
-    padding: 10px 30px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 2px 2px;
-    cursor: pointer;
-}
+/*  Homepage */
+.container-splash{
+    flex: 1;
+    height: 100%;
+  }
+  
+.splash{
+    padding: 1em 3em 1em 3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-wrap: wrap;
+  }
 
+#header-img{
+    width: 105%;
+    padding-top: 3em;
+  }
+
+/* Index input */
+.form-control {
+    font-size: 0.8em;
+}
 .round-btn {
     border-radius: 12px;
 }

@@ -28,7 +28,6 @@ body {
 	height: 50%;
 	display: block;
 	margin: 0 auto;
-
 }
 
 h5 {
@@ -79,6 +78,24 @@ img.logo {
 img.bug {
     width: 50%;
 }
+
+/*  Homepage */
+.container-splash{
+    flex: 1;
+    height: 100%;
+  }
+  
+.splash{
+    padding: 1em 3em 1em 3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+#header-img{
+    width: 105%;
+    padding-top: 3em;
+  }
 
 /* Index input */
 .form-control {

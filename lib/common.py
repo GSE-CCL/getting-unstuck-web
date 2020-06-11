@@ -1,3 +1,4 @@
+import markdown
 import mongoengine as mongo
 import json
 
@@ -23,3 +24,21 @@ def connect_db(credentials_file="secure/db.json"):
                          port=credentials["port"],
                          username=credentials["username"],
                          password=credentials["password"])
+
+
+def md(text):
+    """Converts Markdown to HTML, including Scratchblocks.
+    
+    Args:
+        text (str): the Markdown to convert.
+
+    Returns:
+        A string of HTML from the converted Markdown.
+    """
+
+    text = text.replace("[sb]", '<code class="sb">')
+    text = text.replace("[/sb]", "</code>")
+
+    html = markdown.markdown(text)
+
+    return html

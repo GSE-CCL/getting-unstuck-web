@@ -20,11 +20,27 @@ from lib.settings import CACHE_DIRECTORY
 
 
 app = Flask(__name__)
+parser = Parser()
 
 def twodec(value):
     return f"{value:,.2f}"
 
+def indexOf(lst, value):
+    return lst.index(value)
+
+def pluralize(item):
+    if type(item) == list:
+        return "s" if len(item) != 1 else ""
+    else:
+        return "s" if int(item) != 1 else ""
+
+def human_block(opcode):
+    return parser.get_block_name(opcode)
+
 app.jinja_env.filters["twodec"] = twodec
+app.jinja_env.filters["indexOf"] = indexOf
+app.jinja_env.filters["pluralize"] = pluralize
+app.jinja_env.filters["human_block"] = human_block
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
@@ -135,7 +151,6 @@ def schema_editor(id):
         common.connect_db()
         data = schema.Challenge.objects(id = id).first().to_mongo()
 
-    parser = Parser()
     blocks = parser.block_data
     block_list = list()
     block_dict = dict()
@@ -164,11 +179,8 @@ def homepage():
 def md():
     text = request.form["text"]
     if text is not None:
-        text = text.replace("[sb]", '<code class="sb">')
-        text = text.replace("[/sb]", "</code>")
-
         ret = {
-            "html": markdown.markdown(text),
+            "html": common.md(text),
             "js": "/static/js/sb.js"
         }
 
@@ -198,15 +210,29 @@ def project_id(pid):
     project, scratch_data = scrape.get_project(pid, CACHE_DIRECTORY)
     studio = scrape.get_studio(project["studio_id"])
     sc = schema.get_schema(studio["challenge_id"])
-    print(sc)
 
-    if project == {} or scratch_data == {} or studio == {}:
+    err = False
+    if str(studio["challenge_id"]) in project["validation"]:
+        project["validation"] = project["validation"][str(studio["challenge_id"])]
+    else:
+        err = True
+
+    if project == {} or scratch_data == {} or studio == {} or err:
         return "Uh oh!"
 
     scraper = Scraper()
-    parser = Parser()
     visualizer = Visualizer()
+
+    prompt = {
+        "title": sc["title"] if sc["title"] is not None else studio["title"],
+        "description": sc["description"] if sc["description"] is not None else studio["description"]
+    }
+
+    sc["explanation"] = common.md(sc["explanation"])
     
+    
+    return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc)
+
     return "ok"
     #return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)
 
@@ -283,7 +309,6 @@ def get_challenge():
         return render_template("submit_challenge.html")
     else:
         scraper = Scraper()
-        parser = Parser()
         project_url = request.form['project-url']
         project_id = scraper.get_id(project_url)
         downloaded_project = scraper.download_project(project_id)

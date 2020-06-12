@@ -20,7 +20,7 @@ def test_add_schema_correct(credentials):
 
     assert type(result) == schema.Challenge
     assert "id" in result
-    assert schema.Challenge.objects(id = result["id"]).count() == 1
+    assert len(schema.Challenge.objects(id = result["id"])) == 1
 
 def test_add_schema_incorrect_rt(credentials):
     result = schema.add_schema(credentials_file=credentials, required_text=[[["an array too far"]]])

@@ -13,7 +13,7 @@ def test_schema_object_defaults(credentials):
                                  min_blockify=min_blockify)
     challenge.save()
 
-    assert schema.Challenge.objects(title = "Test challenge - DEFAULTS").count() == 1
+    assert len(schema.Challenge.objects(title = "Test challenge - DEFAULTS")) == 1
 
 def test_schema_object_correct(credentials):
     schema.connect_db(credentials)
@@ -34,7 +34,7 @@ def test_schema_object_correct(credentials):
                                  required_blocks = [{"event_whenflagclicked": 1}])
     challenge.save()
 
-    assert schema.Challenge.objects(title = "Test challenge - CORRECT").count() == 1
+    assert len(schema.Challenge.objects(title = "Test challenge - CORRECT")) == 1
 
 def test_schema_object_blank(credentials):
     schema.connect_db(credentials)

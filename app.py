@@ -206,9 +206,9 @@ def project_id(pid):
         
     # randomly pick a comparison project with the blocks we want
     other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
-    project_num = random.sample(range(0, len(other_projects) - 1), 3)
+    project_num = random.sample(range(0, len(other_projects) - 1), 5)
     comparisons = []
-    for i in range(3):
+    for i in range(5):
         temp_dict = {}
         temp_dict['pid'] = other_projects[project_num[i]].project_id
         temp_dict['username'] = other_projects[project_num[i]].author

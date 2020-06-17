@@ -7,13 +7,13 @@ a {
 body {
     font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
     line-height: 1.6;
-    font-family: 'p22-underground', Helvetica, 'sans-serif';
+    font-family: 'p22-underground';
     color: #222;
 }
 
 .page-title h4{
     padding-top: 0.5em;
-    font-family: 'Gastromond', 'Futura PT Bold', 'serif';
+    font-family: 'Gastromond';
     text-align: center;
     margin: 0;
   }
@@ -107,17 +107,30 @@ img.bug {
 /* Custom settings for sprite images */
 img.sprite {
   width: 100%;
-  min-width: 130px;
-  max-width: 150px;
+  min-width: 250px;
+  max-width: 350px;
   height: auto;
-  border: 2px solid black;
-  padding: 5px;
-  margin: 20px;
+  border: 2px solid #c2c2c2;
+  padding: 20px;
+  margin: 25px;
 }
 
 .sprite-color {
   color: #5dc7e4;
   font-weight: bold;
+}
+
+.img-with-txt a {
+  text-align: justify;
+}
+
+.img-with-txt {
+  display: block;
+  margin: auto auto;
+}
+
+.img-txt {
+  text-align: center;
 }
 
 /* block display (ScratchBlocks)*/
@@ -142,7 +155,7 @@ tbody th {
     width: 450px;
     text-align: center;
     font-size: 3.0em;
-    font-family: 'Gastromond', 'Futura PT Bold', 'serif';
+    font-family: 'Gastromond';
   }
 
 .table-bordered {
@@ -159,9 +172,10 @@ tbody th {
 .tabs {
     display: flex;
     flex-wrap: wrap;
-    max-width: 1200px;
+    max-width: 960px;
     background: #efefef;
     box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3);
+    margin: 0 auto;
   }
 
 .input {
@@ -171,9 +185,10 @@ tbody th {
 
   .label {
     width: 100%;
-    padding: 20px 30px;
+    padding: 10px 20px;
     background: #f9d344;
     cursor: pointer;
+    text-align: center;
     font-weight: bold;
     font-size: 18px;
     color: #7f7f7f;
@@ -200,7 +215,7 @@ tbody th {
   
   @media (min-width: 600px) {
     .label {
-      width: auto;
+      width: 192px;
     }
   }
 
@@ -210,7 +225,7 @@ tbody th {
     background: #fff;
   }
   
-  @media (min-width: 600px) {
+  @media (min-width: 900px) {
     .panel {
       order: 99;
     }

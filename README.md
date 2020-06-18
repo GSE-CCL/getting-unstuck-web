@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/GSE-CCL/getting-unstuck-web.svg?branch=master)](https://travis-ci.org/GSE-CCL/getting-unstuck-web)
+[![Build Status](https://travis-ci.com/GSE-CCL/getting-unstuck-web.svg?branch=master)](https://travis-ci.com/GSE-CCL/getting-unstuck-web)
 
 # Getting Unstuck 2020
 

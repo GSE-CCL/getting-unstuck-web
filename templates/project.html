@@ -4,21 +4,21 @@
 {% block main_content %}
 <div class="row">
     <div class="col-12">
-        <h1>
-            {{ project["title"] }}
-        </h1>
-        <h5>
-            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a> &diams;
-            part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
+        <div class="page-title">
+            <br><br>
+            <h4>
+                {{ studio["title"] }}
+            </h4>
+        </div><br>
+        <h5 class="project-title">
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">{{ project["title"] }}</a> by <a href="https://scratch.mit.edu/users/{{ project['author'] }}">@{{ project["author"] }}</a>
         </h5>
-        <p>
-            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">View project on Scratch</a>
-        </p>
-        {% if "stats" in studio and "max" in studio["stats"]: %}
-        <h5>You made a project for {{ project["title"] }}! The Day 15 Prompt was: </h5>
-        <p class="block" style="text-align:center">Create a project that when multiple conditions have been satisfied, a secret is revealed.</p>
 
-        <p class="block">There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
+        {% if "stats" in studio and "max" in studio["stats"]: %}
+        <h5>On Day 2, we explored conditionals. Our prompt was: </h5><br>
+        <p>Create a project that when multiple conditions have been satisfied, a secret is revealed.</p><br>
+
+        <p>There are many ways to create a project that addresses this prompt. Nearly all projects will incorporate the use of 
             conditional Control blocks, which can be used when a conditions has been met:</p>
         
         <div class="container" style="margin-left: 100px; margin-right: 100px">
@@ -49,30 +49,24 @@
                 </div>
             </div>
         </div>
-
-        <p class="block" style="text-align: center"> In your project, you used 
-            {% if project["stats"]["categories"]["control"] > 1 %}
-                multiple control blocks! Nice!        
-            {% elif project["stats"]["categories"]["control"] == 1 %}
-                one control block. 
-            {% else %}
-                zero control blocks. 
-            {% endif %}
-        </p>
+        <p class="block" style="text-align: center">  
+        {% if project["stats"]["categories"]["control"] >= 1 %}
+                Here's an example of how you used control blocks in <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">your own project</a>:
+        {% endif %}
+        </p><br>
         {% if results["categories"]["control"] >= 1 %}
-
-            <p class="block">For example, you programmed the sprite <span class="sprite-color"> {{ sprite["name"] }} </span>to do the following:</p>
-        
-
         <div class="container" style="margin-left: 100px; margin-right: 100px">
             <div class="row">
-                <div class="col-4 d-flex justify-content-center">
+                <div class="col-4 d-flex justify-content-center code-gray">
                     <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><code class="project">        
                         {{ text }}
                     </code></a>
                 </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor"><img src= "{{ sprite['costume_asset_url'] }}" class="sprite"></img></a>
+                <div class="col-4 d-flex justify-content-center img-with-txt m-auto">
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
+                        <img src="{{ sprite['costume_asset_url'] }}" class="sprite">
+                        <p class="img-txt"> {{ sprite["name"] }} </p>
+                    </a>
                 </div>
             </div>
         </div> 
@@ -81,85 +75,45 @@
             were able to think of a creative solution to today's prompt. We encourage you to take a look at other's projects for inspiration!
         </p>
         {% endif %}
-       <br><br><p class="block" style="text-align: center">Check out how <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }}</a> used conditionals for this project 
-        with the sprite <span class="sprite-color"> {{ comp_sprite["name"] }}</span>!</p><br><br>
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><code class="comparison">
-                        {{ comp_text }}
-                    </code></a>
-                </div>
-                <div class="col-4 d-flex justify-content-center">
-                    <a href="https://scratch.mit.edu/projects/{{ comp_pid }}/editor"><img src= "{{ comp_sprite['costume_asset_url'] }}" class="sprite"></img></a>
-                </div>
-            </div>
-        </div>
-        <br><br><p class="block"style="text-align: center">Did you like the way <a href="https://scratch.mit.edu/users/{{ comp_user }}/">@{{ comp_user }} </a> used conditionals in their project? 
-            Leave them a <a href="https://scratch.mit.edu/projects/{{ comp_pid }}">comment here</a> to tell them what you think! </p>
+        <br><br>
+        <p class="block" style="text-align:center">Here are examples of what others made in response to today’s prompt:</p>
 
-        <p class="block">Control blocks used: </p>
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-sm">
-                    <h1>{{ project["stats"]["categories"]["control"] }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["mean"]["block_categories"]["control"]|twodec }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["max"]["block_categories"]["control"] }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["min"]["block_categories"]["control"] }}</h1>
-                </div>
-            </div>
-        </div>
-
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-sm">
-                    <p>In your project</p>
-                </div>
-                <div class="col-sm">
-                    <p>In others' projects <br>(on average)</p>
-                </div>
-                <div class="col-sm">
-                    <p>In the project with <br> the largest number</p>
-                </div>
-                <div class="col-sm">
-                    <p>In the project with <br> the fewest number</p>
-                </div>
-            </div>
-        </div>
-
-        <p class="block" style="text-align: center">Great job today! How might you apply what you learned today for tomorrow?</p>
         
-        <!-- <table class="table">
-            <thead>
-                <tr>
-                    <th>Block category</th>
-                    <th>Your project</th>
-                    <th>Mean</th>
-                    <th>Minimum</th>
-                    <th>Maximum</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cat in project["stats"]["categories"] %}
-                <tr>
-                    <td>{{ cat }}</td>
-                    <td>{{ project["stats"]["categories"][cat] }}</td>
-                    <td>{{ studio["stats"]["mean"]["block_categories"][cat]|twodec }}</td>
-                    <td>{{ studio["stats"]["min"]["block_categories"][cat] }}</td>
-                    <td>{{ studio["stats"]["max"]["block_categories"][cat] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table> -->
+        <br><div class="tabs">
+            {% for number in range(5) %}
+                <input name="tabs" type="radio" id="tab-{{number + 1}}" checked="checked" class="input"/>
+                <label for="tab-{{number + 1}}" class="label">@{{ comparisons[number]["username"] }}'s <br> Project</label>
+                <div class="panel">
+                        <div class="container" style="margin-left: 100px; margin-right: 100px">
+                            <div class="row">
+                                <div class="col-4 d-flex justify-content-center code-gray">
+                                    <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor"><code class="comparison">
+                                        {{ comparisons[number]["text"] }}
+                                    </code></a>
+                                </div>
+                                <div class="col-4 d-flex justify-content-center img-with-txt m-auto">
+                                    <a href="https://scratch.mit.edu/projects/{{ comparisons[number]['pid'] }}/editor">
+                                        <img src= "{{ comparisons[number]['sprite']['costume_asset_url'] }}" class="sprite">
+                                        <p class="img-txt"> {{ comparisons[number]["sprite"]["name"] }} </p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="block" style="text-align: center; color:white">-----------------------------------------------------------------------------------------</p>
+
+                </div>
+            {% endfor %}
+        </div><br><br>
+
+        <p> What is something interesting you saw in someone else's project? How might you incorporate what someone else did into your next project? In your own project, add an idea for tomorrow in the 
+            Notes and Credits!
+        </p>
+
+        <p>Great job today! How might you apply what you learned today for tomorrow?</p>
         {% else %}
         <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
         {% endif %}
+        <br><br><br><br><br>
     </div>
 </div>
 

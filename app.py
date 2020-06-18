@@ -145,7 +145,9 @@ def schema_editor(id):
         },
         "required_text": [],
         "required_block_categories": {},
-        "required_blocks": []
+        "required_blocks": [],
+        "text": {},
+        "comparison_basis": {"basis": "__none__", "priority": None}
     }
     if id != "__new__":
         common.connect_db()

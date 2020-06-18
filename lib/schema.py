@@ -8,6 +8,16 @@ from . import scrape
 connect_db = common.connect_db
 
 # Here, some validation functions and the schema as a Mongoengine object.
+def valid_comparison_basis(param):
+    """Raises a ValidationError if doesn't meet format for comparison_basis."""
+    if type(param) != dict:
+        raise mongo.ValidationError("comparison_basis is a dict")
+    else:
+        if not ("basis" in param and param["basis"] in ["__none__", "required_text", "required_block_categories", "required_blocks"]):
+            raise mongo.ValidationError("comparison_basis basis key is invalid")
+        elif not ("priority" in param):
+            raise mongo.ValidationError("comparison_basis priority key is invalid")
+
 def valid_required_text(param):
     """Raises a ValidationError if doesn't meet format for required_text."""
     if type(param) != list:
@@ -37,11 +47,22 @@ class Blockify(mongo.EmbeddedDocument):
     sprites = mongo.IntField(default=0)
     variables = mongo.IntField(default=0)
 
+# The part of the schema that handles result page text
+class ResultText(mongo.EmbeddedDocument):
+    explanation = mongo.StringField(max_length=50000, default="")
+    concluding_text = mongo.StringField(max_length=50000, default="")
+    comparison_reflection_text = mongo.StringField(max_length=50000, default="")
+    comparison_framing_text = mongo.StringField(max_length=50000, default="")
+    prompt_framing_text = mongo.StringField(max_length=50000, default="")
+
 # The schema as a Mongoengine object.
 class Challenge(mongo.Document):
     title = mongo.StringField(max_length=200)
     description = mongo.StringField(max_length=5000)
-    explanation = mongo.StringField(max_length=50000)
+    short_label = mongo.StringField(max_length=100)
+    text = mongo.EmbeddedDocumentField(ResultText, required=True)
+    comparison_basis = mongo.DictField(default={"basis": "__none__", "priority": []},
+                                       validation=valid_comparison_basis)
     min_instructions_length = mongo.IntField(default=0)
     min_description_length = mongo.IntField(default=0)
     min_comments_made = mongo.IntField(default=0)
@@ -61,9 +82,11 @@ def add_schema(mins=None,
                required_blocks=[],
                required_blocks_failure=None,
                required_text_failure=None,
+               comparison_basis="__none__",
+               short_label=None,
                title=None,
                description=None,
-               explanation=None,
+               text=None,
                credentials_file="secure/db.json"):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
@@ -82,9 +105,13 @@ def add_schema(mins=None,
             satisfied. (That is, the list functions as "AND"; the dict functions as "OR".)
         require_blocks_failure (str): the failure message to show if block requirement isn't met.
         require_text_failure (str): the failure message to show if text requirement isn't met.
-        title (str): the title of the challenge schema.
-        description (str): the description of the challenge.
-        explanation (str): the explanation to be used at the top of the project result page.
+        comparison_basis (str): determines what to base code excerpts on. Must be from set of
+            {"__none__", "required_text", "required_blocks", "required_block_categories"}
+        short_label (str): the short label descriptor of the prompt.
+        title (str): the title of the prompt.
+        description (str): the description of the prompt.
+        text (dict): a dictionary mapping results page text items from the set
+            {"explanation", "concluding_text", "comparison_reflection_text", "comparison_framing_text", "prompt_framing_text"}
         credentials_file (str): path to the database credentials file.
     Returns:
         The object ID of the new challenge schema in the database. False if the arguments
@@ -107,15 +134,31 @@ def add_schema(mins=None,
         if "variables" in min_blockify:
             new_min_blockify.variables = min_blockify["variables"]
 
+    # Text object
+    result_text = ResultText()
+    if type(text) == dict:
+        if "explanation" in text:
+            result_text.explanation = text["explanation"]
+        if "concluding_text" in text:
+            result_text.concluding_text = text["concluding_text"]
+        if "comparison_reflection_text" in text:
+            result_text.comparison_reflection_text = text["comparison_reflection_text"]
+        if "comparison_framing_text" in text:
+            result_text.comparison_framing_text = text["comparison_framing_text"]
+        if "prompt_framing_text" in text:
+            result_text.prompt_framing_text = text["prompt_framing_text"]
+
     # Required blocks
     for i in range(len(required_blocks)):
         for key in required_blocks[i]:
             required_blocks[i][key] = int(required_blocks[i][key])
 
     # Challenge object
-    challenge = Challenge(title = title,
+    challenge = Challenge(short_label = short_label,
+                          title = title,
                           description = description,
-                          explanation = explanation,
+                          comparison_basis = comparison_basis,
+                          text = result_text,
                           min_blockify = new_min_blockify,
                           required_text = required_text,
                           required_block_categories = required_block_categories,
@@ -174,7 +217,7 @@ def validate_project(schema, project, studio_id, credentials_file="secure/db.jso
     """
 
     stat_types = ["block_comments", "blocks", "categories", "comments", "costumes", "sounds", "variables"]
-    delete_keys = ["description", "explanation", "modified", "required_text_failure", "required_blocks_failure", "title"]
+    delete_keys = ["description", "text", "modified", "required_text_failure", "required_blocks_failure", "title", "short_label", "comparison_basis"]
 
     connect_db(credentials_file=credentials_file)
 

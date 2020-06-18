@@ -5,16 +5,13 @@
 <div class="row">
     <div class="col-12">
         <!-- Some meta about the project -->
-        <h1>
-            {{ project["title"] }}
-        </h1>
-        <h5>
-            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a> &diams;
-            part of <a href="/studio/{{ studio['studio_id'] }}">{{ studio["title"] }}</a>
-        </h5>
-        <p>
-            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">View project on Scratch</a>
-        </p>
+        <h2>
+            {{ studio["title"] }}
+        </h2>
+        <h3 class="mt-3">
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">{{ project["title"] }}</a>
+            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a>
+        </h3>
 
         {% if studio["status"] == "complete": %}
        
@@ -41,85 +38,13 @@
                     </li>
                 {% endfor %}
                 </ul>
-            {% else: %}
-                <p>
-                    It doesn&rsquo;t look like your project used an unexpected method to answer the prompt, but that&rsquo;s okay!
-                    Your project is still super awesome! In fact, you should email us how you made it &minus; maybe we&rsquo;ll
-                    learn something from you.
-                </p>
+            {% elif schema["required_blocks_failure"] != "": %}
+                <p>{{ schema["required_blocks_failure"] }}</p>
             {% endif %}
         {% endif %}
 
-
-        <p class="block" style="text-align: center"> In your project, you used 
-            {% if project["stats"]["categories"]["control"] > 1 %}
-                multiple control blocks! Nice!        
-            {% elif project["stats"]["categories"]["control"] == 1 %}
-                one control block. 
-            {% else %}
-                zero control blocks. 
-            {% endif %}
-        </p>
+        <p class="block" style="text-align: center">{{ schema["reflection_text"] }}</p>
         
-        <p class="block">Control blocks used: </p>
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-sm">
-                    <h1>{{ project["stats"]["categories"]["control"] }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["mean"]["block_categories"]["control"]|twodec }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["max"]["block_categories"]["control"] }}</h1>
-                </div>
-                <div class="col-sm">
-                    <h1>{{ studio["stats"]["min"]["block_categories"]["control"] }}</h1>
-                </div>
-            </div>
-        </div>
-
-        <div class="container" style="margin-left: 100px; margin-right: 100px">
-            <div class="row">
-                <div class="col-sm">
-                    <p>In your project</p>
-                </div>
-                <div class="col-sm">
-                    <p>In others' projects <br>(on average)</p>
-                </div>
-                <div class="col-sm">
-                    <p>In the project with <br> the largest number</p>
-                </div>
-                <div class="col-sm">
-                    <p>In the project with <br> the fewest number</p>
-                </div>
-            </div>
-        </div>
-
-        <p class="block" style="text-align: center">Great job today! How might you apply what you learned today for tomorrow?</p>
-        
-        <!-- <table class="table">
-            <thead>
-                <tr>
-                    <th>Block category</th>
-                    <th>Your project</th>
-                    <th>Mean</th>
-                    <th>Minimum</th>
-                    <th>Maximum</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cat in project["stats"]["categories"] %}
-                <tr>
-                    <td>{{ cat }}</td>
-                    <td>{{ project["stats"]["categories"][cat] }}</td>
-                    <td>{{ studio["stats"]["mean"]["block_categories"][cat]|twodec }}</td>
-                    <td>{{ studio["stats"]["min"]["block_categories"][cat] }}</td>
-                    <td>{{ studio["stats"]["max"]["block_categories"][cat] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table> -->
         {% else %}
         <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
         {% endif %}

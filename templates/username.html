@@ -4,11 +4,12 @@
 {% block main_content %}
 <div class="row">
     <div class="col-12">
+        <br><br>
         <h1>
             {{ username }}
         </h1>
         <p><a href="https://scratch.mit.edu/users/{{ username }}" target="_blank">View user on Scratch</a></p>
-
+<br>
         {% if projects == []: %}
         <p>
             Oh no! It doesn&rsquo;t look like we were able to find any Getting Unstuck projects for your username. Have you added 
@@ -27,6 +28,7 @@
             </li>
             {% endfor %}
         </ul>
+        <br>
         <h5>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</h5>
         {% endif %}
     </div>

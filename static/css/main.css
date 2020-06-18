@@ -163,12 +163,20 @@ tbody th {
     font-family: 'Gastromond';
   }
 
+.table th {
+  vertical-align: middle;
+}
+
 .table-bordered {
     border: 2px solid #5dc7e4;
 }
 
 .table-bordered td, .table-bordered th{
     border: 2px solid #5dc7e4;
+}
+
+.table-link {
+  text-align: center;
 }
 
 /* Project comparisons */

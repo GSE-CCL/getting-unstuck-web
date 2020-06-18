@@ -40,11 +40,11 @@ class Studio(mongo.Document):
     challenge_id = mongo.ObjectIdField()
     public_show = mongo.BooleanField(default=False)
 
-def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
     
     Args:
-        opcode_lst (list): list of Scratch opcodes for the block type.
+        opcode (str): Scratch opcodes for the block type.
         project_id (int): exclude this project from the search.
         studio_id (int): limit to projects in this studio.
         credentials_file (str): path to the database credentials file.
@@ -57,18 +57,18 @@ def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_f
     connect_db(credentials_file=credentials_file)
    
     opcode_present = list()
-    for opcode in opcode_lst:
-        if parser.get_block_name(opcode) is not None:
-            query = {
-                "stats.blocks.{0}".format(opcode): {"$exists": True},
-                "project_id": {"$ne": project_id}
-            }
-            if studio_id != 0:
-                query["studio_id"] = studio_id
-                
-            opcode_present.extend(list(Project.objects(__raw__ = query)))
+    if parser.get_block_name(opcode) is not None:
+        query = {
+            "stats.blocks.{0}".format(opcode): {"$exists": True},
+            "project_id": {"$ne": project_id}
+        }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+
+        opcode_present = Project.objects(__raw__ = query)
 
     return list(opcode_present)
+
 
 def add_comments(project_id, username, credentials_file="secure/db.json"):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
@@ -220,6 +220,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
     # Add individual studio to DB    
     studio_info = scraper.get_studio_meta(studio_id)
     if studio_info is not None:
+        print("attempting for {}".format(studio_id))
         connect_db(credentials_file=credentials_file)
 
         preexisting = Studio.objects(studio_id=studio_id).first()
@@ -255,9 +256,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
             preexisting = Studio.objects(studio_id=studio_id).first()
-            preexisting.status = "complete"
-            preexisting.stats = stats
-            preexisting.save()
+            if preexisting is not None:
+                preexisting.status = "complete"
+                preexisting.stats = stats
+                preexisting.save()
         
         studio_thread = threading.Thread(target=add_projects)
         studio_thread.start()
@@ -348,10 +350,13 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     
     for key in stats["mean"]:
         if key not in no_direct_average:
-            stats["mean"][key] /= len(projects)
+            if len(projects) > 0:
+                stats["mean"][key] /= len(projects)
     for block in stats["mean"]["blocks"]:
-        stats["mean"]["blocks"][block] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["blocks"][block] /= len(projects)
     for cat in stats["mean"]["block_categories"]:
-        stats["mean"]["block_categories"][cat] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["block_categories"][cat] /= len(projects)
 
     return stats

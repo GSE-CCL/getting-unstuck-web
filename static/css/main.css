@@ -35,6 +35,11 @@ h5 {
     font-weight: 600;
 }
 
+h5.project-title {
+  text-align: center;
+  
+}
+
 /* nav bar */
 
 nav.bg-ccl {

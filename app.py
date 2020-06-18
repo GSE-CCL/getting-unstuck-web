@@ -15,8 +15,9 @@ from lib import schema
 from lib import scrape
 from lib import authentication
 from lib import admin
+from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY
+from lib.settings import CACHE_DIRECTORY, SITE
 
 
 app = Flask(__name__)
@@ -47,7 +48,7 @@ app.url_map.strict_slashes = False
 # Pass things to all templates
 @app.context_processor
 def inject_vars():
-    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES)
+    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES, SITE=SITE)
 
 # Helper routes
 @app.route("/redirect", methods=["GET"])
@@ -73,7 +74,7 @@ def login():
         
         res = authentication.login_user(request.form["username"], request.form["password"])
         if res:
-            return redirect("/")
+            return redirect("/admin")
         else:
             return render_template("login.html", message="Couldn't log in with that username/password combination!")
 
@@ -163,7 +164,7 @@ def schema_editor(id):
     return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
 
 @app.route("/admin/schemas/edit", methods=["GET"])
-@admin_required
+#@admin_required
 def add_schema():
     return schema_editor("__new__")
 
@@ -227,13 +228,17 @@ def project_id(pid):
 
     prompt = {
         "title": sc["title"] if sc["title"] is not None else studio["title"],
-        "description": sc["description"] if sc["description"] is not None else studio["description"]
+        "description": sc["description"] if sc["description"] is not None else studio["description"],
     }
 
-    sc["explanation"] = common.md(sc["explanation"])
+    for key in sc["text"]:
+        sc["text"][key] = common.md(sc["text"][key])
+
+    excerpts = {
+        project["author"]: display.get_code_excerpt(project, sc)
+    }
     
-    
-    return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc)
+    return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
 
     return "ok"
     #return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comp_user=other_user, comp_pid=other_pid, comp_sprite=other_sprite, comp_text=other_text)

@@ -230,7 +230,7 @@
                                 <div class="input-group mt-2" data-bo-id="{{ loop.index0 }}">
                                     <input type="text" class="form-control block_input" placeholder="block requirement" value="{{ opt }}">
                                     <input type="number" class="form-control col-3" placeholder="min" required value="{{ req[opt] }}">
-                                    <div class="form-control col-1 p-1 pt-2 text-center"><input type="radio" name="rb_comparison_basis_{{ outer }}" value="{{ loop.index0 }}" {% if data["comparison_basis"]["basis"] == "required_blocks" and data["comparison_basis"]["priority"][outer] == loop.index0: %}checked{% endif %}></div>
+                                    <div class="form-control col-1 p-1 pt-2 text-center"><input type="radio" name="rb_comparison_basis_{{ outer }}" value="{{ loop.index0 }}" {% if data["comparison_basis"]["basis"] == "required_blocks" and data["comparison_basis"]["priority"][outer] == opt: %}checked{% endif %}></div>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button>
                                     </div>

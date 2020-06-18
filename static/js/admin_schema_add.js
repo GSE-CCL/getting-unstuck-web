@@ -17,7 +17,6 @@ let add_topt = (event) => {
 
     let parent_id = event.target.parentNode.dataset.trId;
     let opt_code = '<input type="text" class="form-control" placeholder="text option">'
-                 + '<div class="form-control col-1 p-1 pt-2 text-center"><input type="radio" name="rt_comparison_basis_' + parent_id + '" value="' + max_id + '"></div>'
                  +  '<div class="input-group-append">'
                  + '<button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';
 
@@ -50,6 +49,8 @@ let add_treq = (event) => {
         req_code += '<small><em>one of these</em></small>';
     }
     req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button>'
+              + '<div><input type="radio" name="rt_comparison_basis" value="' + max_id + '" id="rt_comparison_basis_' + max_id + '"> '
+              + '<label for="rt_comparison_basis_' + max_id + '">comparison basis</label></div>'
               + '<div class="required_inner"></div>'
               + '<button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button>';
 
@@ -334,28 +335,22 @@ let submit_schema = (event) => {
 
         // Get the priorities for what to show
         if (data["comparison_basis"]["basis"] == "required_text") {
-            for (let i = 0; i < data["required_text"].length; i++) {
-                data["comparison_basis"]["priority"].push(
-                    parseInt(get_radio(document.getElementsByName("rt_comparison_basis_" + i)))
-                );
-            }
+            data["comparison_basis"]["priority"] = parseInt(get_radio(document.getElementsByName("rt_comparison_basis")))
         }
         else if (data["comparison_basis"]["basis"] == "required_block_categories") {
             data["comparison_basis"]["priority"] = get_radio(document.getElementsByName("rc_comparison_basis"));
         }
         else if (data["comparison_basis"]["basis"] == "required_blocks") {
             for (let i = 0; i < data["required_blocks"].length; i++) {
+                let index = parseInt(get_radio(document.getElementsByName("rb_comparison_basis_" + i)));
                 data["comparison_basis"]["priority"].push(
-                    parseInt(get_radio(document.getElementsByName("rb_comparison_basis_" + i)))
+                    document.querySelector("[data-br-id='" + i + "'] [data-bo-id='" + index + "'] .block_input").value
                 );
             }
         }
 
         resolve();
     }).then(() => {
-        console.log(data);
-        //return;
-
         // Submit form
         handle_ajax("POST", "/admin/schemas", data, (result) => {
             if (result.response == "true") {

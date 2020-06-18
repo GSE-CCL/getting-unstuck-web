@@ -16,34 +16,59 @@
         {% if studio["status"] == "complete": %}
        
         <!-- Introduction and explanation -->
-        <h5>You made a project for {{ prompt["title"] }}! The prompt was:</h5>
-        <p>{{ prompt["description"] }}</p>
+        {{ schema["text"]["prompt_framing_text"]|safe }}
+        <blockquote class="blockquote ml-3">{{ prompt["description"] }}</blockquote>
+        {{ schema["text"]["explanation"]|safe }}
 
-        <p>{{ schema["explanation"]|safe }}</p>
+        <!-- Block category focus -->
+        {% if schema["comparison_basis"]["basis"] == "required_block_categories": %}
+            {% if project["validation"]["required_block_categories"][schema["comparison_basis"]["priority"]]: %}
+            <p>Here&rsquo;s an example of how you used <strong>{{ schema["comparison_basis"]["priority"] }}</strong> blocks in your project:</p>
+            {% endif %}
+        
+        <!-- Required text focus -->
+        {% elif schema["comparison_basis"]["basis"] == "required_text": %}
+            {% if project["validation"]["required_text"][schema["comparison_basis"]["priority"]] > -1: %}
+            <p>
+                Here&rsquo;s an example of how you used the text
+                <strong>&ldquo;{{ schema["required_text"][project["validation"]["required_text"][schema["comparison_basis"]["priority"]]] }}&rdquo;</strong>
+                in your project:
+            </p>
 
-        <!-- Required blocks focus, if needed -->
-        {% if schema["required_blocks"]|length > 0: %}
-            <p>We could think of {{ schema["required_blocks"]|length }} way{{ schema["required_blocks"]|pluralize }}
-            to complete this prompt.</p>
+            {% elif schema["required_text_failure"] != "": %}
+                <p>{{ schema["required_blocks_failure"] }}</p>
+            {% endif %}
 
+        <!-- Required blocks focus -->
+        {% elif schema["comparison_basis"]["basis"] == "required_blocks": %}
             {% if True in project["validation"]["required_blocks"]: %}
                 {% set rbo = project["validation"]["required_blocks"]|indexOf(True) %}
-                <p>You used option {{ (rbo + 1) }}, which called for:</p>
-                <ul>
-                {% for req in schema["required_blocks"][rbo]: %}
-                    <li>
-                    {{ schema["required_blocks"][rbo][req] }}
-                    {{ req|human_block }}
-                    block{{ schema["required_blocks"][rbo][req]|pluralize }}
-                    </li>
-                {% endfor %}
-                </ul>
+
+                {% set focus_block = schema["comparison_basis"]["priority"][rbo] %}
+                <p>Here&rsquo;s an example of how you used the <strong>{{ focus_block|human_block }}</strong> block in your project:</p>
+
             {% elif schema["required_blocks_failure"] != "": %}
                 <p>{{ schema["required_blocks_failure"] }}</p>
             {% endif %}
+
         {% endif %}
 
-        <p class="block" style="text-align: center">{{ schema["reflection_text"] }}</p>
+        <!-- User's code excerpt -->
+        {% if excerpts[project["author"]] != "": %}
+            <code class="_sb">{{ excerpts[project["author"]] }}</code>
+        {% else: %}
+            <p>We couldn&rsquo;t find an example in your code!</p>
+        {% endif %}
+
+        <!-- Project comparison excerpts -->
+        {{ schema["text"]["comparison_framing_text"]|safe }}
+
+        <p>THE CODE EXCERPTS WILL GO HERE</p>
+
+        {{ schema["text"]["comparison_reflection_text"]|safe }}
+
+        {{ schema["text"]["concluding_text"]|safe }}
+
         
         {% else %}
         <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
@@ -51,14 +76,5 @@
     </div>
 </div>
 
-<script src="https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js"></script>
-    <script>
-        scratchblocks.renderMatching('code.project', {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching('code.comparison', {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional1", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional2", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional3", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.conditional4", {inline: false, style:"scratch3"});
-        scratchblocks.renderMatching("code.sb", {inline: true, style: "scratch3"});
-    </script>
+<script src="/static/js/sb.js"></script>
 {% endblock %}

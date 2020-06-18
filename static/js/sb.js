@@ -6,6 +6,10 @@ loaded_sb = () => {
                 inline: true,
                 style: "scratch3"
             });
+            scratchblocks.renderMatching("code._sb", {
+                inline: false,
+                style: "scratch3"
+            });
         };
         script.src = "https://scratchblocks.github.io/js/scratchblocks-v3.4-min.js";
         document.head.appendChild(script);
@@ -15,6 +19,10 @@ loaded_sb = () => {
     else {
         scratchblocks.renderMatching("code.sb", {
             inline: true,
+            style: "scratch3"
+        });
+        scratchblocks.renderMatching("code._sb", {
+            inline: false,
             style: "scratch3"
         });
     }

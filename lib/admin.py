@@ -138,14 +138,9 @@ def set_info(page, form):
                 return False
         elif form["action"] == "edit":
             # Handle title, etc.
-            if form["title"].replace(" ", "") == "":
-                title = None
-            else:
-                title = form["title"]
-            if form["description"].replace(" ", "") == "":
-                description = None
-            else:
-                description = form["description"]
+            title = None if form["title"].replace(" ", "") == "" else form["title"]
+            description = None if form["description"].replace(" ", "") == "" else form["description"]
+            short_label = None if form["short_label"].replace(" ", "") == "" else form["short_label"]
 
             # If inserting a new schema
             if form["id"] == "__new__":
@@ -156,8 +151,11 @@ def set_info(page, form):
                                            required_blocks=form["required_blocks"],
                                            required_blocks_failure=form["required_blocks_failure"],
                                            required_text_failure=form["required_text_failure"],
+                                           short_label=short_label,
+                                           comparison_basis=form["comparison_basis"],
                                            title=title,
-                                           description=description)
+                                           description=description,
+                                           text=form["text"])
                 if not result:
                     return False
                 else:
@@ -165,8 +163,15 @@ def set_info(page, form):
             else:
                 try:
                     doc = schema.Challenge.objects(id = form["id"]).first()
+                    doc.short_label=short_label
+                    doc.comparison_basis=form["comparison_basis"]
                     doc.title = title
                     doc.description = description
+                    doc.text = schema.ResultText(explanation=form["text"]["explanation"],
+                                                    concluding_text=form["text"]["concluding_text"],
+                                                    comparison_reflection_text=form["text"]["comparison_reflection_text"],
+                                                    comparison_framing_text=form["text"]["comparison_framing_text"],
+                                                    prompt_framing_text=form["text"]["prompt_framing_text"])
                     doc.min_instructions_length = form["mins"]["instructions_length"]
                     doc.min_description_length = form["mins"]["description_length"]
                     doc.min_comments_made = form["mins"]["comments_made"]
@@ -176,6 +181,13 @@ def set_info(page, form):
                                                     sprites=form["min_blockify"]["sprites"],
                                                     variables=form["min_blockify"]["variables"])
                     doc.required_block_categories = form["required_block_categories"]
+
+                    # Required blocks
+                    required_blocks = form["required_blocks"]
+                    for i in range(len(required_blocks)):
+                        for key in required_blocks[i]:
+                            required_blocks[i][key] = int(required_blocks[i][key])
+
                     doc.required_blocks = form["required_blocks"]
                     doc.required_text = form["required_text"]
                     doc.required_text_failure = form["required_text_failure"]

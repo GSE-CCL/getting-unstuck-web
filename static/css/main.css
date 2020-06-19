@@ -5,9 +5,7 @@ a {
 }
 
 body {
-    font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
-    line-height: 1.6;
-    font-family: 'p22-underground';
+    font-family: 'p22-underground', Helvetica, 'sans-serif';
     color: #222;
 }
 
@@ -102,9 +100,6 @@ img.bug {
   }
 
 /* Index input */
-.form-control {
-    font-size: 0.8em;
-}
 .round-btn {
     border-radius: 12px;
 }
@@ -290,6 +285,11 @@ tbody th {
     left: 0;
     border: 1px solid #e8e8e8;
     border-radius: 3px;
+}
+
+.code {
+    min-height: 3rem;
+    resize: vertical;
 }
 
 .hide {

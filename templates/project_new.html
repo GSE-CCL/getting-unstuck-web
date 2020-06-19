@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block title %}{{ project["title"] }} &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Some meta about the project -->
+        <h2>
+            {{ studio["title"] }}
+        </h2>
+        <h3 class="mt-3">
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">{{ project["title"] }}</a>
+            by <a href="/user/{{ project['author'] }}">{{ project["author"] }}</a>
+        </h3>
+
+        {% if studio["status"] == "complete": %}
+       
+        <!-- Introduction and explanation -->
+        {{ schema["text"]["prompt_framing_text"]|safe }}
+        <blockquote class="blockquote ml-3">{{ prompt["description"] }}</blockquote>
+        {{ schema["text"]["explanation"]|safe }}
+
+        <!-- Block category focus -->
+        {% if schema["comparison_basis"]["basis"] == "required_block_categories": %}
+            {% if project["validation"]["required_block_categories"][schema["comparison_basis"]["priority"]]: %}
+            <p>Here&rsquo;s an example of how you used <strong>{{ schema["comparison_basis"]["priority"] }}</strong> blocks in your project:</p>
+            {% endif %}
+        
+        <!-- Required text focus -->
+        {% elif schema["comparison_basis"]["basis"] == "required_text": %}
+            {% if project["validation"]["required_text"][schema["comparison_basis"]["priority"]] > -1: %}
+            <p>
+                {% set feature = project["validation"]["required_text"][schema["comparison_basis"]["priority"]] %}
+                Here&rsquo;s an example of how you used the text
+                <strong>&ldquo;{{ schema["required_text"][schema["comparison_basis"]["priority"]][feature] }}&rdquo;</strong>
+                in your project:
+            </p>
+
+            {% elif schema["required_text_failure"] != "": %}
+                <p>{{ schema["required_blocks_failure"] }}</p>
+            {% endif %}
+
+        <!-- Required blocks focus -->
+        {% elif schema["comparison_basis"]["basis"] == "required_blocks": %}
+            {% if True in project["validation"]["required_blocks"]: %}
+                {% set rbo = project["validation"]["required_blocks"]|indexOf(True) %}
+
+                {% set focus_block = schema["comparison_basis"]["priority"][rbo] %}
+                <p>Here&rsquo;s an example of how you used the <strong>{{ focus_block|human_block }}</strong> block in your project:</p>
+
+            {% elif schema["required_blocks_failure"] != "": %}
+                <p>{{ schema["required_blocks_failure"] }}</p>
+            {% endif %}
+
+        {% endif %}
+
+        <!-- User's code excerpt -->
+        {% if excerpts[project["project_id"]] != "": %}
+            <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
+        {% else: %}
+            <p>We couldn&rsquo;t find an example in your code!</p>
+        {% endif %}
+
+        <!-- Project comparison excerpts -->
+        {{ schema["text"]["comparison_framing_text"]|safe }}
+
+        {% for excerpt in excerpts: %}
+            {% if excerpt != project["project_id"]: %}
+            <h6>Code from {{ excerpts[excerpt]["author"] }}:</h6>
+            <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
+            {% endif %}
+        {% endfor %}
+
+        {{ schema["text"]["comparison_reflection_text"]|safe }}
+
+        {{ schema["text"]["concluding_text"]|safe }}
+
+        
+        {% else %}
+        <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
+        {% endif %}
+    </div>
+</div>
+
+<script src="/static/js/sb.js"></script>
+{% endblock %}

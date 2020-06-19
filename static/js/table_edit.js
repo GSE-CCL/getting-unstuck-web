@@ -358,12 +358,4 @@ let setEvents = function(fs) {
     }
 
     document.dispatchEvent(page_events_event);
-
-    // Disable # links
-    let hash_links = document.querySelectorAll("a[href='#']");
-    hash_links.forEach(link => {
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-        });
-    });
 };

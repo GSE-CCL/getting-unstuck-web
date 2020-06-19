@@ -1,4 +1,5 @@
 import json
+import markdown
 import os
 import threading
 import time
@@ -14,24 +15,40 @@ from lib import schema
 from lib import scrape
 from lib import authentication
 from lib import admin
-from lib.project import display
+from lib import display
 from lib.authentication import admin_required, login_required
+from lib.settings import CACHE_DIRECTORY, SITE
 
-CACHE_DIRECTORY = "cache"
 
 app = Flask(__name__)
+parser = Parser()
 
 def twodec(value):
     return f"{value:,.2f}"
 
+def indexOf(lst, value):
+    return lst.index(value)
+
+def pluralize(item):
+    if type(item) == list:
+        return "s" if len(item) != 1 else ""
+    else:
+        return "s" if int(item) != 1 else ""
+
+def human_block(opcode):
+    return parser.get_block_name(opcode)
+
 app.jinja_env.filters["twodec"] = twodec
+app.jinja_env.filters["indexOf"] = indexOf
+app.jinja_env.filters["pluralize"] = pluralize
+app.jinja_env.filters["human_block"] = human_block
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
 # Pass things to all templates
 @app.context_processor
 def inject_vars():
-    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES)
+    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES, SITE=SITE)
 
 # Helper routes
 @app.route("/redirect", methods=["GET"])
@@ -57,7 +74,7 @@ def login():
         
         res = authentication.login_user(request.form["username"], request.form["password"])
         if res:
-            return redirect("/")
+            return redirect("/admin")
         else:
             return render_template("login.html", message="Couldn't log in with that username/password combination!")
 
@@ -129,13 +146,14 @@ def schema_editor(id):
         },
         "required_text": [],
         "required_block_categories": {},
-        "required_blocks": []
+        "required_blocks": [],
+        "text": {},
+        "comparison_basis": {"basis": "__none__", "priority": None}
     }
     if id != "__new__":
         common.connect_db()
         data = schema.Challenge.objects(id = id).first().to_mongo()
 
-    parser = Parser()
     blocks = parser.block_data
     block_list = list()
     block_dict = dict()
@@ -146,7 +164,7 @@ def schema_editor(id):
     return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
 
 @app.route("/admin/schemas/edit", methods=["GET"])
-@admin_required
+#@admin_required
 def add_schema():
     return schema_editor("__new__")
 
@@ -163,6 +181,18 @@ def homepage():
 @app.route("/index")
 def index():
     return render_template("index.html")
+
+@app.route("/md", methods=["POST"])
+def md():
+    text = request.form["text"]
+    if text is not None:
+        ret = {
+            "html": common.md(text),
+            "js": "/static/js/sb.js"
+        }
+
+        return json.dumps(ret)
+    return "False"
 
 @app.route("/project/d", methods=["POST"])
 def project_download():
@@ -184,39 +214,45 @@ def project_download():
 
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
-    common.connect_db()
-    project = scrape.Project.objects(project_id=pid)
-    if project.count() > 0:
-        project = project.first()
+    project, scratch_data = scrape.get_project(pid, CACHE_DIRECTORY)
+    studio = scrape.get_studio(project["studio_id"])
+    sc = schema.get_schema(studio["challenge_id"])
 
-        studio = scrape.Studio.objects(studio_id=project["studio_id"])
-        if studio is not None:
-            studio = studio.first()
+    err = False
+    if str(studio["challenge_id"]) in project["validation"]:
+        project["validation"] = project["validation"][str(studio["challenge_id"])]
     else:
-        studio = None
+        err = True
+
+    if project == {} or scratch_data == {} or studio == {} or err:
+        return "Uh oh!"
 
     scraper = Scraper()
-    parser = Parser()
     visualizer = Visualizer()
 
-    blocks_of_interest = ["control_wait", "control_create_clone_of", "control_delete_this_clone", "control_start_as_clone", "control_if", "control_repeat", "control_if_else", "control_repeat_until", "control_forever", "control_wait_until"]
-    
-    # individual's project
-    sprite, text, results = display(pid, blocks_of_interest)
-        
-    # randomly pick a comparison project with the blocks we want
-    other_projects = scrape.get_projects_with_block(["control_wait", "control_if_else"], studio_id=project["studio_id"], credentials_file="secure/db.json")
-    project_num = random.sample(range(0, len(other_projects) - 1), 5)
-    comparisons = []
-    for i in range(5):
-        temp_dict = {}
-        temp_dict['pid'] = other_projects[project_num[i]].project_id
-        temp_dict['username'] = other_projects[project_num[i]].author
+    prompt = {
+        "title": sc["title"] if sc["title"] is not None else studio["title"],
+        "description": sc["description"] if "description" in sc else studio["description"]
+    }
 
-        # display the comparison project
-        temp_dict['sprite'], temp_dict['text'], temp_dict['results'] = display(str(temp_dict['pid']), blocks_of_interest)
-        comparisons.append(temp_dict)
-    return render_template("project.html", project=project, studio=studio, results=results, sprite=sprite, text=text, comparisons=comparisons)
+    for key in sc["text"]:
+        sc["text"][key] = common.md(sc["text"][key])
+
+    excerpts = {
+        project["project_id"]: {
+            "author": project["author"],
+            "code": display.get_code_excerpt(project, sc)
+        }
+    }
+
+    for example in display.get_comparisons(project, sc, 5):
+        excerpts[example["project_id"]] = {
+            "author": example["author"],
+            "code": display.get_code_excerpt(example, sc)
+        }
+
+    return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+
 
 @app.route("/studio", methods=["GET", "POST"])
 @admin_required

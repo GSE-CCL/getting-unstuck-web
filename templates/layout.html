@@ -3,22 +3,23 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>{% block title %}{% endblock %}Getting Unstuck</title>
+        <title>{% block title %}{% endblock %}{{ SITE["title"] }}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/strategies.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://use.typekit.net/lwk5jup.css">
 
         <!-- Favicon-->
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+        {% block head %}
+        {% endblock %}
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-ccl">
             <div class="container-fluid">
                 <a href="/" class="navbar-left navbar-brand">
-                    <img class="logo" src="{{ url_for('static', filename='img/getting-unstuck-logo.png') }}">
+                    <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ SITE["title"] }}">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

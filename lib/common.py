@@ -12,13 +12,21 @@ def connect_db(credentials_file="secure/db.json"):
     Returns:
         A MongoEngine connection instance.
     """
-    
+
+    # Disconnect if needed
+    try:
+        mongo.disconnect()
+    except:
+        pass
+
+    # Load credentials
     if type(credentials_file) == str:
         with open(credentials_file) as f:
             credentials = json.load(f)
     elif type(credentials_file) == dict:
         credentials = credentials_file
 
+    # Return connection
     return mongo.connect(credentials["database"],
                          host=credentials["host"],
                          port=credentials["port"],

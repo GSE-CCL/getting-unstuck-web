@@ -328,7 +328,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     # Validate against studio's schema, if available
     if studio_id > 0:
         challenge = Studio.objects(studio_id=studio_id).only("challenge_id").first()
-        if challenge is not None:
+        if challenge is not None and challenge["challenge_id"] is not None:
             validation = schema.validate_project(challenge["challenge_id"], project_id, studio_id)
             del validation["_id"]
             doc.validation[str(challenge["challenge_id"])] = validation
@@ -371,8 +371,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             doc.title = studio_info["title"]
             doc.description = studio_info["description"]
             doc.status = "in_progress"
-            if schema is not None:
-                doc.challenge_id = schema
+            
             if show is not None:
                 doc.public_show = show
         else:
@@ -382,9 +381,12 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
                 title = studio_info["title"],
                 description = studio_info["description"],
                 status = "in_progress",
-                challenge_id = schema,
                 public_show = show
             )
+    
+        if schema is not None:
+            doc.challenge_id = schema
+
         doc.save()
 
         # Start a new thread so we can return a webpage

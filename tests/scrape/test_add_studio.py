@@ -26,6 +26,8 @@ def test_add_studio_nonexistent(tmp_path, credentials):
 def test_add_studio(tmp_path, credentials):
     scrape.add_studio(26211962, cache_directory=tmp_path, credentials_file=credentials)
 
+    print(tmp_path)
+
     while len(os.listdir(tmp_path)) < 4:
         continue
 

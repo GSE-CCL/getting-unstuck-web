@@ -75,18 +75,18 @@ class Challenge(mongo.Document):
     modified = mongo.DateTimeField(default=datetime.now())
 
 # Functions to actually work with this schema
-def add_schema(mins=None,
-               min_blockify=None,
+def add_schema(mins={},
+               min_blockify={},
                required_text=[],
                required_block_categories={},
                required_blocks=[],
                required_blocks_failure=None,
                required_text_failure=None,
-               comparison_basis="__none__",
+               comparison_basis={"basis": "__none__", "priority": []},
                short_label=None,
                title=None,
                description=None,
-               text=None,
+               text={},
                credentials_file="secure/db.json"):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
@@ -149,9 +149,12 @@ def add_schema(mins=None,
             result_text.prompt_framing_text = text["prompt_framing_text"]
 
     # Required blocks
-    for i in range(len(required_blocks)):
-        for key in required_blocks[i]:
-            required_blocks[i][key] = int(required_blocks[i][key])
+    try:
+        for i in range(len(required_blocks)):
+            for key in required_blocks[i]:
+                required_blocks[i][key] = int(required_blocks[i][key])
+    except:
+        return False
 
     # Challenge object
     challenge = Challenge(short_label = short_label,

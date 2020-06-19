@@ -125,7 +125,7 @@ body {
   font-size: 2em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 300;
-  font-family: 'p22-underground', Helvetica, 'sans-serif';
+  font-family: 'p22-underground';
   color: #222;
 }
 /*changed font-family*/
@@ -317,9 +317,6 @@ code {
   margin: 0 .2rem;
   font-size: 90%;
   white-space: nowrap;
-  background: #F1F1F1;
-  border: 1px solid #E1E1E1;
-  border-radius: 4px; }
 pre > code {
   display: block;
   padding: 1rem 1.5rem;
@@ -332,7 +329,8 @@ th,
 td {
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #E1E1E1; }
+  border: 2px solid #5dc7e4;
+}
 th:first-child,
 td:first-child {
   padding-left: 0; }

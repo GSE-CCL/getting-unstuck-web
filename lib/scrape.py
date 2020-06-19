@@ -102,7 +102,7 @@ def get_project_from_cache(project_id, cache_directory="cache"):
 
     return scratch_data
 
-
+  
 def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
     
@@ -192,7 +192,7 @@ def get_studio(studio_id, credentials_file="secure/db.json"):
 
     return db
 
-
+  
 def add_comments(project_id, username, credentials_file="secure/db.json"):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
     
@@ -361,6 +361,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
     # Add individual studio to DB    
     studio_info = scraper.get_studio_meta(studio_id)
     if studio_info is not None:
+        print("attempting for {}".format(studio_id))
         connect_db(credentials_file=credentials_file)
 
         preexisting = Studio.objects(studio_id=studio_id).first()
@@ -396,9 +397,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
             preexisting = Studio.objects(studio_id=studio_id).first()
-            preexisting.status = "complete"
-            preexisting.stats = stats
-            preexisting.save()
+            if preexisting is not None:
+                preexisting.status = "complete"
+                preexisting.stats = stats
+                preexisting.save()
         
         studio_thread = threading.Thread(target=add_projects)
         studio_thread.start()
@@ -490,10 +492,13 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     
     for key in stats["mean"]:
         if key not in no_direct_average:
-            stats["mean"][key] /= len(projects)
+            if len(projects) > 0:
+                stats["mean"][key] /= len(projects)
     for block in stats["mean"]["blocks"]:
-        stats["mean"]["blocks"][block] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["blocks"][block] /= len(projects)
     for cat in stats["mean"]["block_categories"]:
-        stats["mean"]["block_categories"][cat] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["block_categories"][cat] /= len(projects)
 
     return stats

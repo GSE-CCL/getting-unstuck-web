@@ -7,6 +7,7 @@ from .settings import CONVERT_URL
 import json
 import mongoengine as mongo
 import os
+import random
 import requests
 import threading
 
@@ -102,15 +103,14 @@ def get_project_from_cache(project_id, cache_directory="cache"):
     return scratch_data
 
 
-def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
     
     Args:
-        opcode_lst (list): list of Scratch opcodes for the block type.
+        opcode (str): Scratch opcodes for the block type.
         project_id (int): exclude this project from the search.
         studio_id (int): limit to projects in this studio.
         credentials_file (str): path to the database credentials file.
-
     Returns:
         A list of projects, as stored in the database, with that opcode.
     """
@@ -119,18 +119,47 @@ def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_f
     connect_db(credentials_file=credentials_file)
    
     opcode_present = list()
-    for opcode in opcode_lst:
-        if parser.get_block_name(opcode) is not None:
-            query = {
-                "stats.blocks.{0}".format(opcode): {"$exists": True},
-                "project_id": {"$ne": project_id}
-            }
-            if studio_id != 0:
-                query["studio_id"] = studio_id
-                
-            opcode_present.extend(list(Project.objects(__raw__ = query)))
+    if parser.get_block_name(opcode) is not None:
+        query = {
+            "stats.blocks.{0}".format(opcode): {"$exists": True},
+            "project_id": {"$ne": project_id}
+        }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+
+        opcode_present = Project.objects(__raw__ = query)
 
     return list(opcode_present)
+
+
+def get_projects_with_category(category, count=1, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+    """Finds projects with given category.
+    
+    Args:
+        category (str): block category name.
+        count (int): minimum block count for that category.
+        project_id (int): exclude this project from the search.
+        studio_id (int): limit to projects in this studio.
+        credentials_file (str): path to the database credentials file.
+    Returns:
+        A QuerySet of projects, as stored in the database, with at least the given count of blocks of the given category.
+    """
+    
+    parser = Parser()
+    connect_db(credentials_file=credentials_file)
+   
+    category_present = list()
+    if category in parser.block_data:
+        query = {
+            "stats.categories.{0}".format(category): {"$gte": count},
+            "project_id": {"$ne": project_id}
+        }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+
+        category_present = Project.objects(__raw__ = query)
+
+    return category_present
 
 
 def get_studio(studio_id, credentials_file="secure/db.json"):

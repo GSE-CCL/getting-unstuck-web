@@ -235,9 +235,18 @@ def project_id(pid):
         sc["text"][key] = common.md(sc["text"][key])
 
     excerpts = {
-        project["author"]: display.get_code_excerpt(project, sc)
+        project["project_id"]: {
+            "author": project["author"],
+            "code": display.get_code_excerpt(project, sc)
+        }
     }
-    
+
+    for example in display.get_comparisons(project, sc, 5):
+        excerpts[example["project_id"]] = {
+            "author": example["author"],
+            "code": display.get_code_excerpt(example, sc)
+        }
+
     return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
 
     return "ok"

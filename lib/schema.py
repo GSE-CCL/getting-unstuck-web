@@ -195,6 +195,7 @@ def get_schema(schema_id, credentials_file="secure/db.json"):
     connect_db(credentials_file=credentials_file)
     try:
         schema = Challenge.objects(id=schema_id).first().to_mongo().to_dict()
+        schema["id"] = str(schema["_id"])
     except:
         schema = dict()
     

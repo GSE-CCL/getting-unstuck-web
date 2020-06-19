@@ -54,8 +54,8 @@
         {% endif %}
 
         <!-- User's code excerpt -->
-        {% if excerpts[project["author"]] != "": %}
-            <code class="_sb">{{ excerpts[project["author"]] }}</code>
+        {% if excerpts[project["project_id"]] != "": %}
+            <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
         {% else: %}
             <p>We couldn&rsquo;t find an example in your code!</p>
         {% endif %}
@@ -63,7 +63,12 @@
         <!-- Project comparison excerpts -->
         {{ schema["text"]["comparison_framing_text"]|safe }}
 
-        <p>THE CODE EXCERPTS WILL GO HERE</p>
+        {% for excerpt in excerpts: %}
+            {% if excerpt != project["project_id"]: %}
+            <h6>Code from {{ excerpts[excerpt]["author"] }}:</h6>
+            <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
+            {% endif %}
+        {% endfor %}
 
         {{ schema["text"]["comparison_reflection_text"]|safe }}
 

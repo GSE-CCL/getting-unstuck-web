@@ -261,11 +261,11 @@ def validate_project(schema, project, studio_id, credentials_file="secure/db.jso
 
     # Check for required text
     result["required_text"] = [-1] * len(schema["required_text"])
-    text_used = " ".join(project["stats"]["block_text"])
+    text_used = " ".join(project["stats"]["block_text"]["text"]).lower()
     rt = schema["required_text"]
     for i in range(len(rt)):
         for j in range(len(rt[i])):
-            if rt[i][j] in text_used:
+            if rt[i][j].lower() in text_used:
                 result["required_text"][i] = j
                 break
 

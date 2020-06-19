@@ -29,32 +29,40 @@ def get_code_excerpt(project, schema):
     # Start work generating blocks
     blocks = list()
     
+    # Find blocks if basis is required text
     if schema["comparison_basis"]["basis"] == "required_text":
-        pass
+        option = project["validation"]["required_text"][schema["comparison_basis"]["priority"]]
+        if option > -1:
+            text = schema["required_text"][schema["comparison_basis"]["priority"]][option].lower()
 
+            # Add to the block list those blocks that have the appropriate text
+            for i, key in enumerate(project["stats"]["block_text"]["text"]):
+                if text in key.lower():
+                    blocks += project["stats"]["block_text"]["blocks"][i]
+
+    # Find blocks if basis is categories
     elif schema["comparison_basis"]["basis"] == "required_block_categories":
         if project["validation"]["required_block_categories"][schema["comparison_basis"]["priority"]]:
-            blocks = list()
             for block in project["stats"]["blocks"]:
                 if block.index(schema["comparison_basis"]["priority"]) == 0:
                     blocks += project["stats"]["blocks"][block]
 
+    # Find blocks if basis is blocks
     elif schema["comparison_basis"]["basis"] == "required_blocks":
         if True in project["validation"]["required_blocks"]:
             rbo = project["validation"]["required_blocks"].index(True)
             blocks = project["stats"]["blocks"][schema["comparison_basis"]["priority"][rbo]]
-            
+    
+    # Choose what to feature
     if len(blocks) > 0:
-        block = random.choice(blocks)
-
-        scratch_data = scrape.get_project_from_cache(project["project_id"])
-
         parser = Parser()
-        blocks = parser.get_surrounding_blocks(block, scratch_data, 7, True)
+        visualizer = Visualizer()
 
+        block = random.choice(blocks)
+        scratch_data = scrape.get_project_from_cache(project["project_id"])
+        blocks = parser.get_surrounding_blocks(block, scratch_data, 7, True)
         target, _ = parser.get_target(block, scratch_data)
 
-        visualizer = Visualizer()
         return visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
     else:
         return ""
@@ -76,6 +84,25 @@ def get_comparisons(project, schema, count, credentials_file="secure/db.json"):
     if schema["comparison_basis"]["basis"] == "__none__":
         projects = scrape.Project.objects(studio_id=project["studio_id"])
 
+    # Find projects that meet the priority text requirement
+    elif schema["comparison_basis"]["basis"] == "required_text":
+        query = {
+            "studio_id": project["studio_id"],
+            "project_id": {"$ne": project["project_id"]},
+            "validation.{}.required_text.{}".format(schema["id"], schema["comparison_basis"]["priority"]): {"$gte": 0}
+        }
+
+        projects = scrape.Project.objects(__raw__=query)
+
+    # Find projects that meet the priority category requirement
+    elif schema["comparison_basis"]["basis"] == "required_block_categories":
+        projects = scrape.get_projects_with_category(schema["comparison_basis"]["priority"],
+                                                     schema["required_block_categories"][schema["comparison_basis"]["basis"]],
+                                                     project["project_id"],
+                                                     project["studio_id"],
+                                                     credentials_file)
+    
+    # Find projects that meet a block requirement
     elif schema["comparison_basis"]["basis"] == "required_blocks":
         query = {
             "studio_id": project["studio_id"],
@@ -84,13 +111,6 @@ def get_comparisons(project, schema, count, credentials_file="secure/db.json"):
         }
 
         projects = scrape.Project.objects(__raw__=query)
-
-    elif schema["comparison_basis"]["basis"] == "required_block_categories":
-        projects = scrape.get_projects_with_category(schema["comparison_basis"]["priority"],
-                                                     schema["required_block_categories"][schema["comparison_basis"]["basis"]],
-                                                     project["project_id"],
-                                                     project["studio_id"],
-                                                     credentials_file)
 
     # Choose random projects
     ids = random.sample(range(len(projects)), min(len(projects), count))

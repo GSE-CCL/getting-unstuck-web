@@ -282,6 +282,13 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     if not stats:
         return False
 
+    # Change block_text's form
+    text_new = {"text": [], "blocks": []}
+    for text in stats["block_text"]:
+        text_new["text"].append(text)
+        text_new["blocks"].append(stats["block_text"][text])
+    stats["block_text"] = text_new
+
     # Check database for existing project with project_id
     connect_db(credentials_file=credentials_file)
     preexisting = Project.objects(project_id=project_id).first()

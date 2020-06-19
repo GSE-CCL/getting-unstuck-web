@@ -30,8 +30,9 @@
         {% elif schema["comparison_basis"]["basis"] == "required_text": %}
             {% if project["validation"]["required_text"][schema["comparison_basis"]["priority"]] > -1: %}
             <p>
+                {% set feature = project["validation"]["required_text"][schema["comparison_basis"]["priority"]] %}
                 Here&rsquo;s an example of how you used the text
-                <strong>&ldquo;{{ schema["required_text"][project["validation"]["required_text"][schema["comparison_basis"]["priority"]]] }}&rdquo;</strong>
+                <strong>&ldquo;{{ schema["required_text"][schema["comparison_basis"]["priority"]][feature] }}&rdquo;</strong>
                 in your project:
             </p>
 

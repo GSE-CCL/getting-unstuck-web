@@ -228,7 +228,7 @@ def project_id(pid):
 
     prompt = {
         "title": sc["title"] if sc["title"] is not None else studio["title"],
-        "description": sc["description"] if sc["description"] is not None else studio["description"],
+        "description": sc["description"] if "description" in sc else studio["description"]
     }
 
     for key in sc["text"]:

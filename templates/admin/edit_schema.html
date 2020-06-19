@@ -160,11 +160,14 @@
                             <small><em>and one of these</em></small>
                             {% endif %}
                             <button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button>
+                            <div>
+                                <input type="radio" name="rt_comparison_basis" value="{{ loop.index0 }}" id="rt_comparison_basis_{{ loop.index0 }}" {% if data["comparison_basis"]["basis"] == "required_text" and data["comparison_basis"]["priority"] == loop.index0: %}checked{% endif %}>
+                                <label for="rt_comparison_basis_{{ loop.index0 }}">comparison basis</label>
+                            </div>
                             <div class="required_inner">
                                 {% for opt in req: %}
                                 <div class="input-group mt-2" data-to-id="{{ loop.index0 }}">
                                     <input type="text" class="form-control" placeholder="text option" value="{{ opt }}">
-                                    <div class="form-control col-1 p-1 pt-2 text-center"><input type="radio" name="rt_comparison_basis_{{ outer }}" value="{{ loop.index0 }}" {% if data["comparison_basis"]["basis"] == "required_text" and data["comparison_basis"]["priority"][outer] == loop.index0: %}checked{% endif %}></div>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button>
                                     </div>

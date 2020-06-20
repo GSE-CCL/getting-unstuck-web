@@ -212,46 +212,10 @@ def project_download():
     else:
         return "False"
 
+
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
-    project, scratch_data = scrape.get_project(pid, CACHE_DIRECTORY)
-    studio = scrape.get_studio(project["studio_id"])
-    sc = schema.get_schema(studio["challenge_id"])
-
-    err = False
-    if str(studio["challenge_id"]) in project["validation"]:
-        project["validation"] = project["validation"][str(studio["challenge_id"])]
-    else:
-        err = True
-
-    if project == {} or scratch_data == {} or studio == {} or err:
-        return "Uh oh!"
-
-    scraper = Scraper()
-    visualizer = Visualizer()
-
-    prompt = {
-        "title": sc["title"] if sc["title"] is not None else studio["title"],
-        "description": sc["description"] if "description" in sc else studio["description"]
-    }
-
-    for key in sc["text"]:
-        sc["text"][key] = common.md(sc["text"][key])
-
-    excerpts = {
-        project["project_id"]: {
-            "author": project["author"],
-            "code": display.get_code_excerpt(project, sc)
-        }
-    }
-
-    for example in display.get_comparisons(project, sc, 5):
-        excerpts[example["project_id"]] = {
-            "author": example["author"],
-            "code": display.get_code_excerpt(example, sc)
-        }
-
-    return render_template("project_new.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+    return display.get_project_page(pid, CACHE_DIRECTORY)
 
 
 @app.route("/studio", methods=["GET", "POST"])

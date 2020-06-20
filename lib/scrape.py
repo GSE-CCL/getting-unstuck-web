@@ -329,7 +329,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     if studio_id > 0:
         challenge = Studio.objects(studio_id=studio_id).only("challenge_id").first()
         if challenge is not None and challenge["challenge_id"] is not None:
-            validation = schema.validate_project(challenge["challenge_id"], project_id, studio_id)
+            validation = schema.validate_project(challenge["challenge_id"], project_id, studio_id, credentials_file=credentials_file)
             del validation["_id"]
             doc.validation[str(challenge["challenge_id"])] = validation
             doc.save()

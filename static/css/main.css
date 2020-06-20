@@ -89,7 +89,7 @@ img.bug {
 }
 
 img.sprite {
-    width: 100%;
+    max-width: 100%;
     max-height: 12rem;
     margin: auto;
     display: block;

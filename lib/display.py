@@ -176,4 +176,4 @@ def get_project_page(pid, cache_directory="cache"):
             "sprite": sprite
         }
 
-    return render_template("project_integrate.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)

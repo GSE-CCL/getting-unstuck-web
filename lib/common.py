@@ -15,7 +15,7 @@ def connect_db(credentials_file="secure/db.json"):
 
     # Disconnect if needed
     try:
-        mongo.disconnect()
+        mongo.disconnect(alias="default")
     except:
         pass
 

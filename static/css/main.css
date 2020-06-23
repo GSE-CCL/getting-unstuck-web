@@ -5,25 +5,19 @@ a {
 }
 
 body {
-    font-size: 0.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
-    line-height: 1.6;
     font-family: 'p22-underground', Helvetica, 'sans-serif';
     color: #222;
 }
 
-.page-title h4{
-    padding-top: 0.5em;
-      font-family: 'Gastromond', 'Futura PT Bold', 'serif';
-      text-align: center;
-      margin: 0;
-  }
+.gastromond {
+    font-family: 'Gastromond';
+}
 
 .page-img img{
-	width: 35%;
-	height: 50%;
-	display: block;
-	margin: 0 auto;
-
+    width: 35%;
+    height: 50%;
+    display: block;
+    margin: 0 auto;
 }
 
 h5 {
@@ -32,14 +26,14 @@ h5 {
     font-weight: 600;
 }
 
-/* nav bar */
+/* Nav bar */
 
 nav.bg-ccl {
-  background-color: #5dc7e4;
+    background-color: #5dc7e4;
 }
 
-a.nav-item.nav-link {
-    color: white !important;
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 1);
 }
 
 .block {
@@ -70,49 +64,144 @@ img.bug {
     width: 50%;
 }
 
-/* Index input */
-.button {
-    background-color: #5dc7e4;
-    border: none;
-    color: white;
-    padding: 10px 30px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 2px 2px;
-    cursor: pointer;
+/*  Homepage */
+.container-splash {
+    flex: 1;
+    height: 100%;
+}
+  
+.splash {
+    padding: 1em 3em 1em 3em;
+    font-size: 1.1em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
+/* Index input */
 .round-btn {
     border-radius: 12px;
 }
 
 /* Custom settings for sprite images */
+.sprite-container {
+    border: 2px solid #E9E9E9;
+    border-radius: 25px;
+}
+
 img.sprite {
-  width: 100%;
-  min-width: 130px;
-  max-width: 150px;
-  height: auto;
-  border: 2px solid black;
-  padding: 5px;
-  margin: 20px;
+    max-width: 100%;
+    max-height: 12rem;
+    margin: auto;
+    display: block;
 }
 
 .sprite-color {
-  color: #5dc7e4;
-  font-weight: bold;
+    color: #5dc7e4;
+    font-weight: bold;
 }
 
-/* For ScratchBlocks */
+/* Markdown text display */
+
+.md p {
+    margin-top: 1.5rem;
+}
+
+/* Block display (ScratchBlocks)*/
+.code-gray {
+    border-radius: 25px;
+    background-color: #E9E9E9;
+}
+
 .scratchblocks {
-    zoom: 0.675;
+    scale: 0.8;
 }
 
 .markItUp .scratchblocks-button ul a {
     padding: 0;
     height: auto;
     margin: 0 0 -12px;
+}
+
+/* Prompts */
+tbody th {
+    padding: 1px !important;
+    width: 450px;
+    text-align: center;
+    font-size: 3.0em;
+    font-family: 'Gastromond';
+}
+
+.table th {
+    vertical-align: middle;
+}
+
+.table-bordered {
+    border: 2px solid #5dc7e4;
+}
+
+.table-bordered td, .table-bordered th{
+    border: 2px solid #5dc7e4;
+}
+
+.table-link {
+    text-align: center;
+}
+
+/* Project comparisons */
+/* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    background: #efefef;
+    box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3);
+}
+
+.tabs .input {
+    display: none;
+}
+
+.tabs .label {
+    padding: 1rem 2rem;
+    background: #f9d344;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #444;
+}
+  
+.label:hover {
+    background: #d8d8d8;
+}
+  
+.label:active {
+    background: #ccc;
+}
+
+.input:focus + .label {
+    box-shadow: inset 0px 0px 0px 3px #2aa1c0;
+    z-index: 1;
+}
+
+.input:checked + .label {
+    background: #fff;
+    color: #000;
+}
+
+.panel {
+    display: none;
+    padding: 20px 30px 30px;
+    background: #fff;
+}
+  
+@media (min-width: 900px) {
+    .panel {
+        order: 99;
+    }
+}
+  
+.input:checked + .label + .panel {
+    display: block;
 }
 
 /* Kind of ridiculous that the alternative to writing these lines of
@@ -157,6 +246,11 @@ img.sprite {
     left: 0;
     border: 1px solid #e8e8e8;
     border-radius: 3px;
+}
+
+.code {
+    min-height: 3rem;
+    resize: vertical;
 }
 
 .hide {

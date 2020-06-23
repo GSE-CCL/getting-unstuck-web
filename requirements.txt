@@ -1,4 +1,6 @@
 ccl-scratch-tools
+dnspython
 flask
+markdown
 mongoengine
 pytest

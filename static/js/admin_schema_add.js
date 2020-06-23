@@ -1,3 +1,12 @@
+// Global editor variable
+let editors = {
+    "explanation": null,
+    "concluding_text": null,
+    "comparison_reflection_text": null,
+    "comparison_framing_text": null,
+    "prompt_framing_text": null
+};
+
 // Add text option
 let add_topt = (event) => {
     let max_id = parseInt(event.target.dataset.maxToId) + 1;
@@ -6,6 +15,7 @@ let add_topt = (event) => {
     element.classList.add("input-group", "mt-2");
     element.dataset.toId = max_id;
 
+    let parent_id = event.target.parentNode.dataset.trId;
     let opt_code = '<input type="text" class="form-control" placeholder="text option">'
                  +  '<div class="input-group-append">'
                  + '<button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div></div>';
@@ -39,6 +49,8 @@ let add_treq = (event) => {
         req_code += '<small><em>one of these</em></small>';
     }
     req_code += '<button class="btn btn-outline-secondary float-right mb-2" type="button" data-action="remove_parent" data-times="1" data-decrement="add_tr_btn;maxRtId">&times;</button>'
+              + '<div><input type="radio" name="rt_comparison_basis" value="' + max_id + '" id="rt_comparison_basis_' + max_id + '"> '
+              + '<label for="rt_comparison_basis_' + max_id + '">comparison basis</label></div>'
               + '<div class="required_inner"></div>'
               + '<button type="button" class="btn btn-secondary mt-2" data-action="add_to" data-max-to-id="-1">Add option</button>';
 
@@ -60,8 +72,10 @@ let add_bopt = (event) => {
     element.classList.add("input-group", "mt-2");
     element.dataset.boId = max_id;
 
+    let parent_id = event.target.parentNode.dataset.brId;
     let opt_code = '<input type="text" class="form-control block_input" placeholder="block requirement">'
                  + '<input type="number" class="form-control col-3" placeholder="min" required>'
+                 + '<div class="form-control col-1 p-1 pt-2 text-center"><input type="radio" name="rb_comparison_basis_' + parent_id + '" value="' + max_id + '"></div>'
                  + '<div class="input-group-append">'
                  + '<button class="btn btn-outline-secondary" type="button" data-action="remove_parent" data-times="2">&times;</button></div>';
 
@@ -281,8 +295,14 @@ let submit_schema = (event) => {
     let data = {
         id: event.target.dataset.schemaId,
         action: "edit",
+        short_label: document.getElementById("short_label").value,
         title: document.getElementById("title").value,
         description: document.getElementById("description").value,
+        comparison_basis: {
+            "basis": document.getElementById("comparison_basis").value,
+            "priority": []
+        },
+        text: {},
         mins: {
             instructions_length: document.getElementById("min_instructions_length").value,
             description_length: document.getElementById("min_description_length").value,
@@ -302,11 +322,33 @@ let submit_schema = (event) => {
         required_blocks_failure: document.getElementById("required_blocks_failure").value
     };
 
-    // Grab minimum of each category
     let promise = new Promise((resolve) => {
+        // Grab minimum of each category
         categories.forEach((category) => {
             data["required_block_categories"][category] = parseInt(document.getElementById("min_categories_" + category).value);
         });
+
+        // Markdown editors
+        Object.keys(editors).forEach((eid) => {
+            data["text"][eid] = editors[eid].getValue();
+        });
+
+        // Get the priorities for what to show
+        if (data["comparison_basis"]["basis"] == "required_text") {
+            data["comparison_basis"]["priority"] = parseInt(get_radio(document.getElementsByName("rt_comparison_basis")))
+        }
+        else if (data["comparison_basis"]["basis"] == "required_block_categories") {
+            data["comparison_basis"]["priority"] = get_radio(document.getElementsByName("rc_comparison_basis"));
+        }
+        else if (data["comparison_basis"]["basis"] == "required_blocks") {
+            for (let i = 0; i < data["required_blocks"].length; i++) {
+                let index = parseInt(get_radio(document.getElementsByName("rb_comparison_basis_" + i)));
+                data["comparison_basis"]["priority"].push(
+                    document.querySelector("[data-br-id='" + i + "'] [data-bo-id='" + index + "'] .block_input").value
+                );
+            }
+        }
+
         resolve();
     }).then(() => {
         // Submit form
@@ -321,6 +363,29 @@ let submit_schema = (event) => {
     }).catch(() => {
         alert("Couldn't save schema.");
     });    
+};
+
+// Disable the modal
+let disableModal = function() {
+    document.getElementById("modal").classList = "modal fade";
+};
+
+// Preview Markdown
+let preview_markdown = (e) => {
+    let editor = e.target.dataset.editor;
+    let data = {"text": editors[editor].getValue()};
+    handle_ajax("POST", "/md", data, (result) => {
+        if (result.response == "False") {
+            alert("Couldn't load preview.");
+        }
+        else {
+            res = JSON.parse(result.response);
+            document.getElementById("modal_title").innerText = "Markdown preview";
+            document.getElementById("modal_body").innerHTML = res["html"];
+            document.getElementById("modal").classList = "modal fade show";
+            add_js(res["js"]);
+        }
+    });
 };
 
 // Event setters
@@ -390,6 +455,32 @@ let loaded = function() {
 
     // Form submission
     document.getElementById("schema_form").addEventListener("submit", submit_schema);
+
+    // Markdown editors
+    ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/");
+    Object.keys(editors).forEach((eid) => {
+        editors[eid] = ace.edit(eid, {
+            maxLines: 30,
+            theme: "ace/theme/clouds"
+        });
+
+        editors[eid].setHighlightActiveLine(false);
+        editors[eid].session.setUseWrapMode(true);
+        editors[eid].session.setMode("ace/mode/markdown");
+        editors[eid].on("change", () => {
+            editors[eid].resize(true);
+        });
+    })
+    
+    let preview_btns = document.querySelectorAll("[data-action='preview_markdown']")
+    preview_btns.forEach((btn) => {
+        btn.addEventListener("click", preview_markdown);
+    });
+
+    let modal_close_btns = document.querySelectorAll("[data-action='close_modal']");
+    modal_close_btns.forEach((mcb) => {
+        mcb.addEventListener("click", disableModal);
+    });
 };
 
 if (document.readyState === "complete")

@@ -1,11 +1,13 @@
 from ccl_scratch_tools import Parser, Scraper
 from . import common as common
+from . import schema as schema
 from datetime import datetime, timedelta
 from math import inf
 from .settings import CONVERT_URL
 import json
 import mongoengine as mongo
 import os
+import random
 import requests
 import threading
 
@@ -28,6 +30,7 @@ class Project(mongo.Document):
     stats = mongo.DictField(required=True)
     history = mongo.DictField(required=True)
     remix = mongo.DictField(required=True)
+    validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
 
@@ -40,15 +43,74 @@ class Studio(mongo.Document):
     challenge_id = mongo.ObjectIdField()
     public_show = mongo.BooleanField(default=False)
 
-def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+
+def get_project(project_id, cache_directory=None, credentials_file="secure/db.json"):
+    """Retrieves a project from database and cache (if available).
+    
+    Args:
+        project_id (int): the ID of the project to retrieve.
+        cache_directory (str): if set, will get the project in JSON form.
+        credentials_file (str): path to the database credentials file.
+        
+    Returns:
+        A tuple, the first element being the database object as a dictionary, the second the Scratch project as a dictionary.
+
+    Raises:
+        ArgumentError, if project_id can't be cast to an integer.
+    """
+
+    connect_db(credentials_file=credentials_file)
+
+    # Make sure project_id is an integer
+    try:
+        project_id = int(project_id)
+    except:
+        raise ArgumentError("project_id must be castable to an integer.")
+
+    # Get project from database
+    try:
+        db = Project.objects(project_id=project_id).first().to_mongo().to_dict()
+    except:
+        db = dict()
+
+    # Get project from cache
+    if cache_directory is not None:
+        scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
+        if scratch_data == {}:
+            add_project(project_id, studio_id=db["studio_id"], cache_directory=cache_directory, credentials_file=credentials_file)
+            scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
+
+    return db, scratch_data
+
+
+def get_project_from_cache(project_id, cache_directory="cache"):
+    """Retrieves a project from the cache.
+    
+    Args:
+        project_id (int): the ID of the project to retrieve.
+        cache_directory (str): if set, will get the project in JSON form.
+    
+    Returns:
+        The project as a dictionary. Empty if unavailable.
+    """
+
+    try:
+        with open("{0}/{1}.json".format(cache_directory, project_id)) as f:
+            scratch_data = json.load(f)
+    except:
+        scratch_data = dict()
+
+    return scratch_data
+
+  
+def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
     """Finds projects with given opcode.
     
     Args:
-        opcode_lst (list): list of Scratch opcodes for the block type.
+        opcode (str): Scratch opcodes for the block type.
         project_id (int): exclude this project from the search.
         studio_id (int): limit to projects in this studio.
         credentials_file (str): path to the database credentials file.
-
     Returns:
         A list of projects, as stored in the database, with that opcode.
     """
@@ -57,19 +119,80 @@ def get_projects_with_block(opcode_lst, project_id=0, studio_id=0, credentials_f
     connect_db(credentials_file=credentials_file)
    
     opcode_present = list()
-    for opcode in opcode_lst:
-        if parser.get_block_name(opcode) is not None:
-            query = {
-                "stats.blocks.{0}".format(opcode): {"$exists": True},
-                "project_id": {"$ne": project_id}
-            }
-            if studio_id != 0:
-                query["studio_id"] = studio_id
-                
-            opcode_present.extend(list(Project.objects(__raw__ = query)))
+    if parser.get_block_name(opcode) is not None:
+        query = {
+            "stats.blocks.{0}".format(opcode): {"$exists": True},
+            "project_id": {"$ne": project_id}
+        }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+
+        opcode_present = Project.objects(__raw__ = query)
 
     return list(opcode_present)
 
+
+def get_projects_with_category(category, count=1, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+    """Finds projects with given category.
+    
+    Args:
+        category (str): block category name.
+        count (int): minimum block count for that category.
+        project_id (int): exclude this project from the search.
+        studio_id (int): limit to projects in this studio.
+        credentials_file (str): path to the database credentials file.
+    Returns:
+        A QuerySet of projects, as stored in the database, with at least the given count of blocks of the given category.
+    """
+    
+    parser = Parser()
+    connect_db(credentials_file=credentials_file)
+   
+    category_present = list()
+    if category in parser.block_data:
+        query = {
+            "stats.categories.{0}".format(category): {"$gte": count},
+            "project_id": {"$ne": project_id}
+        }
+        if studio_id != 0:
+            query["studio_id"] = studio_id
+
+        category_present = Project.objects(__raw__ = query)
+
+    return category_present
+
+
+def get_studio(studio_id, credentials_file="secure/db.json"):
+    """Retrieves a studio from database.
+    
+    Args:
+        studio_id (int): the ID of the studio to retrieve.
+        credentials_file (str): path to the database credentials file.
+        
+    Returns:
+        The studio as a dictionary.
+
+    Raises:
+        ArgumentError, if studio_id can't be cast to an integer.
+    """
+
+    connect_db(credentials_file=credentials_file)
+
+    # Make sure studio_id is an integer
+    try:
+        studio_id = int(studio_id)
+    except:
+        raise ArgumentError("studio_id must be castable to an integer.")
+
+    # Get studio from database
+    try:
+        db = Studio.objects(studio_id=studio_id).first().to_mongo().to_dict()
+    except:
+        db = dict()
+
+    return db
+
+  
 def add_comments(project_id, username, credentials_file="secure/db.json"):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
     
@@ -104,6 +227,7 @@ def add_comments(project_id, username, credentials_file="secure/db.json"):
             )
             doc.save()
 
+
 def add_project(project_id, studio_id=0, cache_directory=None, credentials_file="secure/db.json"):
     """Inserts a project into the database after scraping it. Updates existing database entries.
     
@@ -115,7 +239,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         credentials_file (str): path to the database credentials file.
     
     Returns:
-        True, if a new insertion. False, if updated a record. False if Scratch 2.
+        True, if a new insertion or if updated a record. False if Scratch 2.
 
     Raises:
         IOError: if couldn't write the JSON file to the given cache_directory.
@@ -158,6 +282,13 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     if not stats:
         return False
 
+    # Change block_text's form
+    text_new = {"text": [], "blocks": []}
+    for text in stats["block_text"]:
+        text_new["text"].append(text)
+        text_new["blocks"].append(stats["block_text"][text])
+    stats["block_text"] = text_new
+
     # Check database for existing project with project_id
     connect_db(credentials_file=credentials_file)
     preexisting = Project.objects(project_id=project_id).first()
@@ -169,7 +300,11 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         doc.description = metadata["description"]
         doc.instructions = metadata["instructions"]
         doc.history = metadata["history"]
+        doc.remix = metadata["remix"]
         doc.stats = stats
+
+        if studio_id > 0:
+            doc.studio_id = studio_id
 
         if cache_directory is not None:
             doc.cache_expires = datetime.now() + timedelta(days=30)
@@ -190,7 +325,17 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     doc.save()
     add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
 
-    return not preexisting
+    # Validate against studio's schema, if available
+    if studio_id > 0:
+        challenge = Studio.objects(studio_id=studio_id).only("challenge_id").first()
+        if challenge is not None and challenge["challenge_id"] is not None:
+            validation = schema.validate_project(challenge["challenge_id"], project_id, studio_id, credentials_file=credentials_file)
+            del validation["_id"]
+            doc.validation[str(challenge["challenge_id"])] = validation
+            doc.save()
+
+    return True
+
 
 def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file="secure/db.json"):
     """Scrapes a studio and inserts it into the database.
@@ -216,6 +361,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
     # Add individual studio to DB    
     studio_info = scraper.get_studio_meta(studio_id)
     if studio_info is not None:
+        print("attempting for {}".format(studio_id))
         connect_db(credentials_file=credentials_file)
 
         preexisting = Studio.objects(studio_id=studio_id).first()
@@ -225,8 +371,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             doc.title = studio_info["title"]
             doc.description = studio_info["description"]
             doc.status = "in_progress"
-            if schema is not None:
-                doc.challenge_id = schema
+            
             if show is not None:
                 doc.public_show = show
         else:
@@ -236,9 +381,12 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
                 title = studio_info["title"],
                 description = studio_info["description"],
                 status = "in_progress",
-                challenge_id = schema,
                 public_show = show
             )
+    
+        if schema is not None:
+            doc.challenge_id = schema
+
         doc.save()
 
         # Start a new thread so we can return a webpage
@@ -251,12 +399,14 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
             stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
             preexisting = Studio.objects(studio_id=studio_id).first()
-            preexisting.status = "complete"
-            preexisting.stats = stats
-            preexisting.save()
+            if preexisting is not None:
+                preexisting.status = "complete"
+                preexisting.stats = stats
+                preexisting.save()
         
         studio_thread = threading.Thread(target=add_projects)
         studio_thread.start()
+
 
 def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     """Returns a dictionary of statistics about a studio.
@@ -344,10 +494,13 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     
     for key in stats["mean"]:
         if key not in no_direct_average:
-            stats["mean"][key] /= len(projects)
+            if len(projects) > 0:
+                stats["mean"][key] /= len(projects)
     for block in stats["mean"]["blocks"]:
-        stats["mean"]["blocks"][block] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["blocks"][block] /= len(projects)
     for cat in stats["mean"]["block_categories"]:
-        stats["mean"]["block_categories"][cat] /= len(projects)
+        if len(projects) > 0:
+            stats["mean"]["block_categories"][cat] /= len(projects)
 
     return stats

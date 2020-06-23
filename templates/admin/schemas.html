@@ -11,6 +11,7 @@
         <table class="table table-responsive-lg">
             <thead>
                 <tr data-identifier="__model__">
+                    <th data-field="short_label">Label</th>
                     <th data-field="title">Title</th>
                     <th data-field="description">Description</th>
                     <th data-field="requirements">Requirements</th>
@@ -21,6 +22,13 @@
                 {% for schema in info["schemas"]: %}
                 <tr data-identifier="{{ schema['id'] }}">
                     <td data-field="schema_id" class="hide">{{ schema["id"] }}</td>
+                    <td data-field="short_label">
+                        {% if "short_label" not in schema: %}
+                        <em>None</em>
+                        {% else: %}
+                        {{ schema["short_label"] }}
+                        {% endif %}
+                    </td>
                     <td data-field="title">
                         {% if "title" not in schema: %}
                         <em>Pulls from studio</em>
@@ -86,7 +94,7 @@
                             </ul>
                         </div>
                     </td>
-                    <td data-field="actions">
+                    <td data-field="actions" class="col-1">
                         <a href="/admin/schemas/edit/{{ schema['id'] }}" title="Edit" class="fa fa-edit"></a>&nbsp;
                         <a href="#" data-action="delete" data-identifier="{{ schema['id'] }}" title="Delete" class="fa fa-trash"></a>
                     </td>

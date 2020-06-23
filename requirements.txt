@@ -4,4 +4,5 @@ dnspython
 flask
 markdown
 mongoengine
+nltk
 pytest

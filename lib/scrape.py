@@ -8,6 +8,7 @@ import celery.decorators
 import json
 import logging
 import mongoengine as mongo
+import nltk.tokenize
 import os
 import random
 import requests
@@ -461,6 +462,18 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
             "sounds": 0,
             "variables": 0,
             "number_projects": len(projects)
+        },
+        "total": {
+            "description_words": 0,
+            "instructions_words": 0,
+            "blocks": {},
+            "block_count": 0,
+            "block_categories": {},
+            "comments_left": 0,
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0,
+            "number_projects": len(projects)
         }
     }
 
@@ -498,15 +511,35 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
             stats["min"]["block_categories"][cat] = min(stats["min"]["block_categories"][cat], project["stats"]["categories"][cat])
             stats["max"]["block_categories"][cat] = max(stats["max"]["block_categories"][cat], project["stats"]["categories"][cat])
     
+    # Handle means, totals for top-level keys
     for key in stats["mean"]:
         if key not in no_direct_average:
+            if key in stats["total"]:
+                stats["total"][key] = stats["mean"][key]
             if len(projects) > 0:
                 stats["mean"][key] /= len(projects)
+
+    # Handle means, totals for blocks
     for block in stats["mean"]["blocks"]:
+        stats["total"]["blocks"][block] = stats["mean"]["blocks"][block]
+        stats["total"]["block_count"] += stats["mean"]["blocks"][block]
         if len(projects) > 0:
             stats["mean"]["blocks"][block] /= len(projects)
+
+    # Handle means, totals for block categories
     for cat in stats["mean"]["block_categories"]:
+        stats["total"]["block_categories"][cat] = stats["mean"]["block_categories"][cat]
         if len(projects) > 0:
             stats["mean"]["block_categories"][cat] /= len(projects)
+
+    # Get total comments left on projects
+    pids = projects.all().values_list("project_id")
+    stats["total"]["comments_left"] = Comment.objects(project_id__in=pids).count()
+
+    # Get total words left in instructions and descriptions
+    for project in projects:
+        stats["total"]["description_words"] += len(nltk.tokenize.word_tokenize(project["description"]))
+        stats["total"]["instructions_words"] += len(nltk.tokenize.word_tokenize(project["instructions"]))
+
 
     return stats

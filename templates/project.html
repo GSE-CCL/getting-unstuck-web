@@ -81,7 +81,7 @@
 </div>
 <div class="row m-5 justify-content-center">
     <!-- User's code excerpt -->
-    {% if excerpts[project["project_id"]] != "": %}
+    {% if excerpts[project["project_id"]]["code"] != "": %}
     <div class="col-6 code-gray">
         <div class="pt-3 overflow-auto">
             <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>

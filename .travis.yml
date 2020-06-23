@@ -6,4 +6,5 @@ install:
 services:
     - mongodb
 script:
+    - touch secure/celery.json
     - python3 -m pytest tests

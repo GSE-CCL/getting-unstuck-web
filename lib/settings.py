@@ -5,6 +5,8 @@ CACHE_DIRECTORY = "cache"
 SITE = {
     "title": "Getting Unstuck"
 }
+SECURE_DIRECTORY = "secure"
+
 
 # Task management
 with open("secure/celery.json") as f:

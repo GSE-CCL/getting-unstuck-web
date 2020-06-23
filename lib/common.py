@@ -1,8 +1,9 @@
+import json
 import markdown
 import mongoengine as mongo
-import json
+from lib import settings
 
-def connect_db(credentials_file="secure/db.json"):
+def connect_db(credentials_file=f"{ settings.SECURE_DIRECTORY }/db.json"):
     """Connects to MongoDB using credentials.
     
     Args:

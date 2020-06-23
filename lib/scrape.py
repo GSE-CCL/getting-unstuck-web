@@ -1,15 +1,18 @@
-from ccl_scratch_tools import Parser, Scraper
 from . import common as common
 from . import schema as schema
+from .settings import CONVERT_URL
+from ccl_scratch_tools import Parser, Scraper
 from datetime import datetime, timedelta
 from math import inf
-from .settings import CONVERT_URL
+import celery.decorators
 import json
+import logging
 import mongoengine as mongo
 import os
 import random
 import requests
 import threading
+
 
 connect_db = common.connect_db
 
@@ -227,6 +230,8 @@ def add_comments(project_id, username, credentials_file="secure/db.json"):
             )
             doc.save()
 
+    logging.info("successfully scraped comments for project {}".format(project_id))
+
 
 def add_project(project_id, studio_id=0, cache_directory=None, credentials_file="secure/db.json"):
     """Inserts a project into the database after scraping it. Updates existing database entries.
@@ -280,6 +285,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         stats = False
 
     if not stats:
+        logging.warning("Couldn't get statistics for project {}".format(project_id))
         return False
 
     # Change block_text's form
@@ -334,9 +340,12 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             doc.validation[str(challenge["challenge_id"])] = validation
             doc.save()
 
+    logging.info("successfully scraped project {}".format(project_id))
+
     return True
 
 
+@celery.decorators.task
 def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file="secure/db.json"):
     """Scrapes a studio and inserts it into the database.
     
@@ -361,7 +370,7 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
     # Add individual studio to DB    
     studio_info = scraper.get_studio_meta(studio_id)
     if studio_info is not None:
-        print("attempting for {}".format(studio_id))
+        logging.info("attempting to scrape studio {}".format(studio_id))
         connect_db(credentials_file=credentials_file)
 
         preexisting = Studio.objects(studio_id=studio_id).first()
@@ -389,23 +398,20 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
 
         doc.save()
 
-        # Start a new thread so we can return a webpage
-        def add_projects():
-            # Add all the projects
-            project_ids = scraper.get_projects_in_studio(studio_id)
-            for project in project_ids:
-                add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+        # Add all the projects
+        project_ids = scraper.get_projects_in_studio(studio_id)
+        for project in project_ids:
+            add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
 
-            stats = get_studio_stats(studio_id, credentials_file=credentials_file)
+        stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
-            preexisting = Studio.objects(studio_id=studio_id).first()
-            if preexisting is not None:
-                preexisting.status = "complete"
-                preexisting.stats = stats
-                preexisting.save()
-        
-        studio_thread = threading.Thread(target=add_projects)
-        studio_thread.start()
+        preexisting = Studio.objects(studio_id=studio_id).first()
+        if preexisting is not None:
+            preexisting.status = "complete"
+            preexisting.stats = stats
+            preexisting.save()
+
+        logging.info("successfully scraped studio {}".format(studio_id))
 
 
 def get_studio_stats(studio_id, credentials_file="secure/db.json"):

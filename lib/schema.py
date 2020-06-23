@@ -217,7 +217,7 @@ def validate_project(schema, project, studio_id, credentials_file="secure/db.jso
 
     Returns:
         A modified version of the validation schema, revealing whether each requirement was met.
-        False if couldn't successfully validate the project.
+        False if couldn't successfully validate the project, as when there's no valid schema.
     """
 
     stat_types = ["block_comments", "blocks", "categories", "comments", "costumes", "sounds", "variables"]
@@ -228,6 +228,9 @@ def validate_project(schema, project, studio_id, credentials_file="secure/db.jso
     # Get the schema in dictionary format
     if type(schema) != dict:
         schema = Challenge.objects(id = schema).first().to_mongo().to_dict()
+
+    if schema is None:
+        return False
 
     # Get the project in dictionary format
     if type(project) != dict:

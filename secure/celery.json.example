@@ -1,0 +1,5 @@
+{
+    "name": "app_name",
+    "broker_url": "amqp://localhost",
+    "result_backend": "mongodb+srv://localhost"
+}

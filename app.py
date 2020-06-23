@@ -176,7 +176,7 @@ def edit_schema(id):
 # Studios, projects, users, challenges
 @app.route("/")
 def homepage():
-    return render_template("home.html") 
+    return render_template("home.html", section="home") 
 
 @app.route("/index")
 def index():

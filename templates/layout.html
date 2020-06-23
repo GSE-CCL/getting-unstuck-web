@@ -15,7 +15,12 @@
         {% block head %}
         {% endblock %}
     </head>
+    {% if section == "home" %}
+    <body style="background-color: #5dc7e4;">
+    {% else %}
     <body>
+    {% endif %}
+        
         <nav class="navbar navbar-expand-lg navbar-dark bg-ccl">
             <div class="container-fluid">
                 <a href="/" class="navbar-left navbar-brand">

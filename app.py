@@ -13,14 +13,16 @@ from ccl_scratch_tools import Visualizer
 from lib import common
 from lib import schema
 from lib import scrape
+from lib import tasks
 from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, SITE
 
 
 app = Flask(__name__)
+celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
 parser = Parser()
 
 def twodec(value):
@@ -233,7 +235,7 @@ def studio():
             s = request.form["schema"]
 
         if sid is not None:
-            scrape.add_studio(sid, schema=s, show=("show" in request.form), cache_directory=CACHE_DIRECTORY)
+            scrape.add_studio.delay(sid, schema=s, show=("show" in request.form), cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.")

@@ -138,42 +138,47 @@ def get_project_page(pid, cache_directory="cache"):
     # Load in the project db, project JSON, studio info, and schema
     project, scratch_data = scrape.get_project(pid, cache_directory)
     studio = scrape.get_studio(project["studio_id"])
-    sc = schema.get_schema(studio["challenge_id"])
 
-    # Determine whether there's an error here
-    err = False
-    if str(studio["challenge_id"]) in project["validation"]:
-        project["validation"] = project["validation"][str(studio["challenge_id"])]
+    if "challenge_id" in studio:
+        sc = schema.get_schema(studio["challenge_id"])
+
+        # Determine whether there's an error here
+        err = False
+        if str(studio["challenge_id"]) in project["validation"]:
+            project["validation"] = project["validation"][str(studio["challenge_id"])]
+        else:
+            err = True
+
+        # Show error page
+        if project == {} or scratch_data == {} or studio == {} or err:
+            return "Uh oh!"
+
+        # Prepare helper tools
+        scraper = Scraper()
+        visualizer = Visualizer()
+
+        # Convert Markdown to HTML with Scratchblocks
+        for key in sc["text"]:
+            sc["text"][key] = common.md(sc["text"][key])
+
+        # Get the code excerpt for the projects to be shown
+        excerpts = dict()
+        examples = get_comparisons(project, sc, 5) + [project]
+        for example in examples:
+            code, sprite = get_code_excerpt(example, sc)
+            excerpts[example["project_id"]] = {
+                "author": example["author"],
+                "code": code,
+                "sprite": sprite
+            }
     else:
-        err = True
-
-    # Show error page
-    if project == {} or scratch_data == {} or studio == {} or err:
-        return "Uh oh!"
-
-    # Prepare helper tools
-    scraper = Scraper()
-    visualizer = Visualizer()
+        sc = dict()
+        excerpts = dict()
 
     # One prompt variable to take the logic out of the templating language
     prompt = {
-        "title": sc["title"] if sc["title"] is not None else studio["title"],
+        "title": sc["title"] if "title" in sc and sc["title"] is not None else studio["title"],
         "description": sc["description"] if "description" in sc else studio["description"]
     }
-
-    # Convert Markdown to HTML with Scratchblocks
-    for key in sc["text"]:
-        sc["text"][key] = common.md(sc["text"][key])
-
-    # Get the code excerpt for the projects to be shown
-    excerpts = dict()
-    examples = get_comparisons(project, sc, 5) + [project]
-    for example in examples:
-        code, sprite = get_code_excerpt(example, sc)
-        excerpts[example["project_id"]] = {
-            "author": example["author"],
-            "code": code,
-            "sprite": sprite
-        }
 
     return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)

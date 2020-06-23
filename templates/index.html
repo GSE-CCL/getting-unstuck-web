@@ -4,11 +4,11 @@
 {% block main_content %}
 
 <div class="row">
-    <div class="col-12">
-        <div class="page-title login">
+    <div class="col-6">
+        <div class="page-title">
             <br><br>
-            <h4>What did you make?</h4>
-            <h4>What did you learn?</h4>
+            <h4 style="text-align: left">What did you make?</h4>
+            <h4 style="text-align: left">What did you learn?</h4>
             <br>
         </div>
         <p>
@@ -28,8 +28,13 @@
                 </div>
             </div>
             <br>
-                <button type="submit" class="input-group-btn inline btn btn-primary button round-btn">SUBMIT</button>
+            <div class="text-center">
+                <button type="submit" class="input-group-btn inline btn btn-primary button round-btn text-center">SUBMIT</button>
+            </div>
         </form>
+    </div>
+    <div class="col-6">
+        <img src="{{ url_for('static', filename='img/site-page.png') }}" class="mt-4 ml-5 w-50">
     </div>
 </div>
 

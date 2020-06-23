@@ -27,8 +27,11 @@ h5 {
 }
 
 h4 {
-    text-align: center;
     font-family: 'Gastromond';
+}
+
+.page-title {
+    text-align: center;
 }
 
 /* Nav bar */
@@ -85,6 +88,9 @@ img.bug {
 /* Index input */
 .round-btn {
     border-radius: 12px;
+    text-align: center;
+    background-color: #5dc7e4;
+    border-color: #5dc7e4;
 }
 
 /* Custom settings for sprite images */

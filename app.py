@@ -166,7 +166,7 @@ def schema_editor(id):
     return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
 
 @app.route("/admin/schemas/edit", methods=["GET"])
-#@admin_required
+@admin_required
 def add_schema():
     return schema_editor("__new__")
 

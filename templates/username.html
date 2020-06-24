@@ -3,12 +3,14 @@
 
 {% block main_content %}
 <div class="row">
-    <div class="col-12">
+    <div class="col-7">
         <br><br>
-        <h1>
-            {{ username }}
-        </h1>
-        <p><a href="https://scratch.mit.edu/users/{{ username }}" target="_blank">View user on Scratch</a></p>
+        <div class="page-title">
+            <h4>
+                {{ username }}'s projects
+            </h4>
+        </div>
+        <p style="text-align:center"><a href="https://scratch.mit.edu/users/{{ username }}" target="_blank">View user on Scratch</a></p>
 <br>
         {% if projects == []: %}
         <p>
@@ -19,7 +21,7 @@
         <img class="bug centered" src="{{ url_for('static', filename='img/SIGCSE_Bugs.png') }}"></img> 
 
         {% else: %}
-        <h5>Here are all of the Getting Unstuck projects by <a href="https://scratch.mit.edu/users/{{ username }}">{{ username }}</a>:</h5>
+        <h5>Getting Unstuck projects:</h5>
         <ul>
             {% for project in projects: %}
             <li>
@@ -28,9 +30,11 @@
             </li>
             {% endfor %}
         </ul>
-        <br>
-        <h5>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</h5>
+        <p>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</p>
         {% endif %}
+    </div>
+    <div class="col-5">
+        <img src="{{ url_for('static', filename='img/SIGCSE_Motivation.png') }}" class="mt-5 w-100">
     </div>
 </div>
 {% endblock %}

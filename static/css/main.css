@@ -158,7 +158,12 @@ tbody th {
     text-align: center;
 }
 
-/* Project comparisons */
+/* Project list */
+ul {
+    padding-inline-start: 18px;
+}
+
+/* Project inspirations */
 /* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
 .tabs {
     display: flex;

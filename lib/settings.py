@@ -12,5 +12,8 @@ CACHE_DIRECTORY = "cache"
 SECURE_DIRECTORY = "secure"
 
 # Task management
-with open(f"{SECURE_DIRECTORY}/celery.json") as f:
-    CLRY = json.load(f)
+try:
+    with open(f"{SECURE_DIRECTORY}/celery.json") as f:
+        CLRY = json.load(f)
+except:
+    CLRY = {}

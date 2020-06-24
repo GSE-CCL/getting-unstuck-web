@@ -1,4 +1,5 @@
 import json
+import logging
 import markdown
 import os
 import threading
@@ -22,7 +23,11 @@ from lib.settings import CACHE_DIRECTORY, CLRY, SITE
 
 
 app = Flask(__name__)
-celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
+try:
+    celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
+except:
+    logging.warn("Couldn't load celery.")
+
 parser = Parser()
 
 def twodec(value):

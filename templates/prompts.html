@@ -18,7 +18,7 @@
             {% for challenge in challenges: %}
                 <tr>
                     <th scope="row" colspan="2">{{ loop.index }}</th>
-                    <td>
+                    <td style="padding-bottom: 8px">
                         {% if "description" in schemas[challenge["challenge_id"]]: %}
                         <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
                         {% else: %}

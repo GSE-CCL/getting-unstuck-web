@@ -1,4 +1,3 @@
-[![Documentation Status](https://readthedocs.org/projects/getting-unstuck-web/badge/?version=latest)](https://getting-unstuck-web.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/GSE-CCL/getting-unstuck-web.svg?branch=master)](https://travis-ci.com/GSE-CCL/getting-unstuck-web)
 
 # Getting Unstuck Web

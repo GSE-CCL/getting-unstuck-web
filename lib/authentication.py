@@ -57,7 +57,7 @@ def register_user(username, email, first_name, last_name, password, role="site_v
     
     Returns:
         True if user added successfully, else either False or a specific error message
-            to pass to the user.
+        to pass to the user.
     """
     site_roles = ["site_viewer", "site_admin"]
 

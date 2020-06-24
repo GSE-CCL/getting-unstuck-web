@@ -29,5 +29,5 @@ In a development environment, running the server is simple.
 1. Make sure the MongoDB and RabbitMQ servers are running.
 2. Navigate to the repo directory and activate the virtual environment in two terminal windows/tabs.
 3. In the first terminal window, run `flask run`.
-4. In the second terminal window, run `celery -A app.celery worker --pool=solo -l info --loglevel=warning`.
+4. In the second terminal window, run `celery -A app.celery worker --pool=solo -l info`.
 5. Navigate to `http://localhost:5000` in your browser to start using the web app. When first setting up the server, go to `http://localhost:5000/setup` to set up the first admin user.

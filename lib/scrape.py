@@ -257,9 +257,9 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     # Convert to SB3 if possible
     parser = Parser()
 
-    if not parser.is_scratch3(scratch_data) and CONVERT_URL != "":
+    if not parser.is_scratch3(scratch_data) and settings.CONVERT_URL != "":
         try:
-            r = requests.post(CONVERT_URL, json=scratch_data)
+            r = requests.post(settings.CONVERT_URL, json=scratch_data)
             scratch_data = json.loads(r.json())
         except:
             pass

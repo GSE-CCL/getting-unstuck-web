@@ -1,5 +1,18 @@
 /* strategies.html CSS page */
 
+.three.columns { 
+  width: 22%;           
+ }
+
+/* Self Clearing Goodness */
+
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
 .row-card{
   padding: 0rem 2rem 4% 2rem;
 }
@@ -38,7 +51,7 @@
 .card-container{
   position: relative;
   width: 100%;
-  /* margin-left: 4%; */
+  margin-left: 2%;
   overflow: hidden;
 }
 
@@ -84,12 +97,12 @@
 }
 
 .card-details p{
-  font-size: 1.2rem;
+  font-size: 0.8rem;
 }
 
 .card-details h3{
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   margin-bottom: 0.5em;

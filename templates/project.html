@@ -88,16 +88,17 @@
         </div>
     </div>
     <div class="col-3">
-        <div class="sprite-container">
-            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
-            </a>
-            <p class="w-100 text-center">
+            <div class="sprite-container">
                 <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                    {{ excerpts[project["project_id"]]["sprite"]["name"] }}
+                    <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
                 </a>
-            </p>
+                <p class="w-100 text-center">
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
+                        {{ excerpts[project["project_id"]]["sprite"]["name"] }}
+                    </a>
+                </p>
         </div>
+        
     </div>
 
     {% else: %}
@@ -107,7 +108,7 @@
 <div class="row">
     <div class="col-12">
         <!-- Project comparison excerpts -->
-        <div class="md">
+        <div class="md mt-3">
         {{ schema["text"]["comparison_framing_text"]|safe }}
         </div>
 
@@ -116,7 +117,7 @@
             {% for excerpt in excerpts: %}
             {% if excerpt != project["project_id"]: %}
             <input name="tabs" type="radio" id="tab-{{ loop.index0 }}" {% if loop.index0 == 0: %}checked{% endif %} class="input">
-            <label for="tab-{{ loop.index0 }}" class="label col">@{{ excerpts[excerpt]["author"] }}&rsquo;s Project</label>
+            <label for="tab-{{ loop.index0 }}" class="label col">@{{ excerpts[excerpt]["author"] }}&rsquo;s project</label>
             <div class="panel w-100">
                 <div class="container">
                     <div class="row my-5 justify-content-center">
@@ -151,7 +152,7 @@
             {% endfor %}
         </div>
 
-        <p class="mt-5">&nbsp;</p>
+        <!-- <p class="mt-1">&nbsp;</p> -->
 
         <div class="md">
         <!-- Reflect on the projects shown -->

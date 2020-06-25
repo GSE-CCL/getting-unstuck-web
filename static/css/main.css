@@ -181,9 +181,8 @@ ul {
     background: #f9d344;
     cursor: pointer;
     text-align: center;
-    font-weight: bold;
     font-size: 18px;
-    color: #444;
+    color: rgb(70, 69, 69);
 }
   
 .label:hover {

@@ -75,10 +75,12 @@ nav.bg-ccl {
 }
 
 a.nav-item {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 1);
+    padding-left: 1.5em;
+    padding-right: 1.5em;
 }
 
 .block {

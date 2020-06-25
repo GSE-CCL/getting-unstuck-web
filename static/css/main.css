@@ -35,6 +35,14 @@ body {
     color: #222;
 }
 
+.footer {
+    text-align: center;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: #f9d433;
+    flex-shrink: 0;
+}
+
 .gastromond {
     font-family: 'Gastromond';
 }

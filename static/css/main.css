@@ -62,10 +62,18 @@ h5 {
 
 h4 {
     font-family: 'Gastromond';
+    font-size: 2rem;
 }
 
 .page-title {
     text-align: center;
+}
+
+.vert-center {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
 }
 
 /* Nav bar */

@@ -4,6 +4,31 @@ a {
     color: #5dc7e4;
 }
 
+a.text-black {
+    color: #581280;
+    transition: color 0.25s linear;
+    text-decoration: underline;
+}
+
+a.button {
+    display: inline-block;
+    height: 38px;
+    padding: 0px 30px;
+    color: #555;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 38px;
+    margin: 2px 2px;
+    letter-spacing: .1rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: #ffffff;
+    border: 1px solid #bbb;
+    cursor: pointer;
+    box-sizing: border-box; 
+}
 
 body {
     font-family: 'p22-underground';
@@ -42,7 +67,7 @@ nav.bg-ccl {
 }
 
 a.nav-item {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 1);

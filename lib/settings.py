@@ -10,6 +10,7 @@ SITE = {
 # Directories
 CACHE_DIRECTORY = "cache"
 SECURE_DIRECTORY = "secure"
+DEFAULT_CREDENTIALS_FILE = f"{SECURE_DIRECTORY}/db.json"
 
 # Task management
 try:

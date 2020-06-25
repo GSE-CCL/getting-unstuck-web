@@ -6,7 +6,7 @@ import random
 
 from ccl_scratch_tools import Parser, Scraper, Visualizer
 
-from . import schema, scrape
+from . import schema, scrape, settings
 
 
 def get_code_excerpt(project, sc):
@@ -71,7 +71,7 @@ def get_code_excerpt(project, sc):
         return "", ""
                     
     
-def get_comparisons(project, sc, count, credentials_file="secure/db.json"):
+def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Gets comparison projects based on the schema.
     
     Args:

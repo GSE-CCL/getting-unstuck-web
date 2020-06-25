@@ -85,7 +85,7 @@ def get_project(project_id, cache_directory=None, credentials_file=settings.DEFA
     return db, scratch_data
 
 
-def get_project_from_cache(project_id, cache_directory="cache"):
+def get_project_from_cache(project_id, cache_directory=settings.CACHE_DIRECTORY):
     """Retrieves a project from the cache.
     
     Args:

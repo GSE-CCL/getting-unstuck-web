@@ -124,7 +124,7 @@ def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDEN
     return result
 
 
-def get_project_page(pid, cache_directory="cache"):
+def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     """Get a project page rendered in HTML given a project ID.
     
     Args:

@@ -4,6 +4,7 @@ a {
     color: #5dc7e4;
 }
 
+
 body {
     font-family: 'p22-underground';
     color: #222;
@@ -40,6 +41,9 @@ nav.bg-ccl {
     background-color: #5dc7e4;
 }
 
+a.nav-item {
+    font-size: 0.7rem;
+}
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 1);
 }
@@ -62,6 +66,23 @@ nav.bg-ccl {
     vertical-align: middle;
     width: 300px;
 }
+
+/* Remove hamburger */
+.navbar-collapse.collapse {
+    display: block!important;
+  }
+  
+  .navbar-nav>li, .navbar-nav {
+    float: left !important;
+  }
+  
+  .navbar-nav.navbar-right:last-child {
+    margin-right: -15px !important;
+  }
+  
+  .navbar-right {
+    float: right!important;
+  }
 
 /* Image settings */
 img.logo {

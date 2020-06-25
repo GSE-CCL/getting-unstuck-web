@@ -26,16 +26,17 @@
                 <a href="/" class="navbar-left navbar-brand">
                     <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ SITE["title"] }}">
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button>
+                </button> -->
                 <div class="collapse navbar-collapse navbar-right" id="navbarNavAltMarkup">
                     <div class="navbar-nav ml-auto">
-                        <a class="nav-item nav-link" href="/prompts">Prompts</a>
-                        <a class="nav-item nav-link" href="/strategies">Strategies</a>
-                        <a class="nav-item nav-link" href="/about">About</a>
+                        <a class="nav-item nav-link" href="/prompts">PROMPTS</a>
+                        <a class="nav-item nav-link" href="/strategies">STRATEGIES</a>
+                        <a class="nav-item nav-link" href="/about">ABOUT</a>
+                        <a class="nav-item nav-link" href="/signup">SIGN UP</a>
                         {% if not user: %}
-                        <a class="nav-item nav-link" href="/login">Login</a>
+                        <a class="nav-item nav-link" href="/login">LOGIN</a>
                         {% endif %}
                     </div>
                 </div>

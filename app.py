@@ -6,6 +6,7 @@ import time
 import random
 import urllib
 from flask import Flask, redirect, render_template, request, session
+from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
@@ -18,34 +19,24 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, SITE
 
 
 app = Flask(__name__)
+app.config["CACHE_TYPE"] = "filesystem"
+app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/results"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 300
 celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
 parser = Parser()
 
-def twodec(value):
-    return f"{value:,.2f}"
-
-def indexOf(lst, value):
-    return lst.index(value)
-
-def pluralize(item):
-    if type(item) == list:
-        return "s" if len(item) != 1 else ""
-    else:
-        return "s" if int(item) != 1 else ""
-
-def human_block(opcode):
-    return parser.get_block_name(opcode)
-
-app.jinja_env.filters["twodec"] = twodec
-app.jinja_env.filters["indexOf"] = indexOf
-app.jinja_env.filters["pluralize"] = pluralize
-app.jinja_env.filters["human_block"] = human_block
+app.jinja_env.filters["twodec"] = common.twodec
+app.jinja_env.filters["indexOf"] = common.indexOf
+app.jinja_env.filters["pluralize"] = common.pluralize
+app.jinja_env.filters["human_block"] = common.human_block
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
+
+cache = Cache(app)
 
 # Pass things to all templates
 @app.context_processor
@@ -215,9 +206,15 @@ def project_download():
         return "False"
 
 
+@app.route("/project/<pid>/view", methods=["GET"])
+@cache.cached(timeout=PROJECT_CACHE_LENGTH)
+def project__id(pid):
+    return display.get_project_page(pid, CACHE_DIRECTORY)
+
+
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
-    return display.get_project_page(pid, CACHE_DIRECTORY)
+    return render_template("project_loader.html")
 
 
 @app.route("/studio", methods=["GET", "POST"])

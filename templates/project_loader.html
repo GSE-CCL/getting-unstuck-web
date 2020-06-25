@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Loading project... &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12 text-center">
+        <h4 class="gastromond text-center mt-4">
+            We&rsquo;re loading your project!
+        </h4>
+        <p class="text-center">
+            This may take a few seconds, but we&rsquo;ll make sure you get there!
+        </p>
+        <img src="/static/img/loader.gif" alt="Please wait...">
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/project_loader.js"></script>
+{% endblock %}

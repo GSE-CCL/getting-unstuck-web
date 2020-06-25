@@ -63,7 +63,11 @@ def get_code_excerpt(project, sc):
         blocks = parser.get_surrounding_blocks(block, scratch_data, 7, True)
         target, _ = parser.get_target(block, scratch_data)
 
-        code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
+        try:
+            code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
+        except:
+            code = ""
+
         sprite = parser.get_sprite(block, scratch_data)
 
         return code, sprite
@@ -124,7 +128,7 @@ def get_comparisons(project, sc, count, credentials_file="secure/db.json"):
     return result
 
 
-def get_project_page(pid, cache_directory="cache"):
+def get_project_page(pid, cache_directory="cache/results"):
     """Get a project page rendered in HTML given a project ID.
     
     Args:
@@ -137,6 +141,12 @@ def get_project_page(pid, cache_directory="cache"):
 
     # Load in the project db, project JSON, studio info, and schema
     project, scratch_data = scrape.get_project(pid, cache_directory)
+
+    if len(project) == 0 or len(scratch_data) == 0:
+        message = "We couldn&rsquo;t find your project! Try finding it by going to Prompts, \
+                   then Find Project for the day you&rsquo;re looking for."
+        return render_template("project_loader.html", message=message)
+
     studio = scrape.get_studio(project["studio_id"])
 
     if "challenge_id" in studio:

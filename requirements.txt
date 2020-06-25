@@ -2,6 +2,7 @@ ccl-scratch-tools
 celery
 dnspython
 flask
+Flask-Caching
 markdown
 mongoengine
 nltk

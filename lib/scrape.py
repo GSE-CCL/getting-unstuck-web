@@ -1,10 +1,12 @@
 from . import common as common
 from . import schema as schema
-from .settings import CONVERT_URL
+from . import display as display
+from .settings import CONVERT_URL, PROJECT_DIRECTORY
 from ccl_scratch_tools import Parser, Scraper
 from datetime import datetime, timedelta
 from math import inf
 import celery.decorators
+import jinja2
 import json
 import logging
 import mongoengine as mongo
@@ -80,7 +82,7 @@ def get_project(project_id, cache_directory=None, credentials_file="secure/db.js
     # Get project from cache
     if cache_directory is not None:
         scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
-        if scratch_data == {}:
+        if scratch_data == {} and "studio_id" in db:
             add_project(project_id, studio_id=db["studio_id"], cache_directory=cache_directory, credentials_file=credentials_file)
             scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
 
@@ -99,7 +101,7 @@ def get_project_from_cache(project_id, cache_directory="cache"):
     """
 
     try:
-        with open("{0}/{1}.json".format(cache_directory, project_id)) as f:
+        with open("{0}/projects/{1}.json".format(cache_directory, project_id)) as f:
             scratch_data = json.load(f)
     except:
         scratch_data = dict()
@@ -231,7 +233,7 @@ def add_comments(project_id, username, credentials_file="secure/db.json"):
             )
             doc.save()
 
-    logging.info("successfully scraped comments for project {}".format(project_id))
+    logging.debug("successfully scraped comments for project {}".format(project_id))
 
 
 def add_project(project_id, studio_id=0, cache_directory=None, credentials_file="secure/db.json"):
@@ -268,11 +270,12 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     # Save to cache if needed
     if cache_directory is not None:
-        with open("{0}/{1}.json".format(cache_directory, project_id), "w") as f:
-            try:
-                json.dump(scratch_data, f)
-            except:
-                raise IOError("Couldn't write the JSON file to directory {0}".format(cache_directory))
+        if scraper.make_dir(f"{cache_directory}/projects"):
+            with open("{0}/projects/{1}.json".format(cache_directory, project_id), "w") as f:
+                try:
+                    json.dump(scratch_data, f)
+                except:
+                    raise IOError("Couldn't write the JSON file to directory {0}".format(cache_directory))
 
     # Parse the project using the parser class
     try:
@@ -341,7 +344,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             doc.validation[str(challenge["challenge_id"])] = validation
             doc.save()
 
-    logging.info("successfully scraped project {}".format(project_id))
+    logging.debug("successfully scraped project {}".format(project_id))
 
     return True
 
@@ -401,8 +404,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
 
         # Add all the projects
         project_ids = scraper.get_projects_in_studio(studio_id)
-        for project in project_ids:
+        for i, project in enumerate(project_ids):
             add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+            if i % 10 == 0:
+                logging.info("completed {}/{} projects in studio {}".format(i, len(project_ids), studio_id))
 
         stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
@@ -425,6 +430,8 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     Returns:
         A dictionary of statistics, including mean, min, and max.
     """
+
+    logging.info("calculating statistics for studio {}".format(studio_id))
     
     connect_db(credentials_file=credentials_file)
     projects = Project.objects(studio_id=studio_id)

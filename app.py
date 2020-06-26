@@ -296,7 +296,7 @@ def prompts():
 def summarize():
     return render_template("summary.html")
 
-# Static pages -- About, Strategies
+# Static pages -- About, Strategies, Signup, Research
 @app.route("/about", methods=["GET"])
 def about():
     return render_template("about.html")
@@ -304,6 +304,14 @@ def about():
 @app.route("/strategies", methods=["GET"])
 def strategies():
     return render_template("strategies.html")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    return render_template("signup.html")
+
+@app.route("/research", methods=["GET"])
+def research():
+    return render_template("research.html")
 
 if __name__ == "__main__":
     app.run()

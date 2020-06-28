@@ -14,11 +14,11 @@
   clear: both; }
 
 .row-card{
-  padding: 0rem 2rem 4% 2rem;
+  padding: 0rem 1rem 1rem 1rem;
 }
 
 .row-card-last{
-  padding: 0rem 2rem 4% 2rem;
+  padding: 0rem 1rem 1rem 1rem;
 } /* this exists so that the last row (w/ only one element isn't shuffled randomly */
 
 .card-image {
@@ -51,7 +51,7 @@
 .card-container{
   position: relative;
   width: 100%;
-  margin-left: 2%;
+  margin-left: 1em;
   overflow: hidden;
 }
 

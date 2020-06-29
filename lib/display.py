@@ -9,12 +9,13 @@ from ccl_scratch_tools import Parser, Scraper, Visualizer
 from . import schema, scrape
 
 
-def get_code_excerpt(project, sc):
+def get_code_excerpt(project, sc, include_orphans=False):
     """Gets a relevant code excerpt from a project based on the schema.
     
     Args:
         project (dict): the project's Mongoengine representation.
         schema (dict): the schema's Mongoengine representation.
+        include_orphans (bool): whether to include orphan blocks. Defaults to False.
     
     Returns:
         A tuple -- first, a string of Scratchblocks syntax, then info about the relevant sprite.
@@ -53,6 +54,12 @@ def get_code_excerpt(project, sc):
             rbo = project["validation"]["required_blocks"].index(True)
             blocks = project["stats"]["blocks"][sc["comparison_basis"]["priority"][rbo]]
     
+    # Exclude orphan blocks
+    if not include_orphans and "orphan_blocks" in project["stats"]:
+        for block in project["stats"]["orphan_blocks"]:
+            if block in blocks:
+                blocks.remove(block)
+
     # Choose what to feature
     if len(blocks) > 0:
         parser = Parser()

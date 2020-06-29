@@ -166,7 +166,7 @@
         <div class="row sprite-container">
             {% for stat in studio["stats"]: %}
             <div class="col-md text-center p-3">
-                <h1 class="gastromond">{{ stat["value"] }}</h1>
+                <h1 class="gastromond">{{ stat["value"]|twodec }}</h1>
                 <p>{{ stat["name"]|safe }}</p>
             </div>
             {% endfor %}

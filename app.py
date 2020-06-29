@@ -212,8 +212,19 @@ def project_download():
         return "False"
 
 
+@app.route("/project/r/<pid>")
+def reload_project(pid):
+    try:
+        pid = int(pid)
+    except:
+        pid = 0
+
+    scrape.set_reload_page(pid)
+    return redirect("/project/{}".format(pid))
+
+
 @app.route("/project/<pid>/view", methods=["GET"])
-@cache.cached(timeout=PROJECT_CACHE_LENGTH)
+@cache.cached(timeout=PROJECT_CACHE_LENGTH, forced_update=scrape.get_reload_project)
 def project__id(pid):
     return display.get_project_page(pid, CACHE_DIRECTORY)
 

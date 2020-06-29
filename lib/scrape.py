@@ -39,6 +39,7 @@ class Project(mongo.Document):
     validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
+    reload_page = mongo.BooleanField(default=False)
 
 class Studio(mongo.Document):
     studio_id = mongo.IntField(required=True, unique=True)
@@ -168,6 +169,31 @@ def get_projects_with_category(category, count=1, project_id=0, studio_id=0, cre
     return category_present
 
 
+def get_reload_project(pid):
+    """Returns whether to reload the project result page regardless of the cache state.
+    
+    Args:
+        pid (int): the project ID.
+    
+    Returns:
+        True, if should be reloaded. Else, False.
+    """
+
+    connect_db()
+    project = Project.objects(project_id=pid)
+    
+    try:
+        p = project.first()
+        r = "reload_page" in p and p["reload_page"]
+        if r:
+            p["reload_page"] = False
+            p.save()
+
+        return r
+    except:
+        return False
+
+
 def get_studio(studio_id, credentials_file="secure/db.json"):
     """Retrieves a studio from database.
     
@@ -198,7 +224,27 @@ def get_studio(studio_id, credentials_file="secure/db.json"):
 
     return db
 
-  
+
+def set_reload_page(pid):
+    """Sets a project to reload result page regardless of cache state.
+    
+    Args:
+        pid (int): project ID.
+    
+    Returns:
+        True, if successful. Else, False.
+    """
+
+    connect_db()
+
+    try:
+        p = Project.objects(project_id=pid).first()
+        p["reload_page"] = True
+        p.save()
+    except:
+        return False
+
+
 def add_comments(project_id, username, credentials_file="secure/db.json"):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
     

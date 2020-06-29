@@ -2,6 +2,14 @@
 {% block title %}{{ project["title"] }} &minus; {% endblock %}
 
 {% block main_content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/user/{{ project["author"] }}">Your Projects</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ project["title"] }}</li>
+    </ol>
+  </nav>
+
 <div class="row">
     <div class="col-12">
         <h4 class="gastromond text-center mt-4">
@@ -108,9 +116,17 @@
 <div class="row">
     <div class="col-12">
         <!-- Project comparison excerpts -->
-        <div class="md mt-3">
-        {{ schema["text"]["comparison_framing_text"]|safe }}
+        <div class="row">
+            <div class="col-9">
+                <div class="md mt-3">
+                    {{ schema["text"]["comparison_framing_text"]|safe }}
+                </div>
+            </div>
+            <div class="col-3">
+                <button type="refresh" class="btn btn-primary mt-3 button round-btn float-right" style="margin-bottom:5px">Refresh</button>
+            </div>
         </div>
+        
 
         <!-- Cool CSS-based tabs -->
         <div class="tabs mb-5">

@@ -33,6 +33,7 @@ app.jinja_env.filters["twodec"] = common.twodec
 app.jinja_env.filters["indexOf"] = common.indexOf
 app.jinja_env.filters["pluralize"] = common.pluralize
 app.jinja_env.filters["human_block"] = common.human_block
+app.jinja_env.filters["get_selected"] = common.get_selected
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
@@ -140,9 +141,11 @@ def schema_editor(id):
         "required_text": [],
         "required_block_categories": {},
         "required_blocks": [],
+        "stats": ["min/description", "mean/blocks/event_whenflagclicked", "mean/block_categories/sensing"],
         "text": {},
         "comparison_basis": {"basis": "__none__", "priority": None}
     }
+
     if id != "__new__":
         common.connect_db()
         data = schema.Challenge.objects(id = id).first().to_mongo()
@@ -150,14 +153,17 @@ def schema_editor(id):
     blocks = parser.block_data
     block_list = list()
     block_dict = dict()
+
     for cat in blocks:
         block_list += blocks[cat].keys()
+
         for block in blocks[cat]:
             block_dict[blocks[cat][block].lower().replace(" ", "")] = block
-    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
+
+    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, stats=scrape.get_default_studio_stats())
 
 @app.route("/admin/schemas/edit", methods=["GET"])
-@admin_required
+#@admin_required
 def add_schema():
     return schema_editor("__new__")
 

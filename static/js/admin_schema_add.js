@@ -4,7 +4,8 @@ let editors = {
     "concluding_text": null,
     "comparison_reflection_text": null,
     "comparison_framing_text": null,
-    "prompt_framing_text": null
+    "prompt_framing_text": null,
+    "stats_framing_text": null
 };
 
 // Add text option
@@ -174,8 +175,15 @@ let move_blocks = (event) => {
     helper.style.display = "block";
     helper.style.width = obj.clientWidth + "px";
 
-    helper.dataset.boId = obj.dataset.boId;
-    helper.dataset.brId = obj.parentNode.parentNode.dataset.brId;
+    // Use object ID if available, otherwise try to use block requirement IDs
+    if (event.target.id != undefined && event.target.id != "") {
+        helper.dataset.tid = event.target.id;
+    }
+    else {
+        helper.dataset.boId = obj.dataset.boId;
+        helper.dataset.brId = obj.parentNode.parentNode.dataset.brId;
+    }
+    console.log(helper.dataset)
 };
 
 // Hide block list
@@ -186,6 +194,10 @@ let hide_blocks = (event=null) => {
         || event.relatedTarget.dataset.action != "choose_block") {
         let helper = document.getElementById("block_input_helper");
         helper.style.display = "none";
+
+        helper.dataset.boId = "";
+        helper.dataset.brId = "";
+        helper.dataset.tid = "";
 
         let list_items = document.querySelectorAll("#block_input_helper .list-group-item");
         list_items.forEach((list_item) => {
@@ -234,11 +246,17 @@ let set_block = (event) => {
         let opcode = event.target.dataset.opcode;
         if (event.target.nodeName == "STRONG")
             opcode = event.target.parentNode.dataset.opcode;
-            
-        let br_id = document.getElementById("block_input_helper").dataset.brId;
-        let bo_id = document.getElementById("block_input_helper").dataset.boId;
 
-        document.querySelector("[data-br-id='" + br_id + "'] [data-bo-id='" + bo_id + "'] input").value = opcode;
+        let tid = document.getElementById("block_input_helper").dataset.tid;
+        if (tid != undefined && tid != "") {
+            document.getElementById(tid).value = opcode;
+        }
+        else {    
+            let br_id = document.getElementById("block_input_helper").dataset.brId;
+            let bo_id = document.getElementById("block_input_helper").dataset.boId;
+
+            document.querySelector("[data-br-id='" + br_id + "'] [data-bo-id='" + bo_id + "'] input").value = opcode;
+        }
 
         resolve();
     }).then(() => {
@@ -319,7 +337,8 @@ let submit_schema = (event) => {
         required_blocks: get_nested("required_blocks", true),
         required_text: get_nested("required_text"),
         required_text_failure: document.getElementById("required_text_failure").value,
-        required_blocks_failure: document.getElementById("required_blocks_failure").value
+        required_blocks_failure: document.getElementById("required_blocks_failure").value,
+        stats: []
     };
 
     let promise = new Promise((resolve) => {
@@ -349,6 +368,33 @@ let submit_schema = (event) => {
             }
         }
 
+        // Get the studio stats to show
+        for (let i = 0; i < 5; i++) {
+            let stat = document.getElementById("studio_stats_" + i).value;
+
+            if (stat.indexOf("/blocks") > -1) {
+                let block = document.getElementById("studio_stats_block_" + i).value;
+
+                if (block == "" || block == undefined) {
+                    throw "Must choose a block for studio stat number " + (i + 1) + ".";
+                }
+
+                data["stats"].push(stat + "/" + block);
+            }
+            else if (stat.indexOf("/block_categories") > -1) {
+                let cat = document.getElementById("studio_stats_category_" + i).value;
+
+                if (cat == "" || cat == undefined) {
+                    throw "Must choose a category for studio stat number " + (i + 1) + ".";
+                }
+
+                data["stats"].push(stat + "/" + cat);
+            }
+            else if (stat != "__none__") {
+                data["stats"].push(stat);
+            }
+        }
+
         resolve();
     }).then(() => {
         // Submit form
@@ -360,8 +406,13 @@ let submit_schema = (event) => {
                 alert("Couldn't save the schema.")
             }
         }, "json");
-    }).catch(() => {
-        alert("Couldn't save schema.");
+    }).catch((err) => {
+        if (err != "") {
+            alert(err);
+        }
+        else {
+            alert("Couldn't save schema.");
+        }
     });    
 };
 
@@ -386,6 +437,23 @@ let preview_markdown = (e) => {
             add_js(res["js"]);
         }
     });
+};
+
+// Show more detailed options for studio stats as needed
+let handle_stats = (event) => {
+    let id = event.target.dataset.statId;
+    if (event.target.value.indexOf("/blocks") > -1) {
+        document.getElementById("studio_stats_block_" + id).classList.remove("d-none");
+        document.getElementById("studio_stats_category_" + id).classList.add("d-none");
+    }
+    else if (event.target.value.indexOf("/block_categories") > -1) {
+        document.getElementById("studio_stats_category_" + id).classList.remove("d-none");
+        document.getElementById("studio_stats_block_" + id).classList.add("d-none");
+    }
+    else {
+        document.getElementById("studio_stats_block_" + id).classList.add("d-none");
+        document.getElementById("studio_stats_category_" + id).classList.add("d-none");
+    }
 };
 
 // Event setters
@@ -434,6 +502,13 @@ let events_block_selector = () => {
     });
 };
 
+let events_studio_stats = () => {
+    let inputs = document.querySelectorAll(".studio_stats");
+    inputs.forEach((input) => {
+        input.addEventListener("change", handle_stats);
+    });
+}
+
 let loaded = function() {
     // Required text
     events_topt();
@@ -452,6 +527,9 @@ let loaded = function() {
     // Block selector
     events_block_selector();
     events_block_choose();
+
+    // Studio stats
+    events_studio_stats();
 
     // Form submission
     document.getElementById("schema_form").addEventListener("submit", submit_schema);

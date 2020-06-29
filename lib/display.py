@@ -191,4 +191,64 @@ def get_project_page(pid, cache_directory="cache/results"):
         "description": sc["description"] if "description" in sc else studio["description"]
     }
 
+    # Choose stats to show
+    studio["stats"] = get_studio_stats(sc, studio)
+
     return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+
+
+def get_studio_stats(sc, studio):
+    """Gets the studio stats based on schema requirements.
+    
+    Args:
+        sc (dict): the schema.
+        studio (dict): the studio.
+
+    Returns:
+        A list of dicts, each with keys "name" and "value" to describe each statistic.
+    """
+
+    parser = Parser()
+
+    stats = list()
+    for stat in sc["stats"]:
+        obj = studio["stats"]
+        s = {"name": list(), "value": 0}
+
+        keys = stat.split("/")
+        append = ""
+        for i, key in enumerate(keys):
+            # Make sure this stat actually exists in studio.stats, else discard
+            if key in obj:
+                obj = obj[key]
+            else:
+                s = dict()
+                break
+
+            # Get the human-readable block name as needed
+            if i > 0 and keys[i - 1] == "blocks":
+                key = parser.get_block_name(key)
+
+            # Make block and category names boldface
+            if append == "blocks":
+                key = "<strong>{}</strong>".format(key)
+            
+            # Should we append blocks to the name string?
+            if key == "blocks" or key == "block_categories":
+                append = "blocks"
+            else:
+                s["name"].append(key.replace("_", " "))
+
+        # If studio doesn't have the stat requested
+        if s == {}:
+            break
+        
+        if append != "":
+            s["name"].append(append)
+        
+        s["name"] = " ".join(s["name"])
+        s["value"] = obj
+
+        stats.append(s)
+
+    return stats

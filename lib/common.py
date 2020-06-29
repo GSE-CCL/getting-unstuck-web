@@ -69,3 +69,15 @@ def pluralize(item):
 
 def human_block(opcode):
     return Parser().get_block_name(opcode)
+
+def get_selected(stat):
+    selected = set()
+    if "/blocks" in stat or "/block_categories" in stat:
+        s = stat.split("/")
+        selected.add("/".join(s[0:2]))
+        selected.add(s[1])
+        selected.add(s[-1])
+    else:
+        selected.add(stat)
+
+    return selected

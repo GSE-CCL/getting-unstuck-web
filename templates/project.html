@@ -153,11 +153,28 @@
 
         <p class="mt-5">&nbsp;</p>
 
-        <div class="md">
         <!-- Reflect on the projects shown -->
+        <div class="md">
         {{ schema["text"]["comparison_reflection_text"]|safe }}
+        </div>
+
+        <!-- Studio stats -->
+        {% if studio["stats"]|length > 0: %}
+        <div class="md">
+            {{ schema["text"]["stats_framing_text"]|safe }}
+        </div>
+        <div class="row sprite-container">
+            {% for stat in studio["stats"]: %}
+            <div class="col-md text-center p-3">
+                <h1 class="gastromond">{{ stat["value"] }}</h1>
+                <p>{{ stat["name"]|safe }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <!-- Conclude today's review -->
+        <div class="md">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
 

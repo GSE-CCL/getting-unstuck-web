@@ -420,6 +420,55 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
         logging.info("successfully scraped studio {}".format(studio_id))
 
 
+def get_default_studio_stats():
+    """Returns the default studio stats dictionary."""
+
+    return {
+        "mean": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0
+        },
+        "min": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0
+        },
+        "max": {
+            "description": 0,
+            "instructions": 0,
+            "comments": 0,
+            "blocks": {},
+            "block_categories": {},
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0
+        },
+        "total": {
+            "description_words": 0,
+            "instructions_words": 0,
+            "blocks": {},
+            "block_count": 0,
+            "block_categories": {},
+            "comments_left": 0,
+            "costumes": 0,
+            "sounds": 0,
+            "variables": 0,
+            "number_projects": 0
+        }
+    }
+
+
 def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     """Returns a dictionary of statistics about a studio.
     
@@ -436,53 +485,9 @@ def get_studio_stats(studio_id, credentials_file="secure/db.json"):
     connect_db(credentials_file=credentials_file)
     projects = Project.objects(studio_id=studio_id)
     
-    stats = {
-        "mean": {
-            "description": 0,
-            "instructions": 0,
-            "comments": 0,
-            "blocks": {},
-            "block_categories": {},
-            "costumes": 0,
-            "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
-        },
-        "min": {
-            "description": 0,
-            "instructions": 0,
-            "comments": 0,
-            "blocks": {},
-            "block_categories": {},
-            "costumes": 0,
-            "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
-        },
-        "max": {
-            "description": 0,
-            "instructions": 0,
-            "comments": 0,
-            "blocks": {},
-            "block_categories": {},
-            "costumes": 0,
-            "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
-        },
-        "total": {
-            "description_words": 0,
-            "instructions_words": 0,
-            "blocks": {},
-            "block_count": 0,
-            "block_categories": {},
-            "comments_left": 0,
-            "costumes": 0,
-            "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
-        }
-    }
+    stats = get_default_studio_stats()
+    for key in stats:
+        stats[key]["number_projects"] = len(projects)
 
     # Calculate mean values
     no_direct_average = ["blocks", "block_categories", "number_projects"]

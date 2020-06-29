@@ -1,6 +1,5 @@
 /* general */
-
-a {
+a, .gu-blue-text {
     color: #5dc7e4;
 }
 
@@ -27,7 +26,13 @@ h5 {
 }
 
 h4 {
-    font-family: 'Gastromond';
+    font-family: "Gastromond";
+}
+
+option:disabled {
+    background: #e9e9e9;
+    color: #2aa1c0;
+    font-weight: bold;
 }
 
 .page-title {
@@ -35,7 +40,6 @@ h4 {
 }
 
 /* Nav bar */
-
 nav.bg-ccl {
     background-color: #5dc7e4;
 }
@@ -112,7 +116,6 @@ img.sprite {
 }
 
 /* Markdown text display */
-
 .md p {
     margin-top: 1.5rem;
 }

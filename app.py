@@ -1,4 +1,5 @@
 import json
+import logging
 import markdown
 import os
 import threading
@@ -23,10 +24,12 @@ from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, SITE
 
 
 app = Flask(__name__)
-app.config["CACHE_TYPE"] = "filesystem"
-app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/results"
-app.config["CACHE_DEFAULT_TIMEOUT"] = 300
-celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
+
+try:
+    celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
+except:
+    logging.warn("Couldn't load celery.")
+
 parser = Parser()
 
 app.jinja_env.filters["twodec"] = common.twodec
@@ -305,7 +308,7 @@ def prompts():
 def summarize():
     return render_template("summary.html")
 
-# Static pages -- About, Strategies
+# Static pages -- About, Strategies, Signup, Research
 @app.route("/about", methods=["GET"])
 def about():
     return render_template("about.html")
@@ -313,6 +316,14 @@ def about():
 @app.route("/strategies", methods=["GET"])
 def strategies():
     return render_template("strategies.html")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    return render_template("signup.html")
+
+@app.route("/research", methods=["GET"])
+def research():
+    return render_template("research.html")
 
 if __name__ == "__main__":
     app.run()

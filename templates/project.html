@@ -2,6 +2,14 @@
 {% block title %}{{ project["title"] }} &minus; {% endblock %}
 
 {% block main_content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/user/{{ project["author"] }}">Your Projects</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ project["title"] }}</li>
+    </ol>
+  </nav>
+
 <div class="row">
     <div class="col-12">
         <h4 class="gastromond text-center mt-4">
@@ -25,7 +33,7 @@
         {{ schema["text"]["prompt_framing_text"]|safe }}
         </div>
 
-        <blockquote class="blockquote m-3">{{ prompt["description"] }}</blockquote>
+        <div class="md">{{ prompt["description"] }}</div>
 
         <div class="md">
         {{ schema["text"]["explanation"]|safe }}
@@ -79,25 +87,26 @@
         {% endif %}
     </div>
 </div>
-<div class="row m-5 justify-content-center">
+<div class="row justify-content-center">
     <!-- User's code excerpt -->
     {% if excerpts[project["project_id"]]["code"] != "": %}
-    <div class="col-6 code-gray">
+    <div class="col-6 code-gray mr-3">
         <div class="pt-3 overflow-auto">
             <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
         </div>
     </div>
-    <div class="col-3">
-        <div class="sprite-container">
-            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
-            </a>
-            <p class="w-100 text-center">
+    <div class="col-3 vert-center ml-3">
+            <div class="sprite-container vert-center">
                 <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                    {{ excerpts[project["project_id"]]["sprite"]["name"] }}
+                    <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
                 </a>
-            </p>
+                <p class="w-100 text-center">
+                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
+                        {{ excerpts[project["project_id"]]["sprite"]["name"] }}
+                    </a>
+                </p>
         </div>
+        
     </div>
 
     {% else: %}
@@ -107,26 +116,34 @@
 <div class="row">
     <div class="col-12">
         <!-- Project comparison excerpts -->
-        <div class="md">
-        {{ schema["text"]["comparison_framing_text"]|safe }}
+        <div class="row">
+            <div class="col-9">
+                <div class="md mt-3">
+                    {{ schema["text"]["comparison_framing_text"]|safe }}
+                </div>
+            </div>
+            <div class="col-3">
+                <button type="refresh" class="btn btn-primary mt-3 button round-btn float-right" style="margin-bottom:5px">Refresh</button>
+            </div>
         </div>
+        
 
         <!-- Cool CSS-based tabs -->
         <div class="tabs mb-5">
             {% for excerpt in excerpts: %}
             {% if excerpt != project["project_id"]: %}
             <input name="tabs" type="radio" id="tab-{{ loop.index0 }}" {% if loop.index0 == 0: %}checked{% endif %} class="input">
-            <label for="tab-{{ loop.index0 }}" class="label col">@{{ excerpts[excerpt]["author"] }}&rsquo;s Project</label>
+            <label for="tab-{{ loop.index0 }}" class="label col">@{{ excerpts[excerpt]["author"] }}&rsquo;s project</label>
             <div class="panel w-100">
                 <div class="container">
                     <div class="row my-5 justify-content-center">
-                        <div class="col-6 code-gray">
+                        <div class="col-6 code-gray mr-5">
                             <div class="pt-3 overflow-auto">
                                 <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <div class="sprite-container">
+                        <div class="col-3 vert-center ml-5">
+                            <div class="sprite-container vert-center">
                                 <a href="https://scratch.mit.edu/projects/{{ excerpt }}/editor">
                                     <img src="{{ excerpts[excerpt]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
                                 </a>
@@ -151,7 +168,7 @@
             {% endfor %}
         </div>
 
-        <p class="mt-5">&nbsp;</p>
+        <!-- <p class="mt-1">&nbsp;</p> -->
 
         <!-- Reflect on the projects shown -->
         <div class="md">

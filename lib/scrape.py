@@ -1,7 +1,6 @@
 from . import common as common
-from . import schema as schema
-from . import display as display
 from .settings import CONVERT_URL, PROJECT_DIRECTORY
+from . import display, schema, settings
 from ccl_scratch_tools import Parser, Scraper
 from datetime import datetime, timedelta
 from math import inf
@@ -51,7 +50,7 @@ class Studio(mongo.Document):
     public_show = mongo.BooleanField(default=False)
 
 
-def get_project(project_id, cache_directory=None, credentials_file="secure/db.json"):
+def get_project(project_id, cache_directory=None, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Retrieves a project from database and cache (if available).
     
     Args:
@@ -90,7 +89,7 @@ def get_project(project_id, cache_directory=None, credentials_file="secure/db.js
     return db, scratch_data
 
 
-def get_project_from_cache(project_id, cache_directory="cache"):
+def get_project_from_cache(project_id, cache_directory=settings.CACHE_DIRECTORY):
     """Retrieves a project from the cache.
     
     Args:
@@ -110,7 +109,7 @@ def get_project_from_cache(project_id, cache_directory="cache"):
     return scratch_data
 
   
-def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Finds projects with given opcode.
     
     Args:
@@ -139,7 +138,7 @@ def get_projects_with_block(opcode, project_id=0, studio_id=0, credentials_file=
     return list(opcode_present)
 
 
-def get_projects_with_category(category, count=1, project_id=0, studio_id=0, credentials_file="secure/db.json"):
+def get_projects_with_category(category, count=1, project_id=0, studio_id=0, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Finds projects with given category.
     
     Args:
@@ -193,8 +192,8 @@ def get_reload_project(pid):
     except:
         return False
 
-
-def get_studio(studio_id, credentials_file="secure/db.json"):
+      
+def get_studio(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Retrieves a studio from database.
     
     Args:
@@ -243,9 +242,8 @@ def set_reload_page(pid):
         p.save()
     except:
         return False
-
-
-def add_comments(project_id, username, credentials_file="secure/db.json"):
+  
+def add_comments(project_id, username, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
     
     Args:
@@ -282,7 +280,7 @@ def add_comments(project_id, username, credentials_file="secure/db.json"):
     logging.debug("successfully scraped comments for project {}".format(project_id))
 
 
-def add_project(project_id, studio_id=0, cache_directory=None, credentials_file="secure/db.json"):
+def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Inserts a project into the database after scraping it. Updates existing database entries.
     
     Args:
@@ -307,9 +305,9 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
     # Convert to SB3 if possible
     parser = Parser()
 
-    if not parser.is_scratch3(scratch_data) and CONVERT_URL != "":
+    if not parser.is_scratch3(scratch_data) and settings.CONVERT_URL != "":
         try:
-            r = requests.post(CONVERT_URL, json=scratch_data)
+            r = requests.post(settings.CONVERT_URL, json=scratch_data)
             scratch_data = json.loads(r.json())
         except:
             pass
@@ -396,7 +394,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
 
 @celery.decorators.task
-def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file="secure/db.json"):
+def add_studio(studio_id, schema=None, show=False, cache_directory=None, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Scrapes a studio and inserts it into the database.
     
     Args:

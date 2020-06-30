@@ -2,14 +2,16 @@ from . import common as common
 from . import authentication as authentication
 from . import scrape as scrape
 from . import schema as schema
+from . import errors as errors
 from datetime import datetime
-from flask import session
+from flask import request, session
 import mongoengine as mongo
 from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
-VALID_ADMIN_PAGES = ["schemas", "studios", "users"]
+VALID_ADMIN_PAGES = ["errors", "schemas", "studios", "users"]
+VALID_REDIRECTS = ["/admin/errors"]
 
 def get_info(page):
     """Gets the relevant information that would be used on a given admin page.
@@ -40,6 +42,12 @@ def get_info(page):
         elif page == "schemas":
             connect_db()
             info["schemas"] = schema.Challenge.objects()
+        elif page == "errors":
+            connect_db()
+            if "all" in request.args and request.args["all"]:
+                info["errors"] = errors.Error.objects().order_by("-timestamp")
+            else:
+                info["errors"] = errors.Error.objects(status__ne="closed").order_by("-timestamp")
 
     return info
 
@@ -203,5 +211,19 @@ def set_info(page, form):
                     return False
         else:
             return False
+    elif page == "errors":
+        connect_db()
+        if form["action"] == "delete":
+            try:
+                doc = errors.Error.objects(id=form["identifier"]).first()
+                if doc.status == "closed":
+                    doc.status = "open"
+                else:
+                    doc.status = "closed"
+                    
+                doc.save()
+                return True
+            except:
+                return False
     else:
         return False

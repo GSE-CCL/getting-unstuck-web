@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Errors &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>
+            Errors
+        </h1>
+
+        <p>
+            {% if "all" in request.args and request.args["all"]: %}
+            <a href="/admin/errors">Only view open errors</a>
+            {% else: %}
+            <a href="/admin/errors?all=true">View closed errors too</a>
+            {% endif %}
+        </p>
+
+        <table class="table table-responsive-lg">
+            <thead>
+                <tr data-identifier="__model__">
+                    <th data-field="error_id">ID</th>
+                    <th data-field="timestamp">Timestamp</th>
+                    <th data-field="url">URL</th>
+                    <th data-field="code">Code</th>
+                    <th data-field="traceback">Traceback</th>
+                    <th data-field="actions" class="w-10">Status</th>
+                </tr>
+            </thead>
+            <tbody id="table_body">
+                {% for error in info["errors"]: %}
+                <tr data-identifier="{{ error['id'] }}">
+                    <td data-field="error_id"><a href="/admin/error/{{ error['id'] }}">{{ error["id"] }}</a></td>
+                    <td data-field="timestamp">{{ error["timestamp"] }}</td>
+                    <td data-field="url">
+                        <a href="{{ error["url"] }}" target="_blank">{{ error["url"] }}</a>
+                    </td>
+                    <td data-field="code">{{ error["error_code"] }}</td>
+                    <td data-field="traceback"><a href="/admin/error/{{ error['id'] }}">View</a></td>
+                    <td data-field="actions" class="col-1">
+                        {% if error["status"] == "closed": %}
+                        <a href="#" data-action="delete" data-identifier="{{ error['id'] }}" title="Reopen" class="fa fa-toggle-off"></a>
+                        {% else: %}
+                        <a href="#" data-action="delete" data-identifier="{{ error['id'] }}" title="Close" class="fa fa-toggle-on"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+
+<script src="/static/js/common_edit.js"></script>
+<script src="/static/js/table_edit.js"></script>
+<script src="/static/js/errors.js"></script>
+
+{% endblock %}

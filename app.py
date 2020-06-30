@@ -4,6 +4,7 @@ import markdown
 import os
 import threading
 import time
+import traceback
 import random
 import urllib
 from flask import Flask, redirect, render_template, request, session
@@ -11,8 +12,10 @@ from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
 from lib import common
+from lib import errors
 from lib import schema
 from lib import scrape
 from lib import tasks
@@ -129,9 +132,28 @@ def admin_page(page):
             else:
                 form = request.form
             result = admin.set_info(page, form)
+
+            if "redirect" in request.form:
+                if request.form["redirect"] in admin.VALID_REDIRECTS:
+                    return redirect(request.form["redirect"])
+
             return json.dumps(result)
     else:
         return redirect("/admin")
+
+@app.route("/admin/error/<eid>")
+@admin_required
+def error_page(eid):
+    error = errors.get_error(eid)
+    if not error:
+        return redirect("/admin/errors")
+    else:
+        issue = {
+            "title": "{} error when loading {}".format(error["error_code"], urllib.parse.urlparse(error["url"]).path),
+            "body": "**[Replicate here]({})**\n\nWhen accessing `{}`, there's a {} error. The traceback says:\n\n```python\n{}\n```".format(error["url"], urllib.parse.urlparse(error["url"]).path, error["error_code"], error["traceback"])
+        }
+        
+        return render_template("admin/error.html", error=error, issue=issue)
 
 def schema_editor(id):
     data = {
@@ -352,6 +374,26 @@ def signup():
 @cache.cached()
 def research():
     return render_template("research.html")
+
+
+# Error pages
+def error(e):
+    """Handle errors."""
+
+    status = "closed" if e.code == 404 else "open"
+    saved = errors.add_error(e.code, request.url, traceback.format_exc(), status)
+
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+
+    scratch = "when i receive [error {} v]\nsay [Oh no!]\nswitch costume to (sad :\( v)".format(e.code)
+
+    return render_template("error.html", error=e, scratch=scratch, saved=saved)
+
+
+# Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(error)
 
 
 if __name__ == "__main__":

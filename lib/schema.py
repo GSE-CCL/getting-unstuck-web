@@ -54,6 +54,7 @@ class ResultText(mongo.EmbeddedDocument):
     comparison_reflection_text = mongo.StringField(max_length=50000, default="")
     comparison_framing_text = mongo.StringField(max_length=50000, default="")
     prompt_framing_text = mongo.StringField(max_length=50000, default="")
+    stats_framing_text = mongo.StringField(max_length=50000, default="")
 
 # The schema as a Mongoengine object.
 class Challenge(mongo.Document):
@@ -72,6 +73,7 @@ class Challenge(mongo.Document):
     required_block_categories = mongo.DictField(default={})
     required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
     required_blocks_failure = mongo.StringField(max_length=5000)
+    stats = mongo.ListField(default=[])
     modified = mongo.DateTimeField(default=datetime.now())
 
 # Functions to actually work with this schema
@@ -83,6 +85,7 @@ def add_schema(mins={},
                required_blocks_failure=None,
                required_text_failure=None,
                comparison_basis={"basis": "__none__", "priority": []},
+               stats=[],
                short_label=None,
                title=None,
                description=None,
@@ -107,11 +110,13 @@ def add_schema(mins={},
         require_text_failure (str): the failure message to show if text requirement isn't met.
         comparison_basis (str): determines what to base code excerpts on. Must be from set of
             {"__none__", "required_text", "required_blocks", "required_block_categories"}
+        stats (list): a list of studio-wide stats to feature on the project results page.
+            Separate category and stat with a slash, e.g. max/comments.
         short_label (str): the short label descriptor of the prompt.
         title (str): the title of the prompt.
         description (str): the description of the prompt.
         text (dict): a dictionary mapping results page text items from the set
-            {"explanation", "concluding_text", "comparison_reflection_text", "comparison_framing_text", "prompt_framing_text"}
+            {"explanation", "concluding_text", "comparison_reflection_text", "comparison_framing_text", "prompt_framing_text", "stats_framing_text"}
         credentials_file (str): path to the database credentials file.
     Returns:
         The object ID of the new challenge schema in the database. False if the arguments
@@ -161,6 +166,7 @@ def add_schema(mins={},
                           title = title,
                           description = description,
                           comparison_basis = comparison_basis,
+                          stats = stats,
                           text = result_text,
                           min_blockify = new_min_blockify,
                           required_text = required_text,

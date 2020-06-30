@@ -87,9 +87,9 @@
         {% endif %}
     </div>
 </div>
-<div class="row justify-content-center">
+<div class="row justify-content-center ml-3 mr-3">
     <!-- User's code excerpt -->
-    {% if excerpts[project["project_id"]] != "": %}
+    {% if excerpts[project["project_id"]]["code"] != "": %}
     <div class="col-6 code-gray mr-3">
         <div class="pt-3 overflow-auto">
             <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
@@ -123,10 +123,9 @@
                 </div>
             </div>
             <div class="col-3">
-                <button type="refresh" class="btn btn-primary mt-3 button round-btn float-right" style="margin-bottom:5px">Refresh</button>
+                <a href="/project/r/{{  project['project_id'] }}" class="btn btn-primary mt-3 round-btn float-right mb-1">Five new projects</a>
             </div>
         </div>
-        
 
         <!-- Cool CSS-based tabs -->
         <div class="tabs mb-5">
@@ -137,12 +136,12 @@
             <div class="panel w-100">
                 <div class="container">
                     <div class="row my-5 justify-content-center">
-                        <div class="col-6 code-gray mr-5">
+                        <div class="col-6 code-gray mr-3">
                             <div class="pt-3 overflow-auto">
                                 <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
                             </div>
                         </div>
-                        <div class="col-3 vert-center ml-5">
+                        <div class="col-3 vert-center ml-3">
                             <div class="sprite-container vert-center">
                                 <a href="https://scratch.mit.edu/projects/{{ excerpt }}/editor">
                                     <img src="{{ excerpts[excerpt]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
@@ -170,11 +169,31 @@
 
         <!-- <p class="mt-1">&nbsp;</p> -->
 
-        <div class="md">
         <!-- Reflect on the projects shown -->
+        <div class="md">
         {{ schema["text"]["comparison_reflection_text"]|safe }}
+        </div>
+
+        <!-- Studio stats -->
+        {% if studio["stats"]|length > 0: %}
+        <div class="md">
+            {{ schema["text"]["stats_framing_text"]|safe }}
+        </div>
+        
+        <div class="container">
+            <div class="row code-gray">
+                {% for stat in studio["stats"]: %}
+                <div class="col-md text-center py-3">
+                    <h1 class="gastromond">{{ stat["value"]|twodec }}</h1>
+                    <p>{{ stat["name"]|safe }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Conclude today's review -->
+        <div class="md">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
 

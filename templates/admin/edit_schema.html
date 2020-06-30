@@ -46,8 +46,6 @@
                     <div class="form-control code" id="prompt_framing_text" name="prompt_framing_text">{% if "prompt_framing_text" in data["text"]: %}{{ data["text"]["prompt_framing_text"] }}{% endif %}</div>
                     <a href="#" data-action="preview_markdown" data-editor="prompt_framing_text">Preview</a>
                 </div>
-            </div>
-            <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="explanation">Explanation</label>
                     <small class="form-text text-muted">
@@ -55,6 +53,16 @@
                     </small>
                     <div class="form-control code" id="explanation" name="explanation">{% if "explanation" in data["text"]: %}{{ data["text"]["explanation"] }}{% endif %}</div>
                     <a href="#" data-action="preview_markdown" data-editor="explanation">Preview</a>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="stats_framing_text">Studio stats framing text</label>
+                    <small class="form-text text-muted">
+                        This text is used to preface any studio statistics you choose to display on the project results page.
+                    </small>
+                    <div class="form-control code" id="stats_framing_text" name="stats_framing_text">{% if "stats_framing_text" in data["text"]: %}{{ data["text"]["stats_framing_text"] }}{% endif %}</div>
+                    <a href="#" data-action="preview_markdown" data-editor="stats_framing_text">Preview</a>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="concluding_text">Concluding text</label>
@@ -251,6 +259,35 @@
                         <input type="text" class="form-control" id="required_blocks_failure" name="required_blocks_failure" value="{{ data['required_blocks_failure'] }}">
                     </div>
                 </div>
+            </div>
+            <hr>
+            <h6 class="mt-3">STUDIO STATS TO SHOW</h6>
+            <small class="form-text text-muted">These stats will show at the bottom of the project results page.</small>
+            <div class="form-row mt-2">
+                {% for i in range(5): %}
+                    {% set selected = data["stats"][i]|get_selected %}
+
+                    <div class="form-group col">
+                        <!-- Base options -->
+                        <select class="form-control studio_stats" name="studio_stats_{{ loop.index0 }}" id="studio_stats_{{ loop.index0 }}" data-stat-id="{{ loop.index0 }}">
+                            <option value="__none__">None</option>
+                        {% for stat in stats: %}
+                            <option disabled>{{ stat }}</option>
+                            {% for metric in stats[stat]: %}
+                            <option value="{{ stat }}/{{ metric }}" {% if [stat, metric]|join("/") in selected: %}selected{% endif %}>{{ stat }} {{ metric }}</option>
+                            {% endfor %}
+                        {% endfor %}
+                        </select>
+
+                        <!-- More detailed options -->
+                        <select class="form-control mt-1 {% if 'block_categories' not in selected: %}d-none{% endif %}" name="studio_stats_category_{{ loop.index0 }}" id="studio_stats_category_{{ loop.index0 }}">
+                            {% for cat in blocks: %}
+                                <option value="{{ cat }}" {% if cat in selected: %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                        <input class="form-control mt-1 block_input {% if 'blocks' not in selected: %}d-none{% endif %}" name="studio_stats_block_{{ loop.index0 }}" id="studio_stats_block_{{ loop.index0 }}" placeholder="block" {% if 'blocks' in selected: %}value="{{ data["stats"][i].split("/")|last }}"{% endif %}>
+                    </div>
+                {% endfor %}
             </div>
             <div class="form-row mt-2 mb-3">
                 <div class="form-group col-12">

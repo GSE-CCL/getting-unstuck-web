@@ -1,6 +1,7 @@
 from . import common as common
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, session
+import logging
 import mongoengine as mongo
 import random
 
@@ -9,12 +10,13 @@ from ccl_scratch_tools import Parser, Scraper, Visualizer
 from . import schema, scrape, settings
 
 
-def get_code_excerpt(project, sc):
+def get_code_excerpt(project, sc, include_orphans=False):
     """Gets a relevant code excerpt from a project based on the schema.
     
     Args:
         project (dict): the project's Mongoengine representation.
         schema (dict): the schema's Mongoengine representation.
+        include_orphans (bool): whether to include orphan blocks. Defaults to False.
     
     Returns:
         A tuple -- first, a string of Scratchblocks syntax, then info about the relevant sprite.
@@ -53,6 +55,12 @@ def get_code_excerpt(project, sc):
             rbo = project["validation"]["required_blocks"].index(True)
             blocks = project["stats"]["blocks"][sc["comparison_basis"]["priority"][rbo]]
     
+    # Exclude orphan blocks
+    if not include_orphans and "orphan_blocks" in project["stats"]:
+        for block in project["stats"]["orphan_blocks"]:
+            if block in blocks:
+                blocks.remove(block)
+
     # Choose what to feature
     if len(blocks) > 0:
         parser = Parser()
@@ -63,7 +71,12 @@ def get_code_excerpt(project, sc):
         blocks = parser.get_surrounding_blocks(block, scratch_data, 7, True)
         target, _ = parser.get_target(block, scratch_data)
 
-        code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
+        try:
+            code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
+        except e:
+            logging.warn(e)
+            code = ""
+
         sprite = parser.get_sprite(block, scratch_data)
 
         return code, sprite
@@ -137,6 +150,12 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
 
     # Load in the project db, project JSON, studio info, and schema
     project, scratch_data = scrape.get_project(pid, cache_directory)
+
+    if len(project) == 0 or len(scratch_data) == 0:
+        message = "We couldn&rsquo;t find your project! Try finding it by going to Prompts, \
+                   then Find Project for the day you&rsquo;re looking for."
+        return render_template("project_loader.html", message=message)
+
     studio = scrape.get_studio(project["studio_id"])
 
     if "challenge_id" in studio:
@@ -181,4 +200,64 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
         "description": sc["description"] if "description" in sc else studio["description"]
     }
 
+    # Choose stats to show
+    studio["stats"] = get_studio_stats(sc, studio)
+
     return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+
+
+def get_studio_stats(sc, studio):
+    """Gets the studio stats based on schema requirements.
+    
+    Args:
+        sc (dict): the schema.
+        studio (dict): the studio.
+
+    Returns:
+        A list of dicts, each with keys "name" and "value" to describe each statistic.
+    """
+
+    parser = Parser()
+
+    stats = list()
+    for stat in sc["stats"]:
+        obj = studio["stats"]
+        s = {"name": list(), "value": 0}
+
+        keys = stat.split("/")
+        append = ""
+        for i, key in enumerate(keys):
+            # Make sure this stat actually exists in studio.stats, else discard
+            if key in obj:
+                obj = obj[key]
+            else:
+                s = dict()
+                break
+
+            # Get the human-readable block name as needed
+            if i > 0 and keys[i - 1] == "blocks":
+                key = parser.get_block_name(key)
+
+            # Make block and category names boldface
+            if append == "blocks":
+                key = "<strong>{}</strong>".format(key)
+            
+            # Should we append blocks to the name string?
+            if key == "blocks" or key == "block_categories":
+                append = "blocks"
+            else:
+                s["name"].append(key.replace("_", " "))
+
+        # If studio doesn't have the stat requested
+        if s == {}:
+            break
+        
+        if append != "":
+            s["name"].append(append)
+        
+        s["name"] = " ".join(s["name"])
+        s["value"] = obj
+
+        stats.append(s)
+
+    return stats

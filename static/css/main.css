@@ -79,8 +79,7 @@ h5 {
     font-weight: 600;
 }
 
-h4 {
-    font-family: "Gastromond";
+.big {
     font-size: 2.8rem;
 }
 
@@ -102,8 +101,8 @@ option:disabled {
 }
 
 /* Nav bar */
-nav.bg-ccl {
-    background-color: #5dc7e4;
+.gu-blue-bg {
+    background: #5dc7e4;
 }
 
 a.nav-item {

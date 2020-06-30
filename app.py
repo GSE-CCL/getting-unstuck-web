@@ -40,6 +40,10 @@ app.jinja_env.filters["get_selected"] = common.get_selected
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
+app.config["CACHE_TYPE"] = "filesystem"
+app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/results"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+
 cache = Cache(app)
 
 # Pass things to all templates
@@ -293,16 +297,35 @@ def user_id(username):
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
-    schemas = dict()
+    schema_ids = set()
     for studio in studios:
         if "challenge_id" not in studio:
             studios.remove(studio)
             break
-        schemas[studio["challenge_id"]] = schema.Challenge.objects(id=studio["challenge_id"]).first().to_mongo().to_dict()
+
+        schema_ids.add(studio["challenge_id"])
+
+    schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")
+    id_order = list(schemas.values_list("id"))
+
+    for i in range(len(id_order)):
+        id_order[i] = str(id_order[i])
+
+    schemas = schemas.as_pymongo()
+
+    new_schemas = dict()
+    for sc in schemas:
+        new_schemas[str(sc["_id"])] = sc
+    
+    # Order the studios
+    ordered_studios = [None] * len(studios)
+    for studio in studios:
+        studio["challenge_id"] = str(studio["challenge_id"])
+        ordered_studios[id_order.index(studio["challenge_id"])] = studio
 
     return render_template("prompts.html",
-                           challenges=studios,
-                           schemas=schemas)
+                           challenges=ordered_studios,
+                           schemas=new_schemas)
 
 @app.route("/summary", methods=["GET"])
 def summarize():

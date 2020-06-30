@@ -8,8 +8,8 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/strategies.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
         <!-- For facebook and twitter logos -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.typekit.net/lwk5jup.css">
 
         <!-- Favicon-->
@@ -19,12 +19,12 @@
         {% endblock %}
     </head>
     {% if section == "home" %}
-    <body style="background-color: #5dc7e4;">
+    <body class="gu-blue-bg">
     {% else %}
     <body>
     {% endif %}
         
-        <nav class="navbar navbar-expand-lg navbar-dark bg-ccl">
+        <nav class="navbar navbar-expand-lg navbar-dark gu-blue-bg">
             <div class="container-fluid">
                 <a href="/" class="navbar-left navbar-brand">
                     <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ SITE["title"] }}">
@@ -90,8 +90,12 @@
         {% endblock %}
 
 
-        <footer class="footer">
-            Getting Unstuck is a project of the <a href="https://creativecomputing.gse.harvard.edu/" target="_blank">Creative Computing Lab</a> at the Harvard Graduate School of Education &nbsp;&nbsp;&nbsp;&nbsp; <a href="https://www.facebook.com/groups/GettingUnstuckCommunity" target="_blank"><i class="fab fa-facebook-f"></i></a> &nbsp;&nbsp;<a href="https://twitter.com/scratchedteam?lang=en" target="_blank"><i class="fab fa-twitter"></i></a>
+        <footer class="footer mt-5">
+            Getting Unstuck is a project of the
+            <a href="https://creativecomputing.gse.harvard.edu/" target="_blank">Creative Computing Lab</a>
+            at the Harvard Graduate School of Education &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://www.facebook.com/groups/GettingUnstuckCommunity" target="_blank" class="fa fa-facebook-f"></a>
+            &nbsp;&nbsp;<a href="https://twitter.com/scratchedteam?lang=en" target="_blank" class="fa fa-twitter"></a>
         </footer>
 
     </body>

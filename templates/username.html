@@ -4,21 +4,18 @@
 {% block main_content %}
 <div class="row">
     <div class="col-7">
-        <br><br>
-        <div class="page-title">
-            <h4>
-                {{ username }}'s projects
-            </h4>
-        </div>
-        <p style="text-align:center"><a href="https://scratch.mit.edu/users/{{ username }}" target="_blank">View user on Scratch</a></p>
-<br>
+        <h1 class="gastromond big mt-5">
+            {{ username }}'s projects
+        </h1>
+        <p class="text-center mb-5"><a href="https://scratch.mit.edu/users/{{ username }}" target="_blank">View user on Scratch</a></p>
+
         {% if projects == []: %}
         <p>
             Oh no! It doesn&rsquo;t look like we were able to find any Getting Unstuck projects for your username. Have you added 
             your projects to each day&rsquo;s studio yet? If so, check back in tomorrow, as we download each day&rsquo;s studio every day. 
             Sorry about that!
         </p>
-        <img class="bug centered" src="{{ url_for('static', filename='img/SIGCSE_Bugs.png') }}"></img> 
+        <img class="bug centered" src="{{ url_for('static', filename='img/SIGCSE_Bugs.png') }}"> 
 
         {% else: %}
         <h5>Getting Unstuck projects:</h5>

@@ -73,8 +73,8 @@ def get_code_excerpt(project, sc, include_orphans=False):
 
         try:
             code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
-        except e:
-            logging.warn(e)
+        except:
+            logging.warn("Failed to generate a script using blocks [{}] in project {}".format(", ".join("blocks"), project["project_id"]))
             code = ""
 
         sprite = parser.get_sprite(block, scratch_data)

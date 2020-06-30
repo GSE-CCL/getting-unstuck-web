@@ -42,7 +42,7 @@ app.url_map.strict_slashes = False
 
 app.config["CACHE_TYPE"] = "filesystem"
 app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/results"
-app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+app.config["CACHE_DEFAULT_TIMEOUT"] = 1200
 
 cache = Cache(app)
 
@@ -180,10 +180,6 @@ def edit_schema(id):
     return schema_editor(id)
 
 # Studios, projects, users, challenges
-@app.route("/")
-def homepage():
-    return render_template("home.html", section="home") 
-
 @app.route("/index")
 def index():
     return render_template("index.html")
@@ -332,21 +328,31 @@ def summarize():
     return render_template("summary.html")
 
 # Static pages -- About, Strategies, Signup, Research
+@app.route("/")
+@cache.cached()
+def homepage():
+    return render_template("home.html", section="home") 
+
 @app.route("/about", methods=["GET"])
+@cache.cached()
 def about():
     return render_template("about.html")
 
 @app.route("/strategies", methods=["GET"])
+@cache.cached()
 def strategies():
     return render_template("strategies.html")
 
 @app.route("/signup", methods=["GET", "POST"])
+@cache.cached()
 def signup():
     return render_template("signup.html")
 
 @app.route("/research", methods=["GET"])
+@cache.cached()
 def research():
     return render_template("research.html")
+
 
 if __name__ == "__main__":
     app.run()

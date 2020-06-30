@@ -2,48 +2,50 @@
 {% block title %}Prompts &minus; {% endblock %}
 
 {% block main_content %}
-<div class="page-title">
-    <h1 class="gastromond big">Prompts</h1>
+<div class="row">
+    <div class="col-12">
+        <h1 class="gastromond big text-center">Prompts</h1>
+
+        <p>
+            Every day, we send out a playful prompt that invites you to explore an idea, create a Scratch project, share that
+            project to a daily studio, and reflect on what you&rsquo;ve made. Check back here or sign up for the mailing list to find out 
+            about each day&rsquo;s prompt! Already participating in Getting Unstuck?
+            <a href="/index">Learn more about what you&rsquo;ve made here.</a>
+        </p>
+
+        <table class="table table-bordered">
+            <tbody>
+                {% for challenge in challenges: %}
+                    <tr>
+                        <th scope="row" colspan="2">
+                            {% if "short_label" in schemas[challenge["challenge_id"]]: %}
+                                {{ schemas[challenge["challenge_id"]]["short_label"] }}
+                            {% else: %}
+                                {{ loop.index }}
+                            {% endif %}
+                        </th>
+                        <td style="padding-bottom: 8px">
+                            {% if "description" in schemas[challenge["challenge_id"]]: %}
+                            <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
+                            {% else: %}
+                            <p>{{ challenge["description"] }}</p>
+                            {% endif %}
+
+                            <div class="container">
+                                <div class="row table-link">
+                                    <div class="col-sm">
+                                        <a href="/studio/{{ challenge['studio_id'] }}">Find your project</a>
+                                    </div>
+                                    <div class="col-sm">
+                                        <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<p>
-    Every day, we send out a playful prompt that invites you to explore an idea, create a Scratch project, share that
-    project to a daily studio, and reflect on what you&rsquo;ve made. Check back here or sign up for the mailing list to find out 
-    about each day&rsquo;s prompt! Already participating in Getting Unstuck?
-    <a href="/index">Learn more about what you&rsquo;ve made here.</a>
-</p>
-
-<table class="table table-bordered">
-    <tbody>
-        {% for challenge in challenges: %}
-            <tr>
-                <th scope="row" colspan="2">
-                    {% if "short_label" in schemas[challenge["challenge_id"]]: %}
-                        {{ schemas[challenge["challenge_id"]]["short_label"] }}
-                    {% else: %}
-                        {{ loop.index }}
-                    {% endif %}
-                </th>
-                <td style="padding-bottom: 8px">
-                    {% if "description" in schemas[challenge["challenge_id"]]: %}
-                    <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
-                    {% else: %}
-                    <p>{{ challenge["description"] }}</p>
-                    {% endif %}
-
-                    <div class="container">
-                        <div class="row table-link">
-                            <div class="col-sm">
-                                <a href="/studio/{{ challenge['studio_id'] }}">Find your project</a>
-                            </div>
-                            <div class="col-sm">
-                                <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
 {% endblock %}

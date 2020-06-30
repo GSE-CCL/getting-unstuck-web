@@ -17,13 +17,13 @@
     <tbody>
         {% for challenge in challenges: %}
             <tr>
-                <td>
+                <th scope="row" colspan="2">
                     {% if "short_label" in schemas[challenge["challenge_id"]]: %}
-                    <h2>{{ schemas[challenge["challenge_id"]]["short_label"] }}</h2>
+                        {{ schemas[challenge["challenge_id"]]["short_label"] }}
                     {% else: %}
-                    <h2>{{ loop.index }}</h2>
+                        {{ loop.index }}
                     {% endif %}
-                </td>
+                </th>
                 <td style="padding-bottom: 8px">
                     {% if "description" in schemas[challenge["challenge_id"]]: %}
                     <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>

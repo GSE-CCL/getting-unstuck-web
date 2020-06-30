@@ -153,6 +153,7 @@ def set_info(page, form):
                                            required_text_failure=form["required_text_failure"],
                                            short_label=short_label,
                                            comparison_basis=form["comparison_basis"],
+                                           stats=form["stats"],
                                            title=title,
                                            description=description,
                                            text=form["text"])
@@ -163,15 +164,17 @@ def set_info(page, form):
             else:
                 try:
                     doc = schema.Challenge.objects(id = form["id"]).first()
-                    doc.short_label=short_label
-                    doc.comparison_basis=form["comparison_basis"]
+                    doc.short_label = short_label
+                    doc.comparison_basis = form["comparison_basis"]
+                    doc.stats = form["stats"]
                     doc.title = title
                     doc.description = description
                     doc.text = schema.ResultText(explanation=form["text"]["explanation"],
                                                     concluding_text=form["text"]["concluding_text"],
                                                     comparison_reflection_text=form["text"]["comparison_reflection_text"],
                                                     comparison_framing_text=form["text"]["comparison_framing_text"],
-                                                    prompt_framing_text=form["text"]["prompt_framing_text"])
+                                                    prompt_framing_text=form["text"]["prompt_framing_text"],
+                                                    stats_framing_text=form["text"]["stats_framing_text"])
                     doc.min_instructions_length = form["mins"]["instructions_length"]
                     doc.min_description_length = form["mins"]["description_length"]
                     doc.min_comments_made = form["mins"]["comments_made"]

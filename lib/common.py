@@ -1,3 +1,4 @@
+from ccl_scratch_tools import Parser
 import json
 import markdown
 import mongoengine as mongo
@@ -51,3 +52,32 @@ def md(text):
     html = markdown.markdown(text)
 
     return html
+
+
+# Jinja filters
+def twodec(value):
+    return f"{value:,.2f}"
+
+def indexOf(lst, value):
+    return lst.index(value)
+
+def pluralize(item):
+    if type(item) == list:
+        return "s" if len(item) != 1 else ""
+    else:
+        return "s" if int(item) != 1 else ""
+
+def human_block(opcode):
+    return Parser().get_block_name(opcode)
+
+def get_selected(stat):
+    selected = set()
+    if "/blocks" in stat or "/block_categories" in stat:
+        s = stat.split("/")
+        selected.add("/".join(s[0:2]))
+        selected.add(s[1])
+        selected.add(s[-1])
+    else:
+        selected.add(stat)
+
+    return selected

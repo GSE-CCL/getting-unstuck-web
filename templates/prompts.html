@@ -3,68 +3,46 @@
 
 {% block main_content %}
 <div class="page-title">
-    <h4>
-        Prompts
-    </h4>
+    <h1 class="gastromond big">Prompts</h1>
 </div>
-<p>Every day, we send out a playful prompt that invites you to explore an idea, create a Scratch project, share that
-    project to a daily studio, and reflect on what you've made. Check back here or sign up for the mailing list to find out 
-    about each day's prompt! Already participating in Getting Unstuck? <a href="/index">Learn more about what you've made here.</a></p>
-    <table class="table table-bordered">
-        <tbody>
-            {% for challenge in challenges: %}
-                <tr>
-                    <th scope="row" colspan="2">{{ loop.index }}</th>
-                    <td style="padding-bottom: 8px">
-                        {% if "description" in schemas[challenge["challenge_id"]]: %}
-                        <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
-                        {% else: %}
-                        <p>{{ challenge["description"] }}</p>
-                        {% endif %}
+<p>
+    Every day, we send out a playful prompt that invites you to explore an idea, create a Scratch project, share that
+    project to a daily studio, and reflect on what you&rsquo;ve made. Check back here or sign up for the mailing list to find out 
+    about each day&rsquo;s prompt! Already participating in Getting Unstuck?
+    <a href="/index">Learn more about what you&rsquo;ve made here.</a>
+</p>
 
-                        <div class="container">
-                            <div class="row table-link">
-                                <div class="col-sm">
-                                    <a href="/studio/{{ challenge['studio_id'] }}">See the email</a>
-                                </div>
-                                <div class="col-sm">
-                                    <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
-                                </div>
+<table class="table table-bordered">
+    <tbody>
+        {% for challenge in challenges: %}
+            <tr>
+                <td>
+                    {% if "short_label" in schemas[challenge["challenge_id"]]: %}
+                    <h2>{{ schemas[challenge["challenge_id"]]["short_label"] }}</h2>
+                    {% else: %}
+                    <h2>{{ loop.index }}</h2>
+                    {% endif %}
+                </td>
+                <td style="padding-bottom: 8px">
+                    {% if "description" in schemas[challenge["challenge_id"]]: %}
+                    <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
+                    {% else: %}
+                    <p>{{ challenge["description"] }}</p>
+                    {% endif %}
+
+                    <div class="container">
+                        <div class="row table-link">
+                            <div class="col-sm">
+                                <a href="/studio/{{ challenge['studio_id'] }}">Find your project</a>
+                            </div>
+                            <div class="col-sm">
+                                <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
                             </div>
                         </div>
-                    </td>
-
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-
-
-<!-- 
-{% for challenge in challenges: %}
-<div class="row mt-2">
-    <div class="col-3">
-        {% if "title" in schemas[challenge["challenge_id"]]: %}
-        <h4>{{ schemas[challenge["challenge_id"]]["title"] }}</h4>
-        {% else: %}
-        <h4>{{ challenge["title"] }}</h4>
-        {% endif %}
-
-        <ul class="list-unstyled">
-            <li><a href="/studio/{{ challenge['studio_id'] }}">View studio analysis</a></li>
-            <li><a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">View studio on Scratch</a></li>
-        </ul>
-    </div>
-    <div class="col-9">
-        {% if "description" in schemas[challenge["challenge_id"]]: %}
-        <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
-        {% else: %}
-        <p>{{ challenge["description"] }}</p>
-        {% endif %}
-    </div>
-</div>
-{% endfor %} -->
-
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

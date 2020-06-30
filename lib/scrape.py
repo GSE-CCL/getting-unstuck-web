@@ -1,12 +1,15 @@
 from . import common as common
-from . import schema, settings
+from .settings import CONVERT_URL, PROJECT_DIRECTORY
+from . import display, schema, settings
 from ccl_scratch_tools import Parser, Scraper
 from datetime import datetime, timedelta
 from math import inf
 import celery.decorators
+import jinja2
 import json
 import logging
 import mongoengine as mongo
+import nltk.tokenize
 import os
 import random
 import requests
@@ -35,6 +38,7 @@ class Project(mongo.Document):
     validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
+    reload_page = mongo.BooleanField(default=False)
 
 class Studio(mongo.Document):
     studio_id = mongo.IntField(required=True, unique=True)
@@ -78,7 +82,7 @@ def get_project(project_id, cache_directory=None, credentials_file=settings.DEFA
     # Get project from cache
     if cache_directory is not None:
         scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
-        if scratch_data == {}:
+        if scratch_data == {} and "studio_id" in db:
             add_project(project_id, studio_id=db["studio_id"], cache_directory=cache_directory, credentials_file=credentials_file)
             scratch_data = get_project_from_cache(project_id, cache_directory=cache_directory)
 
@@ -97,7 +101,7 @@ def get_project_from_cache(project_id, cache_directory=settings.CACHE_DIRECTORY)
     """
 
     try:
-        with open("{0}/{1}.json".format(cache_directory, project_id)) as f:
+        with open("{0}/projects/{1}.json".format(cache_directory, project_id)) as f:
             scratch_data = json.load(f)
     except:
         scratch_data = dict()
@@ -164,6 +168,31 @@ def get_projects_with_category(category, count=1, project_id=0, studio_id=0, cre
     return category_present
 
 
+def get_reload_project(pid):
+    """Returns whether to reload the project result page regardless of the cache state.
+    
+    Args:
+        pid (int): the project ID.
+    
+    Returns:
+        True, if should be reloaded. Else, False.
+    """
+
+    connect_db()
+    project = Project.objects(project_id=pid)
+    
+    try:
+        p = project.first()
+        r = "reload_page" in p and p["reload_page"]
+        if r:
+            p["reload_page"] = False
+            p.save()
+
+        return r
+    except:
+        return False
+
+      
 def get_studio(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Retrieves a studio from database.
     
@@ -194,6 +223,25 @@ def get_studio(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
 
     return db
 
+
+def set_reload_page(pid):
+    """Sets a project to reload result page regardless of cache state.
+    
+    Args:
+        pid (int): project ID.
+    
+    Returns:
+        True, if successful. Else, False.
+    """
+
+    connect_db()
+
+    try:
+        p = Project.objects(project_id=pid).first()
+        p["reload_page"] = True
+        p.save()
+    except:
+        return False
   
 def add_comments(project_id, username, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Inserts a project's comments into the database. These are public comments on the project itself, not code comments.
@@ -229,7 +277,7 @@ def add_comments(project_id, username, credentials_file=settings.DEFAULT_CREDENT
             )
             doc.save()
 
-    logging.info("successfully scraped comments for project {}".format(project_id))
+    logging.debug("successfully scraped comments for project {}".format(project_id))
 
 
 def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
@@ -266,11 +314,12 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     # Save to cache if needed
     if cache_directory is not None:
-        with open("{0}/{1}.json".format(cache_directory, project_id), "w") as f:
-            try:
-                json.dump(scratch_data, f)
-            except:
-                raise IOError("Couldn't write the JSON file to directory {0}".format(cache_directory))
+        if scraper.make_dir(f"{cache_directory}/projects"):
+            with open("{0}/projects/{1}.json".format(cache_directory, project_id), "w") as f:
+                try:
+                    json.dump(scratch_data, f)
+                except:
+                    raise IOError("Couldn't write the JSON file to directory {0}".format(cache_directory))
 
     # Parse the project using the parser class
     try:
@@ -339,7 +388,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             doc.validation[str(challenge["challenge_id"])] = validation
             doc.save()
 
-    logging.info("successfully scraped project {}".format(project_id))
+    logging.debug("successfully scraped project {}".format(project_id))
 
     return True
 
@@ -399,8 +448,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
 
         # Add all the projects
         project_ids = scraper.get_projects_in_studio(studio_id)
-        for project in project_ids:
+        for i, project in enumerate(project_ids):
             add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
+            if i % 10 == 0:
+                logging.info("completed {}/{} projects in studio {}".format(i, len(project_ids), studio_id))
 
         stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
@@ -413,21 +464,10 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
         logging.info("successfully scraped studio {}".format(studio_id))
 
 
-def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
-    """Returns a dictionary of statistics about a studio.
-    
-    Args:
-        studio_id (int): the ID of the studio to scrape.
-        credentials_file (str): path to the database credentials file.
-    
-    Returns:
-        A dictionary of statistics, including mean, min, and max.
-    """
-    
-    connect_db(credentials_file=credentials_file)
-    projects = Project.objects(studio_id=studio_id)
-    
-    stats = {
+def get_default_studio_stats():
+    """Returns the default studio stats dictionary."""
+
+    return {
         "mean": {
             "description": 0,
             "instructions": 0,
@@ -436,8 +476,7 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
             "block_categories": {},
             "costumes": 0,
             "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
+            "variables": 0
         },
         "min": {
             "description": 0,
@@ -447,8 +486,7 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
             "block_categories": {},
             "costumes": 0,
             "sounds": 0,
-            "variables": 0,
-            "number_projects": len(projects)
+            "variables": 0
         },
         "max": {
             "description": 0,
@@ -458,10 +496,42 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
             "block_categories": {},
             "costumes": 0,
             "sounds": 0,
+            "variables": 0
+        },
+        "total": {
+            "description_words": 0,
+            "instructions_words": 0,
+            "blocks": {},
+            "block_count": 0,
+            "block_categories": {},
+            "comments_left": 0,
+            "costumes": 0,
+            "sounds": 0,
             "variables": 0,
-            "number_projects": len(projects)
+            "number_projects": 0
         }
     }
+
+
+def get_studio_stats(studio_id, credentials_file="secure/db.json"):
+    """Returns a dictionary of statistics about a studio.
+    
+    Args:
+        studio_id (int): the ID of the studio to scrape.
+        credentials_file (str): path to the database credentials file.
+    
+    Returns:
+        A dictionary of statistics, including mean, min, and max.
+    """
+
+    logging.info("calculating statistics for studio {}".format(studio_id))
+    
+    connect_db(credentials_file=credentials_file)
+    projects = Project.objects(studio_id=studio_id)
+    
+    stats = get_default_studio_stats()
+    for key in stats:
+        stats[key]["number_projects"] = len(projects)
 
     # Calculate mean values
     no_direct_average = ["blocks", "block_categories", "number_projects"]
@@ -497,15 +567,35 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
             stats["min"]["block_categories"][cat] = min(stats["min"]["block_categories"][cat], project["stats"]["categories"][cat])
             stats["max"]["block_categories"][cat] = max(stats["max"]["block_categories"][cat], project["stats"]["categories"][cat])
     
+    # Handle means, totals for top-level keys
     for key in stats["mean"]:
         if key not in no_direct_average:
+            if key in stats["total"]:
+                stats["total"][key] = stats["mean"][key]
             if len(projects) > 0:
                 stats["mean"][key] /= len(projects)
+
+    # Handle means, totals for blocks
     for block in stats["mean"]["blocks"]:
+        stats["total"]["blocks"][block] = stats["mean"]["blocks"][block]
+        stats["total"]["block_count"] += stats["mean"]["blocks"][block]
         if len(projects) > 0:
             stats["mean"]["blocks"][block] /= len(projects)
+
+    # Handle means, totals for block categories
     for cat in stats["mean"]["block_categories"]:
+        stats["total"]["block_categories"][cat] = stats["mean"]["block_categories"][cat]
         if len(projects) > 0:
             stats["mean"]["block_categories"][cat] /= len(projects)
+
+    # Get total comments left on projects
+    pids = projects.all().values_list("project_id")
+    stats["total"]["comments_left"] = Comment.objects(project_id__in=pids).count()
+
+    # Get total words left in instructions and descriptions
+    for project in projects:
+        stats["total"]["description_words"] += len(nltk.tokenize.word_tokenize(project["description"]))
+        stats["total"]["instructions_words"] += len(nltk.tokenize.word_tokenize(project["instructions"]))
+
 
     return stats

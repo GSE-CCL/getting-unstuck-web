@@ -7,6 +7,7 @@ import time
 import random
 import urllib
 from flask import Flask, redirect, render_template, request, session
+from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
@@ -19,10 +20,11 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, SITE
 
 
 app = Flask(__name__)
+
 try:
     celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
 except:
@@ -30,27 +32,19 @@ except:
 
 parser = Parser()
 
-def twodec(value):
-    return f"{value:,.2f}"
-
-def indexOf(lst, value):
-    return lst.index(value)
-
-def pluralize(item):
-    if type(item) == list:
-        return "s" if len(item) != 1 else ""
-    else:
-        return "s" if int(item) != 1 else ""
-
-def human_block(opcode):
-    return parser.get_block_name(opcode)
-
-app.jinja_env.filters["twodec"] = twodec
-app.jinja_env.filters["indexOf"] = indexOf
-app.jinja_env.filters["pluralize"] = pluralize
-app.jinja_env.filters["human_block"] = human_block
+app.jinja_env.filters["twodec"] = common.twodec
+app.jinja_env.filters["indexOf"] = common.indexOf
+app.jinja_env.filters["pluralize"] = common.pluralize
+app.jinja_env.filters["human_block"] = common.human_block
+app.jinja_env.filters["get_selected"] = common.get_selected
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
+
+app.config["CACHE_TYPE"] = "filesystem"
+app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/results"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 300
+
+cache = Cache(app)
 
 # Pass things to all templates
 @app.context_processor
@@ -154,9 +148,11 @@ def schema_editor(id):
         "required_text": [],
         "required_block_categories": {},
         "required_blocks": [],
+        "stats": [],
         "text": {},
         "comparison_basis": {"basis": "__none__", "priority": None}
     }
+
     if id != "__new__":
         common.connect_db()
         data = schema.Challenge.objects(id = id).first().to_mongo()
@@ -164,14 +160,17 @@ def schema_editor(id):
     blocks = parser.block_data
     block_list = list()
     block_dict = dict()
+
     for cat in blocks:
         block_list += blocks[cat].keys()
+
         for block in blocks[cat]:
             block_dict[blocks[cat][block].lower().replace(" ", "")] = block
-    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id)
+
+    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, stats=scrape.get_default_studio_stats())
 
 @app.route("/admin/schemas/edit", methods=["GET"])
-#@admin_required
+@admin_required
 def add_schema():
     return schema_editor("__new__")
 
@@ -220,9 +219,26 @@ def project_download():
         return "False"
 
 
+@app.route("/project/r/<pid>")
+def reload_project(pid):
+    try:
+        pid = int(pid)
+    except:
+        pid = 0
+
+    scrape.set_reload_page(pid)
+    return redirect("/project/{}".format(pid))
+
+
+@app.route("/project/<pid>/view", methods=["GET"])
+@cache.cached(timeout=PROJECT_CACHE_LENGTH, forced_update=scrape.get_reload_project)
+def project__id(pid):
+    return display.get_project_page(pid, CACHE_DIRECTORY)
+
+
 @app.route("/project/<pid>", methods=["GET"])
 def project_id(pid):
-    return display.get_project_page(pid, CACHE_DIRECTORY)
+    return render_template("project_loader.html")
 
 
 @app.route("/studio", methods=["GET", "POST"])
@@ -281,16 +297,35 @@ def user_id(username):
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
-    schemas = dict()
+    schema_ids = set()
     for studio in studios:
         if "challenge_id" not in studio:
             studios.remove(studio)
             break
-        schemas[studio["challenge_id"]] = schema.Challenge.objects(id=studio["challenge_id"]).first().to_mongo().to_dict()
+
+        schema_ids.add(studio["challenge_id"])
+
+    schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")
+    id_order = list(schemas.values_list("id"))
+
+    for i in range(len(id_order)):
+        id_order[i] = str(id_order[i])
+
+    schemas = schemas.as_pymongo()
+
+    new_schemas = dict()
+    for sc in schemas:
+        new_schemas[str(sc["_id"])] = sc
+    
+    # Order the studios
+    ordered_studios = [None] * len(studios)
+    for studio in studios:
+        studio["challenge_id"] = str(studio["challenge_id"])
+        ordered_studios[id_order.index(studio["challenge_id"])] = studio
 
     return render_template("prompts.html",
-                           challenges=studios,
-                           schemas=schemas)
+                           challenges=ordered_studios,
+                           schemas=new_schemas)
 
 @app.route("/summary", methods=["GET"])
 def summarize():

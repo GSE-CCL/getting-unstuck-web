@@ -248,6 +248,10 @@ ul {
 }
 
 /* Project inspirations */
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: ">>";
+}
 /* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
 .tabs {
     display: flex;

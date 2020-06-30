@@ -513,7 +513,7 @@ def get_default_studio_stats():
     }
 
 
-def get_studio_stats(studio_id, credentials_file="secure/db.json"):
+def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Returns a dictionary of statistics about a studio.
     
     Args:

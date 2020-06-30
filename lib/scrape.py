@@ -9,11 +9,16 @@ import jinja2
 import json
 import logging
 import mongoengine as mongo
-import nltk.tokenize
 import os
 import random
 import requests
 import threading
+
+try:
+    import nltk.tokenize
+    USE_SPLIT = False
+except:
+    USE_SPLIT = True
 
 
 connect_db = common.connect_db
@@ -594,8 +599,15 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
 
     # Get total words left in instructions and descriptions
     for project in projects:
-        stats["total"]["description_words"] += len(nltk.tokenize.word_tokenize(project["description"]))
-        stats["total"]["instructions_words"] += len(nltk.tokenize.word_tokenize(project["instructions"]))
+        if USE_SPLIT:
+            desc = project["description"].split(" ")
+            inst = project["instructions"].split(" ")
+        else:
+            desc = nltk.tokenize.word_tokenize(project["description"])
+            inst = nltk.tokenize.word_tokenize(project["instructions"])
+
+        stats["total"]["description_words"] += len(desc)
+        stats["total"]["instructions_words"] += len(inst)
 
 
     return stats

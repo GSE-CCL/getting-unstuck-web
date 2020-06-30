@@ -163,13 +163,16 @@
         <div class="md">
             {{ schema["text"]["stats_framing_text"]|safe }}
         </div>
-        <div class="row sprite-container">
-            {% for stat in studio["stats"]: %}
-            <div class="col-md text-center p-3">
-                <h1 class="gastromond">{{ stat["value"]|twodec }}</h1>
-                <p>{{ stat["name"]|safe }}</p>
+        
+        <div class="container">
+            <div class="row code-gray">
+                {% for stat in studio["stats"]: %}
+                <div class="col-md text-center py-3">
+                    <h1 class="gastromond">{{ stat["value"]|twodec }}</h1>
+                    <p>{{ stat["name"]|safe }}</p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
         {% endif %}
 

@@ -1,6 +1,7 @@
 from . import common as common
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, session
+import logging
 import mongoengine as mongo
 import random
 
@@ -72,7 +73,8 @@ def get_code_excerpt(project, sc, include_orphans=False):
 
         try:
             code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
-        except:
+        except e:
+            logging.warn(e)
             code = ""
 
         sprite = parser.get_sprite(block, scratch_data)

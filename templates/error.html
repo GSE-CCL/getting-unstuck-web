@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}An error! &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-4">
+        <h1 class="gastromond big">Oh no!</h1>
+        <p>We had a problem loading this page. Sorry about that.</p>
+    </div>
+    <div class="col-2">
+        <code class="_sb">
+            {{ scratch }}
+        </code>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <h2>More information</h2>
+        <p>Here&rsquo;s what we know:</p>
+        <p>The site experienced <strong>{{ error.code }}: {{ error.name }}</strong>.</p>
+        <p>
+            Please reference error <strong>{{ saved }}</strong> if you contact us for support.
+            It&rsquo;ll help us figure out what went wrong (probably using one of the
+            <a href="/strategies">strategies</a> listed on this site!).
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+<script src="/static/js/sb.js"></script>
+{% endblock %}

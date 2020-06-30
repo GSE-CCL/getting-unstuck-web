@@ -33,7 +33,7 @@
         {{ schema["text"]["prompt_framing_text"]|safe }}
         </div>
 
-        <div class="md">{{ prompt["description"] }}</div>
+        <blockquote class="blockquote mx-5">{{ prompt["description"] }}</blockquote>
 
         <div class="md">
         {{ schema["text"]["explanation"]|safe }}
@@ -166,8 +166,6 @@
             {% endif %}
             {% endfor %}
         </div>
-
-        <!-- <p class="mt-1">&nbsp;</p> -->
 
         <!-- Reflect on the projects shown -->
         <div class="md">

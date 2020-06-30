@@ -89,10 +89,6 @@ option:disabled {
     font-weight: bold;
 }
 
-.page-title {
-    text-align: center;
-}
-
 .vert-center {
     display:flex;
     flex-direction:column;

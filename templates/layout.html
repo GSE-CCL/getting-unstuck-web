@@ -8,14 +8,26 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/strategies.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-        <!-- For facebook and twitter logos -->
         <link rel="stylesheet" href="https://use.typekit.net/lwk5jup.css">
 
         <!-- Favicon-->
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
 
+        <!-- Meta -->
+        <meta property="og:url" content="{{ request.url }}">
+        <meta property="og:image" content="{{ request.host_url }}static/img/social.png">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@ScratchEdTeam">
+        <meta name="twitter:image" content="{{ request.host_url }}static/img/social.png">
+
         {% block head %}
+        <meta name="og:title" content="{{ SITE['title'] }}">
+        <meta name="description" content="{{ SITE['description'] }}">
+        <meta name="og:description" content="{{ SITE['description'] }}">
+        <meta name="author" content="{{ SITE['author'] }}">
+
+        <meta name="twitter:title" content="{{ SITE['title'] }}">
+        <meta name="twitter:description" content="{{ SITE['description'] }}">
         {% endblock %}
     </head>
     {% if section == "home" %}

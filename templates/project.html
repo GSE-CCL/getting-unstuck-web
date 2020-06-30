@@ -1,14 +1,24 @@
 {% extends "layout.html" %}
 {% block title %}{{ project["title"] }} &minus; {% endblock %}
 
-{% block main_content %}
+{% set share_text = "Check out the project I made for Getting Unstuck!" %}
+{% block head %}
+<meta name="og:title" content="{{ project['title'] }} by @{{ project['author'] }} - Getting Unstuck">
+<meta name="description" content="This is {{ project['title'] }} by @{{ project['author'] }}, created as part of Getting Unstuck. {{ SITE['description'] }}">
+<meta name="og:description" content="This is {{ project['title'] }} by @{{ project['author'] }}, created as part of Getting Unstuck. {{ SITE['description'] }}">
+<meta name="author" content="Project by {{ project['author'] }}, analyzed by {{ SITE['author'] }}.">
 
+<meta name="twitter:title" content="{{ project['title'] }} by @{{ project['author'] }} - Getting Unstuck">
+<meta name="twitter:description" content="{{ share_text }}">
+{% endblock %}
+
+{% block main_content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/user/{{ project["author"] }}">Your Projects</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{ project["title"] }}</li>
+        <li class="breadcrumb-item"><a href="/user/{{ project["author"] }}">Your Projects</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ project["title"] }}</li>
     </ol>
-  </nav>
+</nav>
 
 <div class="row">
     <div class="col-12">
@@ -106,7 +116,6 @@
                     </a>
                 </p>
         </div>
-        
     </div>
 
     {% else: %}
@@ -197,12 +206,19 @@
 
         <p class="m-5">&nbsp;</p>
 
+        <p class="h4">
+            <a class="btn btn-primary round-btn fa fa-facebook-f" target="_blank" href="https://www.facebook.com/dialog/share?app_id=652197795370441&display=popup&href={{ request.url|urlencode }}&redirect_uri={{ request.url|urlencode }}"></a>
+            <a class="btn btn-primary round-btn fa fa-twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}"></a>
+        </p>
+
         <!-- What to say if scraping not done -->
         {% else %}
         <p>Once we can compare your project to the studio it&rsquo;s in, we&rsquo;ll give you some feedback!</p>
         {% endif %}
     </div>
 </div>
+{% endblock %}
 
+{% block end_file %}
 <script src="/static/js/sb.js"></script>
 {% endblock %}

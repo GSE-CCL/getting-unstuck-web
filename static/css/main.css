@@ -248,6 +248,10 @@ ul {
 }
 
 /* Project inspirations */
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: ">>";
+}
 /* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
 .tabs {
     display: flex;
@@ -267,26 +271,37 @@ ul {
     text-align: center;
     font-size: 18px;
     color: rgb(70, 69, 69);
-    border: 1px solid #d8d8d8;
+    border: 1px solid #A6A8AB;
 }
   
 .label:hover {
-    background: #d8d8d8;
+    background: #E6E7E8;
 }
   
 .label:active {
     background: #ccc;
+    box-shadow: inset 0px 0px 0px 2px #F9D344;
 }
 
+/* yellow: F9D344  gray: A6A8AB */
+
 .input:focus + .label {
-    box-shadow: inset 0px 0px 0px 3px #2aa1c0;
+    box-shadow: inset 0px 0px 0px 2px #F9D344;
     z-index: 1;
 }
 
 .input:checked + .label {
+    border: 0px !important;
     background: #fff;
+    box-shadow: inset 0px 0px 0px 2px #F9D344;
     color: #000;
 }
+
+@media (min-width: 600px) {
+    .label {
+      width: auto;
+    }
+  }
 
 .panel {
     display: none;
@@ -294,7 +309,7 @@ ul {
     background: #fff;
 }
   
-@media (min-width: 900px) {
+@media (min-width: 600px) {
     .panel {
         order: 99;
     }

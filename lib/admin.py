@@ -19,8 +19,8 @@ def get_info(page):
     
     Returns:
         A dictionary mapping keys of information to whatever that information is.
-            Empty dictionary if not a valid admin page name.
-            Purposely broad so as to be abstract-ish.
+        Empty dictionary if not a valid admin page name.
+        Purposely broad so as to be abstract-ish.
     """
     info = dict()
     if page in VALID_ADMIN_PAGES:

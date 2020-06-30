@@ -3,7 +3,7 @@ from datetime import datetime
 import mongoengine as mongo
 from mongoengine.queryset.visitor import Q
 
-from . import scrape
+from . import scrape, settings
 
 connect_db = common.connect_db
 
@@ -90,7 +90,7 @@ def add_schema(mins={},
                title=None,
                description=None,
                text={},
-               credentials_file="secure/db.json"):
+               credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
     
     Args:
@@ -189,7 +189,7 @@ def add_schema(mins={},
         return False
 
 
-def get_schema(schema_id, credentials_file="secure/db.json"):
+def get_schema(schema_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Gets a schema from the database.
     
     Args:
@@ -211,7 +211,7 @@ def get_schema(schema_id, credentials_file="secure/db.json"):
     return schema
 
 
-def validate_project(schema, project, studio_id, credentials_file="secure/db.json"):
+def validate_project(schema, project, studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Determines if the project meets the standards of a given schema.
     
     Args:

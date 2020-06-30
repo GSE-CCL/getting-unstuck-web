@@ -17,8 +17,8 @@
 
         <form action="/redirect" method="GET">
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" placeholder="Scratch username">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" placeholder="Scratch username" style="float: right;">
                     <small id="usernameHelp" class="form-text text-muted">
                         Not sure? This should appear in the top right of your screen
                         when you go to <a href="https://scratch.mit.edu">scratch.mit.edu</a>
@@ -26,15 +26,15 @@
                         to log into Scratch.
                     </small>
                 </div>
+                <div style="overflow: hidden; padding-right: .5em;">
+                    <button type="submit" class="input-group-btn inline btn btn-primary button round-btn">SUBMIT</button>
+                </div>
             </div>
-            <br>
-            <div class="text-center">
-                <button type="submit" class="input-group-btn inline btn btn-primary button round-btn text-center">SUBMIT</button>
-            </div>
+            
         </form>
     </div>
     <div class="col-6">
-        <img src="{{ url_for('static', filename='img/site-page.png') }}" class="mt-4 ml-5 w-50">
+        <img src="{{ url_for('static', filename='img/define-repeat.png') }}" class="mt-4 ml-5 w-75">
     </div>
 </div>
 

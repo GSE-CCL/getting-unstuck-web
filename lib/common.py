@@ -1,10 +1,10 @@
 from ccl_scratch_tools import Parser
-
+import json
 import markdown
 import mongoengine as mongo
-import json
+from lib import settings
 
-def connect_db(credentials_file="secure/db.json"):
+def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Connects to MongoDB using credentials.
     
     Args:

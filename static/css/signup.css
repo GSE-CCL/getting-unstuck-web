@@ -1,0 +1,58 @@
+/* signup.html CSS page */
+.form {
+    padding: 0em 3em 0em 3em;
+  }
+  
+  .form-input {
+    width: 24em;
+    height: 5em;
+  }
+  
+  .form-container{
+    width: 50%;
+  }
+  
+  .form-section{
+    padding-top: 0.5rem;
+  }
+  
+  .form-checkboxes{
+    padding-top: 0.5rem;
+    font-weight: normal;
+  }
+  
+  .form-checkboxes ul li:first-child {
+    margin-top: 0.5em;
+  }
+  
+  .form-checkboxes ul li {
+    margin-bottom: 0;
+  }
+  
+  .form-checkboxes ul li label {
+    display: inline;
+    padding-left: 1em;
+  }
+  
+  input{
+    margin-bottom: 0em;
+  }
+  
+  #signup{
+      background-color: whitesmoke;
+      margin-bottom: 2em;
+  }
+  
+  #subscribe-button{
+    text-indent: 0%!important; 
+    width: 45%!important;
+    padding: 4px 0px 4px 0px!important;
+  }
+  
+  .textarea{
+    width:100%;
+  }
+
+  .input-group {
+      display:block;
+  }

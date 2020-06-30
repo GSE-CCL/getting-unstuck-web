@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}Error details &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col">
+        {% if error["status"] == "closed": %}
+        {% set badge_color = "badge-success" %}
+        {% else: %}
+        {% set badge_color = "badge-warning" %}
+        {% endif %}
+
+        <p class="h5 mb-2"><span class="badge {{ badge_color }}">{{ error["status"] }}</span></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <h1>Error {{ error["error_code"] }}</h1>
+        <small>{{ error["id"] 
+            }}</small>
+        <p>occurred at <strong>{{ error["timestamp"] }}</strong></p>
+        <p class="mb-0">while accessing:</p>
+        <p><a href="{{ error['url'] }}" target="_blank">{{ error["url"] }}</a></p>
+
+        <h6 class="mt-5">Create an issue on Github:</h6>
+        <p>
+            <a class="btn btn-primary round-btn" target="_blank" href="https://github.com/GSE-CCL/getting-unstuck-web/issues/new?title={{ issue['title']|urlencode }}&body={{ issue['body']|urlencode }}&labels=bug">
+                GSE-CCL/getting-unstuck-web
+            </a>
+        </p>
+        <p>
+            <a class="btn btn-primary round-btn" target="_blank" href="https://github.com/GSE-CCL/scratch-tools/issues/new?title={{ issue['title']|urlencode }}&body={{ issue['body']|urlencode }}&labels=bug">
+                GSE-CCL/scratch-tools
+            </a>
+        </p>
+        <p>
+            <a class="btn btn-primary round-btn" target="_blank" href="https://github.com/GSE-CCL/scratch-to-blocks/issues/new?title={{ issue['title']|urlencode }}&body={{ issue['body']|urlencode }}&labels=bug">
+                GSE-CCL/scratch-to-blocks
+            </a>
+        </p>
+    </div>
+    <div class="col-md-7">
+        <h2>Traceback</h2>
+        <pre class="pre-scrollable">
+            <code>{{ error["traceback"] }}</code>
+        </pre>
+        <form action="/admin/errors" method="POST">
+            <input type="hidden" name="identifier" value="{{ error['id'] }}">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="redirect" value="/admin/errors">
+            <button type="submit" class="btn btn-primary round-btn">{% if error["status"] == "closed": %}Open{% else: %}Close{% endif %} error</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

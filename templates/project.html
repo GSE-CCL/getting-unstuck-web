@@ -43,7 +43,7 @@
         {{ schema["text"]["prompt_framing_text"]|safe }}
         </div>
 
-        <blockquote class="blockquote mx-5">{{ prompt["description"] }}</blockquote>
+        <blockquote class="blockquote mx-2 mx-md-5">{{ prompt["description"] }}</blockquote>
 
         <div class="md">
         {{ schema["text"]["explanation"]|safe }}
@@ -100,21 +100,21 @@
 <div class="row justify-content-center ml-3 mr-3">
     <!-- User's code excerpt -->
     {% if excerpts[project["project_id"]]["code"] != "": %}
-    <div class="col-6 code-gray mr-3">
-        <div class="pt-3 overflow-auto">
+    <div class="col-md-6 code-gray mr-md-3">
+        <div class="py-3 overflow-auto">
             <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
         </div>
     </div>
-    <div class="col-3 vert-center ml-3">
-            <div class="sprite-container vert-center">
+    <div class="col-md-3 vert-center ml-md-3 mt-3 mt-md-0">
+        <div class="sprite-container vert-center">
+            <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
+                <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
+            </a>
+            <p class="w-100 text-center">
                 <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                    <img src="{{ excerpts[project["project_id"]]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
+                    {{ excerpts[project["project_id"]]["sprite"]["name"] }}
                 </a>
-                <p class="w-100 text-center">
-                    <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}/editor">
-                        {{ excerpts[project["project_id"]]["sprite"]["name"] }}
-                    </a>
-                </p>
+            </p>
         </div>
     </div>
 
@@ -126,12 +126,12 @@
     <div class="col-12">
         <!-- Project comparison excerpts -->
         <div class="row">
-            <div class="col-9">
+            <div class="col-md-9">
                 <div class="md mt-3">
                     {{ schema["text"]["comparison_framing_text"]|safe }}
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <a href="/project/r/{{  project['project_id'] }}" class="btn btn-primary mt-3 round-btn float-right mb-1">Five new projects</a>
             </div>
         </div>
@@ -141,16 +141,16 @@
             {% for excerpt in excerpts: %}
             {% if excerpt != project["project_id"]: %}
             <input name="tabs" type="radio" id="tab-{{ loop.index0 }}" {% if loop.index0 == 0: %}checked{% endif %} class="input">
-            <label for="tab-{{ loop.index0 }}" class="label col">@{{ excerpts[excerpt]["author"] }}&rsquo;s project</label>
+            <label for="tab-{{ loop.index0 }}" class="label col-md">@{{ excerpts[excerpt]["author"] }}&rsquo;s project</label>
             <div class="panel w-100">
                 <div class="container">
                     <div class="row my-5 justify-content-center">
-                        <div class="col-6 code-gray mr-3">
-                            <div class="pt-3 overflow-auto">
+                        <div class="col-md-6 code-gray mr-md-3">
+                            <div class="py-3 overflow-auto">
                                 <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
                             </div>
                         </div>
-                        <div class="col-3 vert-center ml-3">
+                        <div class="col-md-3 vert-center ml-md-3 mt-3 mt-md-0">
                             <div class="sprite-container vert-center">
                                 <a href="https://scratch.mit.edu/projects/{{ excerpt }}/editor">
                                     <img src="{{ excerpts[excerpt]["sprite"]["costume_asset_url"] }}" class="sprite p-3">
@@ -204,12 +204,10 @@
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
 
-        <p class="m-5">&nbsp;</p>
-
-        <p class="h4">
-            <a class="btn btn-primary round-btn fa fa-facebook-f" target="_blank" href="https://www.facebook.com/dialog/share?app_id=652197795370441&display=popup&href={{ request.url|urlencode }}&redirect_uri={{ request.url|urlencode }}"></a>
-            <a class="btn btn-primary round-btn fa fa-twitter" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}"></a>
-        </p>
+        <div class="my-5">
+            <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+            <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
+        </div>
 
         <!-- What to say if scraping not done -->
         {% else %}
@@ -221,4 +219,21 @@
 
 {% block end_file %}
 <script src="/static/js/sb.js"></script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="JjX5JT3V"></script>
+<script>window.twttr = (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0],
+      t = window.twttr || {};
+    if (d.getElementById(id)) return t;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  
+    t._e = [];
+    t.ready = function(f) {
+      t._e.push(f);
+    };
+  
+    return t;
+  }(document, "script", "twitter-wjs"));</script>
 {% endblock %}

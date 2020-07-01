@@ -102,7 +102,7 @@
     {% if excerpts[project["project_id"]]["code"] != "": %}
     <div class="col-6 code-gray mr-3">
         <div class="pt-3 overflow-auto">
-            <code class="_sb">{{ excerpts[project["project_id"]]["code"]|safe }}</code>
+            <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
         </div>
     </div>
     <div class="col-3 vert-center ml-3">

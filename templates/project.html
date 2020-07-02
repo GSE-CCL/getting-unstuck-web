@@ -10,6 +10,8 @@
 
 <meta name="twitter:title" content="{{ project['title'] }} by @{{ project['author'] }} - Getting Unstuck">
 <meta name="twitter:description" content="{{ share_text }}">
+
+<link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
 {% endblock %}
 
 {% block main_content %}
@@ -203,11 +205,35 @@
         <div class="md">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
+    </div>
+</div>
+<div class="col-12">
+    <form class="reflection mt-5">
+        <h5 class="my-2">How many minutes did you spend on this project?</h5>
+        <div class="form-group day-night p-2">
+            <input type="range" min="0" max="1440" value="1" class="align-middle" id="project_minutes">
 
-        <div class="my-5">
-            <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-            <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
+            <div class="tooltip bs-tooltip-bottom" id="project_minutes_tooltips">
+                <div class="arrow"></div>
+                <div class="tooltip-inner"><span id="minutes_spent">0</span> minutes</div>
+            </div>
         </div>
+
+        <h5 class="my-2">How did this project make you feel?</h5>
+        {% for feel in feels: %}
+        <input type="checkbox" name="feels" value="{{ feel['value'] }}" id="feels_{{ feel['value'] }}" class="feels d-none">
+        <label for="feels_{{ feel['value'] }}" class="btn badge badge-pill btn-light align-middle p-2 font-weight-normal">
+            <i class="em {{ feel['icon'] }}"></i>
+            {{ feel["text"] }}
+        </label>
+        {% endfor %}
+    </form>
+
+    <div class="my-5">
+        <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+        <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
+    </div>
+</div>
 
         <!-- What to say if scraping not done -->
         {% else %}
@@ -219,6 +245,7 @@
 
 {% block end_file %}
 <script src="/static/js/sb.js"></script>
+<script src="/static/js/day-night.js"></script>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="JjX5JT3V"></script>
 <script>window.twttr = (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0],

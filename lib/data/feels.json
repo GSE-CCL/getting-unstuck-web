@@ -1,0 +1,47 @@
+[
+    {
+        "icon": "em-fire",
+        "text": "trash fire",
+        "value": "trashfire"
+    },
+    {
+        "icon": "em-ocean",
+        "text": "overwhelmed",
+        "value": "overwhelmed"
+    },
+    {
+        "icon": "em-mag",
+        "text": "curious",
+        "value": "curious"
+    },
+    {
+        "icon": "em-tada",
+        "text": "proud",
+        "value": "proud"
+    },
+    {
+        "icon": "em-heart",
+        "text": "love",
+        "value": "love"
+    },
+    {
+        "icon": "em-chart_with_downwards_trend",
+        "text": "ups and downs",
+        "value": "rollercoaster"
+    },
+    {
+        "icon": "em-brain",
+        "text": "big brain energy",
+        "value": "bigbrain"
+    },
+    {
+        "icon": "em-wrench",
+        "text": "master debugger",
+        "value": "debugger"
+    },
+    {
+        "icon": "em-trophy",
+        "text": "champion",
+        "value": "champion"
+    }
+]

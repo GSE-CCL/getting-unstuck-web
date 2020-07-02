@@ -1,6 +1,7 @@
 from . import common as common
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, session
+import json
 import logging
 import mongoengine as mongo
 import random
@@ -137,6 +138,33 @@ def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDEN
     return result
 
 
+def get_feels(feels=f"{settings.PROJECT_DIRECTORY}/lib/data/feels.json", randomize=False, alphabetize=False):
+    """Get the emotions (feels, for the younger among us) that a user can choose to describe their experience.
+    
+    Args:
+        feels (str): the file path to feels.json, from which the feels are loaded.
+        randomize (bool): whether to randomize the order of feels. Default is False.
+        alphabetize (bool): whether to alphabetize by text. Default is False. Will override randomize.
+
+    Returns:
+        A list of feelings the end user may feel. False if problem loading file.
+    """
+
+    try:
+        with open(feels) as f:
+            feelings = json.load(f)
+
+        if randomize:
+            random.shuffle(feelings)
+
+        if alphabetize:
+            feelings = sorted(feelings, key = lambda f: f["text"]) 
+
+        return feelings
+    except:
+        return False
+
+
 def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     """Get a project page rendered in HTML given a project ID.
     
@@ -203,7 +231,10 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     # Choose stats to show
     studio["stats"] = get_studio_stats(sc, studio)
 
-    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts)
+    # Get the feels
+    feels = get_feels(randomize=True)
+
+    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts, feels=feels)
 
 
 def get_studio_stats(sc, studio):

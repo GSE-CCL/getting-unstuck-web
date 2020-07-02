@@ -313,6 +313,42 @@ ul {
     display: block;
 }
 
+.feels:checked + label {
+    background: #5dc7e4;
+    border-color: #5dc7e4;
+    color: #fff;
+}
+
+.day-night {
+    background: rgba(0, 155, 255, 1);
+    border-radius: 2rem;
+}
+
+.day-night input[type=range] {
+    width: 100%;
+    height: 36px;
+    background: transparent;
+}
+
+.day-night input[type=range]::-webkit-slider-thumb,
+.day-night input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    width: 36px;
+    height: 36px;
+    background: url("https://twemoji.maxcdn.com/2/72x72/1f31e.png");
+    background-size: contain;
+    border: 0;
+    cursor: pointer;
+    margin-top: -14px;
+}
+
+.day-night.night input[type=range]::-webkit-slider-thumb,
+.day-night.night input[type=range]::-moz-range-thumb {
+    background: url("https://twemoji.maxcdn.com/2/72x72/1f31d.png");
+    background-size: contain;
+}
+
+
 /* Kind of ridiculous that the alternative to writing these lines of
    CSS and a few lines of JavaScript is importing all of jQuery in
    order to use Bootstrap's JS. */

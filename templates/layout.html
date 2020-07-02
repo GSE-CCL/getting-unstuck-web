@@ -98,10 +98,6 @@
             {% endblock %}
         </div>
 
-        {% block end_file %}
-        {% endblock %}
-
-
         <footer class="footer mt-5">
             Getting Unstuck is a project of the
             <a href="https://creativecomputing.gse.harvard.edu/" target="_blank">Creative Computing Lab</a>
@@ -110,5 +106,11 @@
             &nbsp;&nbsp;<a href="https://twitter.com/scratchedteam?lang=en" target="_blank" class="fa fa-twitter"></a>
         </footer>
 
+        {% block end_file %}
+        {% endblock %}
+        
+        {% if "ga" in SITE: %}
+        {{ SITE["ga"]|safe }}
+        {% endif %}
     </body>
 </html>

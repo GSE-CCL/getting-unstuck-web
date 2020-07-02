@@ -202,7 +202,7 @@ def edit_schema(id):
     return schema_editor(id)
 
 # Studios, projects, users, challenges
-@app.route("/index")
+@app.route("/participation")
 def index():
     return render_template("index.html")
 

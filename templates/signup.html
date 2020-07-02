@@ -1,32 +1,40 @@
 {% extends "layout.html" %}
 
-{% block main_content %}
+{% block head %}
+<meta name="og:title" content="{{ SITE['title'] }}">
+<meta name="description" content="{{ SITE['description'] }}">
+<meta name="og:description" content="{{ SITE['description'] }}">
+<meta name="author" content="{{ SITE['author'] }}">
+
+<meta name="twitter:title" content="{{ SITE['title'] }}">
+<meta name="twitter:description" content="{{ SITE['description'] }}">
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
 
-  <!-- Begin MailChimp Signup Form -->
-  <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-  <style type="text/css">
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
 
-  #mc_embed_signup .mc-field-group {
-      padding-bottom: 0%;
-      width: 75%;
-  }
+#mc_embed_signup .mc-field-group {
+    padding-bottom: 0%;
+    width: 75%;
+}
 
-  .form-container{
-    padding: 0em 3em 0em 3em;
-  }
+.form-container{
+  padding: 0em 3em 0em 3em;
+}
 
-  #mc_embed_signup form {
-    padding: 0px;
-  }
+#mc_embed_signup form {
+  padding: 0px;
+}
 
-  .mc-embedded-subscribe{
-    line-height: 1;
-  }
-    /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-       We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-  </style>
+.mc-embedded-subscribe{
+  line-height: 1;
+}
+</style>
+{% endblock %}
+
+{% block main_content %}
 
 <h1 class="gastromond big">Sign up!</h1>
 

@@ -23,3 +23,14 @@ try:
         CLRY = json.load(f)
 except:
     CLRY = {}
+
+# 301 redirects
+REDIRECT_PAGES = {
+    "gettingunstuck.gse.harvard.edu": "/",
+    "/about.html": "/about",
+    "/index.html": "/",
+    "/research.html": "/research",
+    "/signup.html": "/signup",
+    "/strategies.html": "/strategies",
+    
+}

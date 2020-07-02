@@ -23,7 +23,7 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_PAGES, SITE
 
 
 app = Flask(__name__)
@@ -379,6 +379,9 @@ def research():
 # Error pages
 def error(e):
     """Handle errors."""
+
+    if e.code == 404 and request.path in REDIRECT_PAGES:
+        return redirect(REDIRECT_PAGES[request.path], code=301)
 
     status = "closed" if e.code == 404 else "open"
     saved = errors.add_error(e.code, request.url, traceback.format_exc(), status)

@@ -32,6 +32,5 @@ REDIRECT_PAGES = {
     "/index.html": "/",
     "/research.html": "/research",
     "/signup.html": "/signup",
-    "/strategies.html": "/strategies",
-    
+    "/strategies.html": "/strategies"
 }

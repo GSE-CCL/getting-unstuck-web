@@ -316,6 +316,7 @@ let submit_schema = (event) => {
         short_label: document.getElementById("short_label").value,
         title: document.getElementById("title").value,
         description: document.getElementById("description").value,
+        url: document.getElementById("url").value,
         comparison_basis: {
             "basis": document.getElementById("comparison_basis").value,
             "priority": []

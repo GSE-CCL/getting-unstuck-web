@@ -61,6 +61,7 @@ class Challenge(mongo.Document):
     title = mongo.StringField(max_length=200)
     description = mongo.StringField(max_length=5000)
     short_label = mongo.StringField(max_length=100)
+    url = mongo.URLField(max_length=1000)
     text = mongo.EmbeddedDocumentField(ResultText, required=True)
     comparison_basis = mongo.DictField(default={"basis": "__none__", "priority": []},
                                        validation=valid_comparison_basis)
@@ -89,6 +90,7 @@ def add_schema(mins={},
                short_label=None,
                title=None,
                description=None,
+               url=None,
                text={},
                credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Adds a new challenge schema to the database. No arguments are required; but passing in no arguments is pretty useless.
@@ -115,6 +117,7 @@ def add_schema(mins={},
         short_label (str): the short label descriptor of the prompt.
         title (str): the title of the prompt.
         description (str): the description of the prompt.
+        url (str): the URL the prompts page will feature.
         text (dict): a dictionary mapping results page text items from the set
             {"explanation", "concluding_text", "comparison_reflection_text", "comparison_framing_text", "prompt_framing_text", "stats_framing_text"}
         credentials_file (str): path to the database credentials file.
@@ -165,6 +168,7 @@ def add_schema(mins={},
     challenge = Challenge(short_label = short_label,
                           title = title,
                           description = description,
+                          url = url,
                           comparison_basis = comparison_basis,
                           stats = stats,
                           text = result_text,

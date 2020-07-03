@@ -38,8 +38,14 @@
                 <div class="form-group col-md-6">
                     <label for="url">URL</label>
                     <input type="url" class="form-control" id="url" name="url"
-                    {% if "url" in data: %}value="{{ data['url'] }}"{% endif %}
+                    {% if "url" in data: %}value="{{ data['url']['url'] }}"{% endif %}
                     placeholder="If blank, will be the studio page on this site.">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="url_text">URL text</label>
+                    <input type="text" class="form-control" id="url_text" name="url_text"
+                    {% if "url" in data: %}value="{{ data['url']['text'] }}"{% else: %}value="{{ SITE['default_prompts_url_text'] }}"{% endif %}
+                    placeholder="What the URL should read as on the page.">
                 </div>
             </div>
             <div class="form-row">

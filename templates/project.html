@@ -124,6 +124,34 @@
         <p>We couldn&rsquo;t find an example in your code!</p>
     {% endif %}
 </div>
+
+<!-- Reflection on project -->
+<div class="row my-5">
+    <div class="col-md-6">
+        <h6>Let&rsquo;s take a minute to reflect!</h6>
+        
+        <p>How many minutes did you spend on this project?</p>
+        <div class="form-group day-night p-2 mt-2">
+            <input type="range" min="0" max="181" value="1" class="align-middle" id="project_minutes">
+
+            <div class="tooltip bs-tooltip-bottom" id="project_minutes_tooltips">
+                <div class="arrow"></div>
+                <div class="tooltip-inner"><span id="time_spent">0</span> <span id="time_unit">minutes</span></div>
+            </div>
+        </div>
+    
+    </div>
+    <div class="col-md-6">
+        <p class="my-2">How did this project make you feel?</p>
+        {% for feel in feels: %}
+        <input type="checkbox" name="feels" value="{{ feel['value'] }}" id="feels_{{ feel['value'] }}" class="feels d-none">
+        <label for="feels_{{ feel['value'] }}" class="btn badge badge-pill btn-light align-middle p-2 font-weight-normal">
+            <i class="em {{ feel['icon'] }}"></i>
+            {{ feel["text"] }}
+        </label>
+        {% endfor %}
+    </div>
+</div>
 <div class="row">
     <div class="col-12">
         <!-- Project comparison excerpts -->
@@ -207,31 +235,14 @@
         </div>
     </div>
 </div>
-<div class="col-12">
-    <form class="reflection mt-5">
-        <h5 class="my-2">How many minutes did you spend on this project?</h5>
-        <div class="form-group day-night p-2">
-            <input type="range" min="0" max="1440" value="1" class="align-middle" id="project_minutes">
 
-            <div class="tooltip bs-tooltip-bottom" id="project_minutes_tooltips">
-                <div class="arrow"></div>
-                <div class="tooltip-inner"><span id="minutes_spent">0</span> minutes</div>
-            </div>
+<!-- Social links -->
+<div class="row">
+    <div class="col-12">
+        <div class="my-5">
+            <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+            <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
         </div>
-
-        <h5 class="my-2">How did this project make you feel?</h5>
-        {% for feel in feels: %}
-        <input type="checkbox" name="feels" value="{{ feel['value'] }}" id="feels_{{ feel['value'] }}" class="feels d-none">
-        <label for="feels_{{ feel['value'] }}" class="btn badge badge-pill btn-light align-middle p-2 font-weight-normal">
-            <i class="em {{ feel['icon'] }}"></i>
-            {{ feel["text"] }}
-        </label>
-        {% endfor %}
-    </form>
-
-    <div class="my-5">
-        <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
-        <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
     </div>
 </div>
 

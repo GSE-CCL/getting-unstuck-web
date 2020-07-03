@@ -31,7 +31,26 @@ let loaded = () => {
         let x = width * value / range + 24;
         document.getElementById("project_minutes_tooltips").style.left = x + "px"
         document.getElementById("project_minutes_tooltips").style.opacity = 1;
-        document.getElementById("minutes_spent").innerText = value;
+
+        let unit = "minutes";
+        if (value == 1) {
+            unit = "minute";
+        }
+        else if (value == 181) {
+            unit = "hours"
+            value = "3+"
+        }
+        else if (value > 60) {
+            unit = "hours";
+            value = Math.round(value / 15) / 4;
+        }
+
+        if (value == 1 && unit == "hours") {
+            unit = "hour"
+        }
+
+        document.getElementById("time_spent").innerText = value;
+        document.getElementById("time_unit").innerText = unit;
     };
     input.addEventListener("input", updateStyling);
 

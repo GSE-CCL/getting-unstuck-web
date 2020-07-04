@@ -141,6 +141,12 @@ def set_info(page, form):
             try:
                 doc = schema.Challenge.objects(id=form["identifier"]).first()
                 doc.delete()
+
+                # Clear studios
+                for doc in scrape.Studio.objects(challenge_id=form["identifier"]).all():
+                    doc.challenge_id = None
+                    doc.save()
+
                 return True
             except:
                 return False

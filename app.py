@@ -12,7 +12,7 @@ from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
-from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError, NotFound
 
 from lib import common
 from lib import errors
@@ -177,7 +177,10 @@ def schema_editor(id):
 
     if id != "__new__":
         common.connect_db()
-        data = schema.Challenge.objects(id = id).first().to_mongo()
+        try:
+            data = schema.Challenge.objects(id = id).first().to_mongo()
+        except AttributeError:
+            raise NotFound()
 
     blocks = parser.block_data
     block_list = list()
@@ -286,6 +289,10 @@ def studio_id(sid):
 
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
+
+    if studio is None:
+        return redirect("/prompts")
+
     projects = list(scrape.Project.objects(studio_id = sid))
     info = {"authors": list(), "project_ids": list(), "titles": list()}
 
@@ -305,11 +312,19 @@ def user_id(username):
     common.connect_db()
     projects = list(scrape.Project.objects(author = username))
     studios = dict()
-    for project in projects:
-        if project["studio_id"] not in studios:
-            studios[project["studio_id"]] = scrape.Studio.objects(studio_id = project["studio_id"]).first()
 
-    return render_template("username.html", projects=projects, studios=studios, username=username)
+    keep_projects = list()
+    for i, project in enumerate(projects):
+        if project["studio_id"] not in studios:
+            studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+            
+            if studio is not None:
+                studios[project["studio_id"]] = studio
+                keep_projects.append(project)
+        else:
+            keep_projects.append(project)
+
+    return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
 def prompts():
@@ -339,7 +354,11 @@ def prompts():
     ordered_studios = [None] * len(studios)
     for studio in studios:
         studio["challenge_id"] = str(studio["challenge_id"])
-        ordered_studios[id_order.index(studio["challenge_id"])] = studio
+
+        try:
+            ordered_studios[id_order.index(studio["challenge_id"])] = studio
+        except ValueError:
+            pass
 
     return render_template("prompts.html",
                            challenges=ordered_studios,

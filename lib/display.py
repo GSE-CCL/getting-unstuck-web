@@ -6,6 +6,7 @@ import mongoengine as mongo
 import random
 
 from ccl_scratch_tools import Parser, Scraper, Visualizer
+from werkzeug.exceptions import NotFound
 
 from . import schema, scrape, settings
 
@@ -69,7 +70,10 @@ def get_code_excerpt(project, sc, include_orphans=False):
         block = random.choice(blocks)
         scratch_data = scrape.get_project_from_cache(project["project_id"])
         blocks = parser.get_surrounding_blocks(block, scratch_data, 7, True)
-        target, _ = parser.get_target(block, scratch_data)
+        target = parser.get_target(block, scratch_data)
+
+        if type(target) != bool:
+            target = target[0]
 
         try:
             code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
@@ -169,8 +173,8 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
             err = True
 
         # Show error page
-        if project == {} or scratch_data == {} or studio == {} or err:
-            return "Uh oh!"
+        if project == {} or scratch_data == {} or studio == {} or sc == {} or err:
+            raise NotFound()
 
         # Prepare helper tools
         scraper = Scraper()

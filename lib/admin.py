@@ -141,6 +141,12 @@ def set_info(page, form):
             try:
                 doc = schema.Challenge.objects(id=form["identifier"]).first()
                 doc.delete()
+
+                # Clear studios
+                for doc in scrape.Studio.objects(challenge_id=form["identifier"]).all():
+                    doc.challenge_id = None
+                    doc.save()
+
                 return True
             except:
                 return False
@@ -149,6 +155,7 @@ def set_info(page, form):
             title = None if form["title"].replace(" ", "") == "" else form["title"]
             description = None if form["description"].replace(" ", "") == "" else form["description"]
             short_label = None if form["short_label"].replace(" ", "") == "" else form["short_label"]
+            url = None if form["url"]["url"] == "" or form["url"]["text"] == "" else form["url"]
 
             # If inserting a new schema
             if form["id"] == "__new__":
@@ -164,6 +171,7 @@ def set_info(page, form):
                                            stats=form["stats"],
                                            title=title,
                                            description=description,
+                                           url=url,
                                            text=form["text"])
                 if not result:
                     return False
@@ -177,6 +185,7 @@ def set_info(page, form):
                     doc.stats = form["stats"]
                     doc.title = title
                     doc.description = description
+                    doc.url = schema.Link(url=url["url"], text=url["text"])
                     doc.text = schema.ResultText(explanation=form["text"]["explanation"],
                                                     concluding_text=form["text"]["concluding_text"],
                                                     comparison_reflection_text=form["text"]["comparison_reflection_text"],

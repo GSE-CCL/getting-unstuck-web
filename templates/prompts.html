@@ -16,6 +16,7 @@
         <table class="table table-bordered">
             <tbody>
                 {% for challenge in challenges: %}
+                    {% if challenge != None: %}
                     <tr>
                         <th scope="row" colspan="2">
                             {% if "short_label" in schemas[challenge["challenge_id"]]: %}
@@ -34,7 +35,11 @@
                             <div class="container">
                                 <div class="row table-link">
                                     <div class="col-sm">
+                                        {% if "url" in schemas[challenge["challenge_id"]]: %}
+                                        <a href="{{schemas[challenge['challenge_id']]['url']['url'] }}">{{schemas[challenge['challenge_id']]['url']['text'] }}</a>
+                                        {% else: %}
                                         <a href="/studio/{{ challenge['studio_id'] }}">Find your project</a>
+                                        {% endif %}
                                     </div>
                                     <div class="col-sm">
                                         <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
@@ -43,6 +48,7 @@
                             </div>
                         </td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

@@ -24,15 +24,17 @@ def test_add_studio_nonexistent(tmp_path, credentials):
 
 
 def test_add_studio(tmp_path, credentials):
-    scrape.add_studio(26211962, cache_directory=tmp_path, credentials_file=credentials)
-
-    print(tmp_path)
-
-    while len(os.listdir(tmp_path)) < 4:
-        continue
+    scrape.add_studio.delay(26211962, cache_directory=str(tmp_path), credentials_file=credentials)
+    
+    count = 0
+    while count < 4:
+        try:
+            count = len(os.listdir(tmp_path / "projects"))
+        except:
+            pass
 
     # Check file system
-    files = os.listdir(tmp_path)
+    files = os.listdir(tmp_path / "projects")
     assert "383948531.json" in files
     assert "383948574.json" in files
 

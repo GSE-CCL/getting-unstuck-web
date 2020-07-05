@@ -200,7 +200,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
 
     # One prompt variable to take the logic out of the templating language
     prompt = {
-        "title": sc["title"] if "title" in sc and sc["title"] is not None else studio["title"],
+        "title": sc["title"] if "title" in sc and sc["title"] is not None else studio["title"] if "title" in studio else None,
         "description": sc["description"] if "description" in sc else studio["description"]
     }
 

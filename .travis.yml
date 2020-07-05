@@ -1,6 +1,9 @@
 language: python
 dist: xenial
 python: 3.7
+before_install:
+    - sudo apt update
+    - sudo apt -y install rabbitmq-server
 install:
     - pip install -r requirements.txt
     - python3 -c "import nltk; nltk.download('punkt')"
@@ -8,4 +11,5 @@ services:
     - mongodb
 script:
     - cp secure/celery.json.example secure/celery.json
+    - celery worker -A app.celery &
     - python3 -m pytest tests

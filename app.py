@@ -302,7 +302,7 @@ def studio_id(sid):
         info["titles"].append(project["title"].lower())
 
     message = None
-    if studio["status"] == "in_progress":
+    if studio["status"] == "in_progress" or studio["status"] is None:
         message = "This studio is currently in the process of being downloaded and analyzed. <a href=''>Refresh page.</a>"
 
     return render_template("studio_id.html", info=info, projects=projects, studio=studio, message=message)

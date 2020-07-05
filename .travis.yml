@@ -12,4 +12,5 @@ services:
     - mongodb
 script:
     - cp secure/celery.json.example secure/celery.json
+    - celery worker -A app.celery &
     - python3 -m pytest tests

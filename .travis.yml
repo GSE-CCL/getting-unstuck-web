@@ -10,7 +10,6 @@ install:
     - python3 -c "import nltk; nltk.download('punkt')"
 services:
     - mongodb
-    - rabbitmq
 script:
     - cp secure/celery.json.example secure/celery.json
     - python3 -m pytest tests

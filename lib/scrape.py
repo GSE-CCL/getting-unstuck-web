@@ -304,8 +304,13 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
 
     # Gather information about the project
     scraper = Scraper()
-    scratch_data = scraper.download_project(project_id)
     metadata = scraper.get_project_meta(project_id)
+
+    # Handle error from trying to decode ZIPs
+    try:
+        scratch_data = scraper.download_project(project_id)
+    except RuntimeError:
+        scratch_data = dict()
 
     # Convert to SB3 if possible
     parser = Parser()

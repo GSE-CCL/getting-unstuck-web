@@ -12,7 +12,7 @@ from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
 from ccl_scratch_tools import Visualizer
-from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError, NotFound
 
 from lib import common
 from lib import errors
@@ -23,7 +23,7 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_PAGES, SITE
 
 
 app = Flask(__name__)
@@ -177,7 +177,10 @@ def schema_editor(id):
 
     if id != "__new__":
         common.connect_db()
-        data = schema.Challenge.objects(id = id).first().to_mongo()
+        try:
+            data = schema.Challenge.objects(id = id).first().to_mongo()
+        except AttributeError:
+            raise NotFound()
 
     blocks = parser.block_data
     block_list = list()
@@ -202,7 +205,7 @@ def edit_schema(id):
     return schema_editor(id)
 
 # Studios, projects, users, challenges
-@app.route("/index")
+@app.route("/participation")
 def index():
     return render_template("index.html")
 
@@ -286,6 +289,10 @@ def studio_id(sid):
 
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
+
+    if studio is None:
+        return redirect("/prompts")
+
     projects = list(scrape.Project.objects(studio_id = sid))
     info = {"authors": list(), "project_ids": list(), "titles": list()}
 
@@ -295,7 +302,7 @@ def studio_id(sid):
         info["titles"].append(project["title"].lower())
 
     message = None
-    if studio["status"] == "in_progress":
+    if studio["status"] == "in_progress" or studio["status"] is None:
         message = "This studio is currently in the process of being downloaded and analyzed. <a href=''>Refresh page.</a>"
 
     return render_template("studio_id.html", info=info, projects=projects, studio=studio, message=message)
@@ -305,11 +312,19 @@ def user_id(username):
     common.connect_db()
     projects = list(scrape.Project.objects(author = username))
     studios = dict()
-    for project in projects:
-        if project["studio_id"] not in studios:
-            studios[project["studio_id"]] = scrape.Studio.objects(studio_id = project["studio_id"]).first()
 
-    return render_template("username.html", projects=projects, studios=studios, username=username)
+    keep_projects = list()
+    for i, project in enumerate(projects):
+        if project["studio_id"] not in studios:
+            studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+            
+            if studio is not None:
+                studios[project["studio_id"]] = studio
+                keep_projects.append(project)
+        else:
+            keep_projects.append(project)
+
+    return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
 def prompts():
@@ -339,7 +354,11 @@ def prompts():
     ordered_studios = [None] * len(studios)
     for studio in studios:
         studio["challenge_id"] = str(studio["challenge_id"])
-        ordered_studios[id_order.index(studio["challenge_id"])] = studio
+
+        try:
+            ordered_studios[id_order.index(studio["challenge_id"])] = studio
+        except ValueError:
+            pass
 
     return render_template("prompts.html",
                            challenges=ordered_studios,
@@ -379,6 +398,9 @@ def research():
 # Error pages
 def error(e):
     """Handle errors."""
+
+    if e.code == 404 and request.path in REDIRECT_PAGES:
+        return redirect(REDIRECT_PAGES[request.path], code=301)
 
     status = "closed" if e.code == 404 else "open"
     saved = errors.add_error(e.code, request.url, traceback.format_exc(), status)

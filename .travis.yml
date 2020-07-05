@@ -1,12 +1,15 @@
 language: python
-dist: trusty
-python: 3.6
+dist: xenial
+python: 3.7
+addons:
+  apt:
+    packages:
+      - rabbitmq-server
 install:
     - pip install -r requirements.txt
     - python3 -c "import nltk; nltk.download('punkt')"
 services:
     - mongodb
-    - rabbitmq
 script:
     - cp secure/celery.json.example secure/celery.json
     - celery worker -A app.celery &

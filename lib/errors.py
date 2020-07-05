@@ -35,15 +35,18 @@ def add_error(error_code, url, traceback, status="open", credentials_file=settin
     return str(e["id"])
 
 
-def get_error(eid):
+def get_error(eid, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Gets an error from the database.
     
     Args:
         eid (str): the error ID.
+        credentials_file (str): the path to the credentials file.
     
     Returns:
         errors.Error if found, else False.
     """
+
+    connect_db(credentials_file)
 
     try:
         return Error.objects(id=eid).first()

@@ -1,7 +1,7 @@
 language: python
 dist: xenial
 python: 3.7
-before-installl:
+before-install:
     - sudo apt update
     - sudo apt -y install rabbitmq-server
 install:

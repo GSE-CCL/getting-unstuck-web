@@ -1,4 +1,4 @@
-let loaded = () => {
+let loaded_dn = () => {
     // Starting RBGA
     let start_day = [0, 200, 255, 1];
     let color = [0, 200, 255, 1];
@@ -49,17 +49,27 @@ let loaded = () => {
             unit = "hour"
         }
 
-        document.getElementById("time_spent").innerText = value;
-        document.getElementById("time_unit").innerText = unit;
+        let times = document.getElementsByClassName("time_spent");
+        let units = document.getElementsByClassName("time_unit");
+        for (let i = 0; i < times.length; i++) {
+            times[i].innerText = value;
+        }
+        for (let i = 0; i < units.length; i++) {
+            units[i].innerText = unit;
+        }
     };
     input.addEventListener("input", updateStyling);
-
+    
     input.addEventListener("change", (event) => {
         document.getElementById("project_minutes_tooltips").style.opacity = 0;
     });
+
+    // Initialize
+    updateStyling({target: document.getElementById("project_minutes")});
+    document.getElementById("project_minutes_tooltips").style.opacity = 0;
 };
 
 if (document.readyState === "complete")
-    loaded();
+    loaded_dn();
 else
-    document.addEventListener("DOMContentLoaded", loaded);
+    document.addEventListener("DOMContentLoaded", loaded_dn);

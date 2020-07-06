@@ -31,6 +31,12 @@ let init_reflection = () => {
     if (pid in saved) {
         document.getElementById("project_minutes").value = saved[pid]["minutes"];
         set_checked_feels(saved[pid]["feelings"]);
+
+        let evt1 = new Event("input");
+        document.getElementById("project_minutes").dispatchEvent(evt1);
+        
+        let evt2 = new Event("change");
+        document.getElementById("project_minutes").dispatchEvent(evt2);
     }
     
     // Hide if needed

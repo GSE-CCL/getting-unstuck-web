@@ -152,7 +152,8 @@ img.bug {
 }
 
 /* Index input */
-.round-btn {
+.round-btn, a.round-btn {
+    color: #fff;
     border-radius: 12px;
     text-align: center;
     background-color: #5dc7e4;

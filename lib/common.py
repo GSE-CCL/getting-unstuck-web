@@ -4,12 +4,13 @@ import markdown
 import mongoengine as mongo
 from lib import settings
 
-def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE, alias="default"):
     """Connects to MongoDB using credentials.
     
     Args:
         credentials_file (str): path to the credentials file,
             or the Python dictionary containing the contents thereof.
+        alias (str): alias for the connection.
 
     Returns:
         A MongoEngine connection instance.
@@ -17,16 +18,11 @@ def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
 
     # Disconnect if needed
     try:
-        mongo.disconnect(alias="default")
+        mongo.disconnect(alias=alias)
     except:
         pass
 
-    # Load credentials
-    if type(credentials_file) == str:
-        with open(credentials_file) as f:
-            credentials = json.load(f)
-    elif type(credentials_file) == dict:
-        credentials = credentials_file
+    credentials = get_credentials(credentials_file)
 
     # Return connection
     return mongo.connect(credentials["database"],
@@ -34,6 +30,24 @@ def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
                          port=credentials["port"],
                          username=credentials["username"],
                          password=credentials["password"])
+
+
+def get_credentials(credentials_file):
+    """Gets credentials into a dict.
+    
+    Args:
+        credentials_file (str): path to the credentials file,
+            or the Python dictionary containing the contents thereof.
+
+    Returns:
+        credentials (dict): the credentials as a dictionary.
+    """
+
+    if type(credentials_file) == dict:
+        return credentials_file
+    elif type(credentials_file) == str:
+        with open(credentials_file) as f:
+            return json.load(f)
 
 
 def md(text):

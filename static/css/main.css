@@ -324,14 +324,53 @@ ul {
     border-radius: 2rem;
 }
 
-.day-night input[type=range] {
+.day-night input[type=range],
+.day-night input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
     height: 36px;
     background: transparent;
+    border: 0;
     -webkit-appearance: none;
 }
 
-.day-night input[type=range]::-webkit-slider-thumb,
+.day-night input[type=range]::-ms-track {
+    width: 100%;
+    height: 36px;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+.day-night input[type=range]::-ms-fill-lower {
+    background: transparent;
+    border: 0;
+}
+
+.day-night input[type=range]::-ms-fill-upper {
+    background: transparent;
+    border: 0;
+}
+
+.day-night input[type=range]:focus::-ms-fill-upper {
+    background: transparent;
+    border: 0;
+}
+
+.day-night input[type=range]:focus::-ms-fill-lower {
+    background: transparent;
+    border: 0;
+}
+
+.day-night input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 36px;
+    height: 36px;
+    background: url("https://twemoji.maxcdn.com/2/72x72/1f31e.png");
+    background-size: contain;
+    border: 0;
+    cursor: pointer;
+}
+
 .day-night input[type=range]::-moz-range-thumb {
     -webkit-appearance: none;
     width: 36px;
@@ -343,7 +382,25 @@ ul {
     margin-top: -14px;
 }
 
-.day-night.night input[type=range]::-webkit-slider-thumb,
+input[type=range]::-ms-thumb {
+    -webkit-appearance: none;
+    width: 36px;
+    height: 36px;
+    background: url("https://twemoji.maxcdn.com/2/72x72/1f31e.png");
+    background-size: contain;
+    border: 0;
+    cursor: pointer;
+}
+
+.day-night input[type=range]:focus {
+    outline: none;
+}
+
+.day-night.night input[type=range]::-webkit-slider-thumb {
+    background: url("https://twemoji.maxcdn.com/2/72x72/1f31d.png");
+    background-size: contain;
+}
+
 .day-night.night input[type=range]::-moz-range-thumb {
     background: url("https://twemoji.maxcdn.com/2/72x72/1f31d.png");
     background-size: contain;

@@ -18,6 +18,7 @@
         <img class="bug centered" src="{{ url_for('static', filename='img/SIGCSE_Bugs.png') }}"> 
 
         {% else: %}
+        <p>Click on the name of your project to explore what you made for each prompt.</p>
         <h5>Getting Unstuck projects:</h5>
         <ul>
             {% for project in projects: %}

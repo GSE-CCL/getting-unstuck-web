@@ -208,8 +208,9 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
         visualizer = Visualizer()
 
         # Convert Markdown to HTML with Scratchblocks
-        for key in sc["text"]:
-            sc["text"][key] = common.md(sc["text"][key])
+        if "text" in sc:
+            for key in sc["text"]:
+                sc["text"][key] = common.md(sc["text"][key])
 
         # Get the code excerpt for the projects to be shown
         excerpts = dict()
@@ -263,6 +264,10 @@ def get_studio_stats(sc, studio):
     parser = Parser()
 
     stats = list()
+
+    if "stats" not in sc:
+        return stats
+
     for stat in sc["stats"]:
         obj = studio["stats"]
         s = {"name": list(), "value": 0}

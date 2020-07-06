@@ -231,7 +231,7 @@
         {% endif %}
 
         <!-- Conclude today's review -->
-        <div class="md">
+        <div style="margin-top:1em">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
     </div>
@@ -240,7 +240,7 @@
 <!-- Social links -->
 <div class="row">
     <div class="col-12">
-        <div class="my-5">
+        <div class="my-2">
             <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
             <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
         </div>

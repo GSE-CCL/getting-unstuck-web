@@ -44,6 +44,7 @@
         <div class="md">
         {{ schema["text"]["prompt_framing_text"]|safe }}
         </div>
+
         <div class="md">
             <p class="mx-2 mx-md-5 weight">{{ prompt["description"] }}</p>
         </div>
@@ -104,7 +105,7 @@
     <!-- User's code excerpt -->
     {% if excerpts[project["project_id"]]["code"] != "": %}
     <div class="col-md-6 code-gray mr-md-3">
-        <div class="py-3 overflow-auto">
+        <div class="py-3 overflow-auto max_height_500px">
             <code class="_sb">{{ excerpts[project["project_id"]]["code"] }}</code>
         </div>
     </div>
@@ -178,7 +179,7 @@
                 <div class="container">
                     <div class="row my-5 justify-content-center">
                         <div class="col-md-6 code-gray mr-md-3">
-                            <div class="py-3 overflow-auto">
+                            <div class="py-3 overflow-auto max_height_500px">
                                 <code class="_sb">{{ excerpts[excerpt]["code"] }}</code>
                             </div>
                         </div>
@@ -232,7 +233,7 @@
         {% endif %}
 
         <!-- Conclude today's review -->
-        <div style="margin-top:1em">
+        <div class="mt-3">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
     </div>

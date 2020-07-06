@@ -36,7 +36,7 @@ let handle_ajax = function(method, url, data, callback, type="form") {
         http.setRequestHeader("Content-type", "application/json");
         http.send(JSON.stringify(data));
     }
-}
+};
 
 // Adapted from https://stackoverflow.com/a/1349426/6062385
 let strgen = (length) => {
@@ -46,13 +46,27 @@ let strgen = (length) => {
         result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
-}
+};
+
+// Toggles navbar on mobile
+let toggle_navbar = (event) => {
+    let selector = event.target.dataset.target;
+    let element = document.querySelector(selector);
+
+    element.classList.toggle("d-block");
+};
+
 
 let init_gu = () => {
     if (Cookies.get("_gu_uid") === undefined) {
         Cookies.set("_gu_uid", strgen(128), {expires: 60});
     }
-}
+
+    let navs = document.getElementsByClassName("navbar-toggler");
+    for (let i = 0; i < navs.length; i++) {
+        navs[i].addEventListener("click", toggle_navbar);
+    }
+};
 
 
 if (document.readyState === "complete")

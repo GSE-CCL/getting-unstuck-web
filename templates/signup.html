@@ -36,129 +36,133 @@
 
 {% block main_content %}
 
-<h1 class="gastromond big">Sign up!</h1>
+<div class="row">
+    <div class="col-12">
+        <h1 class="gastromond big">Sign up!</h1>
 
-<p>Welcome to Getting Unstuck!  From July 6 until July 17, you’ll receive a daily email that includes an invitation to explore an idea, create and share a Scratch project, and reflect on what you've made. 
-    This is a learning experience to help you develop greater computational and creative fluency with Scratch. Getting Unstuck is a project designed by the Creative Computing Lab at the Harvard Graduate School of Education. 
-    Learn more about the research <a href="/research" target="_blank">here</a>. </p>
+        <p>Welcome to Getting Unstuck!  From July 6 until July 17, you’ll receive a daily email that includes an invitation to explore an idea, create and share a Scratch project, and reflect on what you've made. 
+            This is a learning experience to help you develop greater computational and creative fluency with Scratch. Getting Unstuck is a project designed by the Creative Computing Lab at the Harvard Graduate School of Education. 
+            Learn more about the research <a href="/research" target="_blank">here</a>. </p>
 
-<p>To join Getting Unstuck, please complete this brief survey. </p>
+        <p>To join Getting Unstuck, please complete this brief survey. </p>
 
 
+        </div>
+
+        <!-- Begin Mailchimp Signup Form -->
+
+        <div id="mc_embed_signup" class="container">
+        <form action="https://harvard.us18.list-manage.com/subscribe/post?u=5dd4d8b32f719a30cbde507c6&amp;id=9de5997a0e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+
+        <div id="mc_embed_signup_scroll">
+        <!-- <h2>Subscribe</h2> -->
+        <span class="asterisk">*</span> indicates required
+
+        <div class="form-section">
+        <h5>Contact</h5>
+
+        <div class="mc-field-group">
+        <label for="mce-FNAME">Name  <span class="asterisk">*</span>
+        </label>
+        <input type="text" value="" name="FNAME" class="required" id="mce-FNAME">
+        </div>
+
+        <div class="mc-field-group">
+        <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+        <br><i>Where would you like the daily prompts sent? You can unsubscribe at any time.</i></label>
+        <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+        </div>
+        </div>
+
+
+        <div class="form-section">
+        <h5>Scratch Experiences</h5>
+
+        <div class="mc-field-group">
+        <label for="mce-SCRATCH">What is your Scratch account username?  <span class="asterisk">*</span>
+        </label>
+        <input type="text" value="" name="SCRATCH" class="required" id="mce-SCRATCH">
+        </div>
+        <div class="mc-field-group">
+        <label for="mce-COMFORTLVL">How would you describe your Scratch familiarity?  <span class="asterisk">*</span>
+        </label>
+        <select name="COMFORTLVL" class="required" id="mce-COMFORTLVL">
+        <option value=""></option>
+        <option value="Brand new! What's Scratch?">Brand new! What's Scratch?</option>
+        <option value="I have seen others (teachers/students) use Scratch.">I have seen others (teachers/students) use Scratch.</option>
+        <option value="I've made a couple projects.">I've made a couple projects.</option>
+        <option value="I've helped others make projects.">I've helped others make projects.</option>
+        <option value="I'm well-acquainted with the ins and outs of Scratch.">I'm well-acquainted with the ins and outs of Scratch.</option>
+
+        </select>
+        </div>
+
+        <div class="mc-field-group input-group form-checkboxes">
+        Did you participate in Getting Unstuck 2018?  <span class="asterisk">*</span>
+
+        <ul><li><input type="radio" value="Yes" name="PRIORP" id="mce-PRIORP-0"><label for="mce-PRIORP-0">Yes</label></li>
+        <li><input type="radio" value="No" name="PRIORP" id="mce-PRIORP-1"><label for="mce-PRIORP-1">No</label></li>
+        </ul>
+        </div>
+        <div class="mc-field-group">
+        <label for="mce-HOURS">How many hours have you taught with Scratch?  <span class="asterisk">*</span>
+        </label>
+        <select name="HOURS" class="required" id="mce-HOURS">
+        <option value=""></option>
+        <option value="0">0</option>
+        <option value="1-9">1-9</option>
+        <option value="10-49">10-49</option>
+        <option value="50+">50+</option>
+
+        </select>
+        </div>
+        </div>
+
+        <div class="form-section">
+        <h5>Educator Experiences</h5>
+
+        <div class="mc-field-group">  
+        <label for="mce-STUCK">When students are stuck on problems, I hope they..  <span class="asterisk">*</span>
+        </label>
+        <input type="text" value="" name="STUCK" class="required" id="mce-STUCK">
+        </div>
+
+        <div class="mc-field-group">
+        <label for="mce-CRTVWORK">In my classroom, creative work looks like...  <span class="asterisk">*</span>
+        </label>
+        <input type="text" value="" name="CRTVWORK" class="required" id="mce-CRTVWORK">
+        </div>
+        <div class="mc-field-group">
+        <label for="mce-WANTS">By participating in Getting Unstuck, I hope to learn...  <span class="asterisk">*</span>
+        </label>
+        <input type="text" value="" name="WANTS" class="required" id="mce-WANTS">
+        </div>
+        <div class="mc-field-group input-group form-checkboxes">
+        <p>I work with these grade levels (check all) </p>
+        <ul><li><input type="checkbox" value="1" name="group[7706][1]" id="mce-group[7706]-7706-0"><label for="mce-group[7706]-7706-0">PK-3</label></li>
+        <li><input type="checkbox" value="2" name="group[7706][2]" id="mce-group[7706]-7706-1"><label for="mce-group[7706]-7706-1">4-6</label></li>
+        <li><input type="checkbox" value="4" name="group[7706][4]" id="mce-group[7706]-7706-2"><label for="mce-group[7706]-7706-2">7-8</label></li>
+        <li><input type="checkbox" value="8" name="group[7706][8]" id="mce-group[7706]-7706-3"><label for="mce-group[7706]-7706-3">9-10</label></li>
+        <li><input type="checkbox" value="16" name="group[7706][16]" id="mce-group[7706]-7706-4"><label for="mce-group[7706]-7706-4">11-12</label></li>
+        <li><input type="checkbox" value="32" name="group[7706][32]" id="mce-group[7706]-7706-5"><label for="mce-group[7706]-7706-5">College</label></li>
+        <li><input type="checkbox" value="64" name="group[7706][64]" id="mce-group[7706]-7706-6"><label for="mce-group[7706]-7706-6">Other</label></li>
+        <li><input type="checkbox" value="128" name="group[7706][128]" id="mce-group[7706]-7706-7"><label for="mce-group[7706]-7706-7">I'm not an educator</label></li>
+        </ul>
+        </div>
+        </div>
+
+        <div id="mce-responses" class="clear">
+        <div class="response" id="mce-error-response" style="display:none"></div>
+        <div class="response" id="mce-success-response" style="display:none"></div>
+        </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_5dd4d8b32f719a30cbde507c6_9de5997a0e" tabindex="-1" value=""></div>
+        <div class="clear" align="left" style="width:50%;"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" style="vertical-align: middle; text-align: center; margin-top:1em;"></div>
+        </div>
+        </form>
+        </div>
+        <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[1]='FNAME';ftypes[1]='text';fnames[0]='EMAIL';ftypes[0]='email';fnames[2]='SCRATCH';ftypes[2]='text';fnames[3]='COMFORTLVL';ftypes[3]='dropdown';fnames[5]='PRIORP';ftypes[5]='radio';fnames[4]='HOURS';ftypes[4]='dropdown';fnames[6]='STUCK';ftypes[6]='text';fnames[7]='CRTVWORK';ftypes[7]='text';fnames[8]='WANTS';ftypes[8]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+        <!--End mc_embed_signup-->
+    </div>
 </div>
-
-<!-- Begin Mailchimp Signup Form -->
-
-<div id="mc_embed_signup" class="container">
-<form action="https://harvard.us18.list-manage.com/subscribe/post?u=5dd4d8b32f719a30cbde507c6&amp;id=9de5997a0e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-
-<div id="mc_embed_signup_scroll">
-<!-- <h2>Subscribe</h2> -->
-<span class="asterisk">*</span> indicates required
-
-<div class="form-section">
-<h5>Contact</h5>
-
-<div class="mc-field-group">
-<label for="mce-FNAME">Name  <span class="asterisk">*</span>
-</label>
-<input type="text" value="" name="FNAME" class="required" id="mce-FNAME">
-</div>
-
-<div class="mc-field-group">
-<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-<br><i>Where would you like the daily prompts sent? You can unsubscribe at any time.</i></label>
-<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-</div>
-</div>
-
-
-<div class="form-section">
-<h5>Scratch Experiences</h5>
-
-<div class="mc-field-group">
-<label for="mce-SCRATCH">What is your Scratch account username?  <span class="asterisk">*</span>
-</label>
-<input type="text" value="" name="SCRATCH" class="required" id="mce-SCRATCH">
-</div>
-<div class="mc-field-group">
-<label for="mce-COMFORTLVL">How would you describe your Scratch familiarity?  <span class="asterisk">*</span>
-</label>
-<select name="COMFORTLVL" class="required" id="mce-COMFORTLVL">
-<option value=""></option>
-<option value="Brand new! What's Scratch?">Brand new! What's Scratch?</option>
-<option value="I have seen others (teachers/students) use Scratch.">I have seen others (teachers/students) use Scratch.</option>
-<option value="I've made a couple projects.">I've made a couple projects.</option>
-<option value="I've helped others make projects.">I've helped others make projects.</option>
-<option value="I'm well-acquainted with the ins and outs of Scratch.">I'm well-acquainted with the ins and outs of Scratch.</option>
-
-</select>
-</div>
-
-<div class="mc-field-group input-group form-checkboxes">
-Did you participate in Getting Unstuck 2018?  <span class="asterisk">*</span>
-
-<ul><li><input type="radio" value="Yes" name="PRIORP" id="mce-PRIORP-0"><label for="mce-PRIORP-0">Yes</label></li>
-<li><input type="radio" value="No" name="PRIORP" id="mce-PRIORP-1"><label for="mce-PRIORP-1">No</label></li>
-</ul>
-</div>
-<div class="mc-field-group">
-<label for="mce-HOURS">How many hours have you taught with Scratch?  <span class="asterisk">*</span>
-</label>
-<select name="HOURS" class="required" id="mce-HOURS">
-<option value=""></option>
-<option value="0">0</option>
-<option value="1-9">1-9</option>
-<option value="10-49">10-49</option>
-<option value="50+">50+</option>
-
-</select>
-</div>
-</div>
-
-<div class="form-section">
-<h5>Educator Experiences</h5>
-
-<div class="mc-field-group">  
-<label for="mce-STUCK">When students are stuck on problems, I hope they..  <span class="asterisk">*</span>
-</label>
-<input type="text" value="" name="STUCK" class="required" id="mce-STUCK">
-</div>
-
-<div class="mc-field-group">
-<label for="mce-CRTVWORK">In my classroom, creative work looks like...  <span class="asterisk">*</span>
-</label>
-<input type="text" value="" name="CRTVWORK" class="required" id="mce-CRTVWORK">
-</div>
-<div class="mc-field-group">
-<label for="mce-WANTS">By participating in Getting Unstuck, I hope to learn...  <span class="asterisk">*</span>
-</label>
-<input type="text" value="" name="WANTS" class="required" id="mce-WANTS">
-</div>
-<div class="mc-field-group input-group form-checkboxes">
-<p>I work with these grade levels (check all) </p>
-<ul><li><input type="checkbox" value="1" name="group[7706][1]" id="mce-group[7706]-7706-0"><label for="mce-group[7706]-7706-0">PK-3</label></li>
-<li><input type="checkbox" value="2" name="group[7706][2]" id="mce-group[7706]-7706-1"><label for="mce-group[7706]-7706-1">4-6</label></li>
-<li><input type="checkbox" value="4" name="group[7706][4]" id="mce-group[7706]-7706-2"><label for="mce-group[7706]-7706-2">7-8</label></li>
-<li><input type="checkbox" value="8" name="group[7706][8]" id="mce-group[7706]-7706-3"><label for="mce-group[7706]-7706-3">9-10</label></li>
-<li><input type="checkbox" value="16" name="group[7706][16]" id="mce-group[7706]-7706-4"><label for="mce-group[7706]-7706-4">11-12</label></li>
-<li><input type="checkbox" value="32" name="group[7706][32]" id="mce-group[7706]-7706-5"><label for="mce-group[7706]-7706-5">College</label></li>
-<li><input type="checkbox" value="64" name="group[7706][64]" id="mce-group[7706]-7706-6"><label for="mce-group[7706]-7706-6">Other</label></li>
-<li><input type="checkbox" value="128" name="group[7706][128]" id="mce-group[7706]-7706-7"><label for="mce-group[7706]-7706-7">I'm not an educator</label></li>
-</ul>
-</div>
-</div>
-
-<div id="mce-responses" class="clear">
-<div class="response" id="mce-error-response" style="display:none"></div>
-<div class="response" id="mce-success-response" style="display:none"></div>
-</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-<div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_5dd4d8b32f719a30cbde507c6_9de5997a0e" tabindex="-1" value=""></div>
-<div class="clear" align="left" style="width:50%;"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" style="vertical-align: middle; text-align: center; margin-top:1em;"></div>
-</div>
-</form>
-</div>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[1]='FNAME';ftypes[1]='text';fnames[0]='EMAIL';ftypes[0]='email';fnames[2]='SCRATCH';ftypes[2]='text';fnames[3]='COMFORTLVL';ftypes[3]='dropdown';fnames[5]='PRIORP';ftypes[5]='radio';fnames[4]='HOURS';ftypes[4]='dropdown';fnames[6]='STUCK';ftypes[6]='text';fnames[7]='CRTVWORK';ftypes[7]='text';fnames[8]='WANTS';ftypes[8]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
-<!--End mc_embed_signup-->
 
 {% endblock %}

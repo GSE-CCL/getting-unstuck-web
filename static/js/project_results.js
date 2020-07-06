@@ -34,14 +34,14 @@ let init_reflection = () => {
 
         let evt1 = new Event("input");
         document.getElementById("project_minutes").dispatchEvent(evt1);
-        
+
         let evt2 = new Event("change");
         document.getElementById("project_minutes").dispatchEvent(evt2);
     }
     
     // Hide if needed
     handle_ajax("GET", "/project/o/" + pid, {}, (ret) => {
-        if (!(ret.response == "" || ret.response == Cookies.get("_gu_uid"))) {
+        if (!(ret.response == "" || ret.response == Cookies.get("_gu_uid")) || !navigator.cookieEnabled) {
             document.getElementById("project_reflection").classList.add("d-none");
         }
     });

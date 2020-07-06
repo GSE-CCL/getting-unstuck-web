@@ -425,6 +425,12 @@ def research():
 
 
 # Error pages
+@app.route("/ie")
+@cache.cached()
+def ie():
+    return render_template("ie.html")
+
+
 def error(e):
     """Handle errors."""
 

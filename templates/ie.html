@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Please use a different browser &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-8">
+        <h1 class="gastromond big">Internet Explorer isn&rsquo;t supported.</h1>
+        <p>
+            This site doesn&rsquo;t work well in Internet Explorer.
+            For example, you should see some Scratch blocks on the right.
+            But, since you&rsquo;re in Internet Explorer, you probably just
+            see some text.
+        </p>
+        <h5>Suggested solutions</h5>
+        <ul>
+            <li>
+                We test extensively in <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>
+                and <a href="https://www.google.com/chrome/">Google Chrome</a>.
+                We suggest downloading one of these browsers for free, and accessing this website from there.
+            </li>
+            <li>
+                Windows 8 and 10 computers come with Microsoft Edge, and Mac computers come with Safari.
+                Both of these built-in browsers should also work with this website.
+            </li>
+        </ul>
+    </div>
+    <div class="col-2">
+        <code class="_sb">
+            when flag clicked
+            say (IE?) for (2) secs
+        </code>
+    </div>
+</div>
+{% endblock %}
+
+{% block end_file %}
+<script src="/static/js/sb.js"></script>
+{% endblock %}

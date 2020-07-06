@@ -12,6 +12,9 @@
             about each day&rsquo;s prompt! Already participating in Getting Unstuck?
             <a href="/participation">Learn more about what you&rsquo;ve made here.</a>
         </p>
+        <div style="overflow: hidden; text-align:center" class="mr-3 mb-3">
+            <button href="/participation" class="input-group-btn inline btn btn-primary button round-btn">What did you make? What did you learn?</button>
+        </div>
 
         <table class="table table-bordered">
             <tbody>
@@ -34,16 +37,14 @@
 
                             <div class="container">
                                 <div class="row table-link">
-                                    <div class="col-sm">
                                         {% if "url" in schemas[challenge["challenge_id"]]: %}
-                                        <a href="{{schemas[challenge['challenge_id']]['url']['url'] }}">{{schemas[challenge['challenge_id']]['url']['text'] }}</a>
+                                        <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp&nbsp || &nbsp&nbsp
                                         {% else: %}
-                                        <a href="/studio/{{ challenge['studio_id'] }}">Find your project</a>
+                                        &nbsp
                                         {% endif %}
-                                    </div>
-                                    <div class="col-sm">
+                                        <a href="/studio/{{ challenge['studio_id'] }}">Explore what you made</a>
+                                        &nbsp&nbsp || &nbsp&nbsp
                                         <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
-                                    </div>
                                 </div>
                             </div>
                         </td>

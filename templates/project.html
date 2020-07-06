@@ -10,6 +10,8 @@
 
 <meta name="twitter:title" content="{{ project['title'] }} by @{{ project['author'] }} - Getting Unstuck">
 <meta name="twitter:description" content="{{ share_text }}">
+
+<link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
 {% endblock %}
 
 {% block main_content %}
@@ -122,7 +124,36 @@
         <p>We couldn&rsquo;t find an example in your code!</p>
     {% endif %}
 </div>
-<div class="row">
+
+<!-- Reflection on project -->
+<div class="row mt-5" id="project_reflection">
+    <div class="col-md-6">
+        <input type="hidden" name="gu_uid" id="gu_uid" value="{{ reflection['gu_uid'] }}">
+        <h6>Let&rsquo;s take a minute to reflect!</h6>
+        
+        <p>How many minutes did you spend on this project?</p>
+        <div class="form-group day-night p-2 mt-2">
+            <input type="range" min="0" max="181" value="1" class="align-middle w-100" id="project_minutes">
+
+            <div class="tooltip bs-tooltip-bottom" id="project_minutes_tooltips">
+                <div class="arrow"></div>
+                <div class="tooltip-inner"><span class="time_spent">0</span> <span class="time_unit">minutes</span></div>
+            </div>
+        </div>
+        <p class="text-center"><span class="time_spent">0</span> <span class="time_unit">minutes</span></p>
+    </div>
+    <div class="col-md-6">
+        <p class="my-2">How did this project make you feel? <span id="feels_instructions">(Choose up to 5.)</span></p>
+        {% for feel in feels: %}
+        <input type="checkbox" name="feels" value="{{ feel['value'] }}" id="feels_{{ feel['value'] }}" class="feels d-none">
+        <label for="feels_{{ feel['value'] }}" class="btn badge badge-pill btn-light align-middle p-2 font-weight-normal">
+            <i class="em {{ feel['icon'] }}"></i>
+            {{ feel["text"] }}
+        </label>
+        {% endfor %}
+    </div>
+</div>
+<div class="row mt-5">
     <div class="col-12">
         <!-- Project comparison excerpts -->
         <div class="row">
@@ -203,11 +234,18 @@
         <div class="md">
         {{ schema["text"]["concluding_text"]|safe }}
         </div>
+    </div>
+</div>
 
+<!-- Social links -->
+<div class="row">
+    <div class="col-12">
         <div class="my-5">
             <div class="fb-share-button align-top" data-href="{{ request.url }}" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
             <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ share_text|urlencode }}&hashtags=GettingUnstuck&url={{ request.url|urlencode }}" data-size="large">Tweet</a>
         </div>
+    </div>
+</div>
 
         <!-- What to say if scraping not done -->
         {% else %}
@@ -219,6 +257,8 @@
 
 {% block end_file %}
 <script src="/static/js/sb.js"></script>
+<script src="/static/js/day-night.js"></script>
+<script src="/static/js/project_results.js"></script>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0" nonce="JjX5JT3V"></script>
 <script>window.twttr = (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0],

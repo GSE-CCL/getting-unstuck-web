@@ -240,6 +240,35 @@ def project_download():
         return "False"
 
 
+@app.route("/project/f/<pid>", methods=["POST"])
+def project_feedback(pid):
+    if ("_gu_uid" in request.cookies
+        and "feelings" in request.json
+        and "minutes" in request.json):
+        try:
+            common.connect_db()
+            reflection = scrape.ProjectReflection(project_id = pid,
+                                                  gu_uid = request.cookies.get("_gu_uid"),
+                                                  minutes = int(request.json["minutes"]),
+                                                  feelings = request.json["feelings"])
+            reflection.save()
+            return "True"
+        except:
+            return "False"
+    else:
+        return "False"
+
+
+@app.route("/project/o/<pid>")
+def feedback_owner(pid):
+    try:
+        common.connect_db()
+        reflection = scrape.ProjectReflection.objects(project_id=pid).order_by("-timestamp").first()
+        return reflection["gu_uid"]
+    except:
+        return ""
+
+
 @app.route("/project/r/<pid>")
 def reload_project(pid):
     try:

@@ -1,0 +1,77 @@
+[
+    {
+        "icon": "em-trophy",
+        "text": "triumphant",
+        "value": "triumphant"
+    },
+    {
+        "icon": "em-sparkles",
+        "text": "inspired",
+        "value": "inspired"
+    },
+    {
+        "icon": "em-wrench",
+        "text": "super debugger",
+        "value": "super debugger"
+    },
+    {
+        "icon": "em-hearts",
+        "text": "love what I made",
+        "value": "love what I made"
+    },
+    {
+        "icon": "em-tada",
+        "text": "proud",
+        "value": "proud"
+    },
+    {
+        "icon": "em-fire",
+        "text": "amazing",
+        "value": "amazing"
+    },
+    {
+        "icon": "em-computer",
+        "text": "creative",
+        "value": "creative"
+    },
+    {
+        "icon": "em-telescope",
+        "text": "curious",
+        "value": "curious"
+    },
+    {
+        "icon": "em-boat",
+        "text": "smooth sailing",
+        "value": "smooth sailing"
+    },
+    {
+        "icon": "em-cake",
+        "text": "piece of cake",
+        "value": "piece of cake"
+    },
+    {
+        "icon": "em-roller_coaster",
+        "text": "emotional roller coaster",
+        "value": "emotional roller coaster"
+    },
+    {
+        "icon": "em-brain",
+        "text": "brainteaser",
+        "value": "brainteaser"
+    },
+    {
+        "icon": "em-wilted_flower",
+        "text": "disappointed",
+        "value": "disappointed"
+    },
+    {
+        "icon": "em-sweat_drops",
+        "text": "challenged",
+        "value": "challenged"
+    },
+    {
+        "icon": "em-ocean",
+        "text": "overwhelmed",
+        "value": "overwhelmed"
+    }
+]

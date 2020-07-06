@@ -126,8 +126,9 @@
 </div>
 
 <!-- Reflection on project -->
-<div class="row my-5">
+<div class="row mt-5" id="project_reflection">
     <div class="col-md-6">
+        <input type="hidden" name="gu_uid" id="gu_uid" value="{{ reflection['gu_uid'] }}">
         <h6>Let&rsquo;s take a minute to reflect!</h6>
         
         <p>How many minutes did you spend on this project?</p>
@@ -140,7 +141,6 @@
             </div>
         </div>
         <p class="text-center"><span class="time_spent">0</span> <span class="time_unit">minutes</span></p>
-    
     </div>
     <div class="col-md-6">
         <p class="my-2">How did this project make you feel? <span id="feels_instructions">(Choose up to 5.)</span></p>
@@ -153,7 +153,7 @@
         {% endfor %}
     </div>
 </div>
-<div class="row">
+<div class="row mt-5">
     <div class="col-12">
         <!-- Project comparison excerpts -->
         <div class="row">

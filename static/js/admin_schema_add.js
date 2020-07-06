@@ -183,7 +183,6 @@ let move_blocks = (event) => {
         helper.dataset.boId = obj.dataset.boId;
         helper.dataset.brId = obj.parentNode.parentNode.dataset.brId;
     }
-    console.log(helper.dataset)
 };
 
 // Hide block list

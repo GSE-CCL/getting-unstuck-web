@@ -328,6 +328,7 @@ ul {
     width: 100%;
     height: 36px;
     background: transparent;
+    -webkit-appearance: none;
 }
 
 .day-night input[type=range]::-webkit-slider-thumb,

@@ -184,8 +184,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     project, scratch_data = scrape.get_project(pid, cache_directory)
 
     if len(project) == 0 or len(scratch_data) == 0:
-        message = "We couldn&rsquo;t find your project! Try finding it by going to Prompts, \
-                   then Find Project for the day you&rsquo;re looking for."
+        message = "We couldn&rsquo;t find your project!"
         return render_template("project_loader.html", message=message)
 
     studio = scrape.get_studio(project["studio_id"])
@@ -222,9 +221,18 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
                 "code": code,
                 "sprite": sprite
             }
+
+        # Get the saved reflection, if any
+        _reflections = scrape.ProjectReflection.objects(project_id=pid).order_by("-timestamp")
+        try:
+            reflection = _reflections.first().to_mongo().to_dict()
+            reflection["editable"] = True if reflection["gu_uid"] == request.cookies.get("_gu_uid") else False
+        except:
+            reflection = dict()
     else:
         sc = dict()
         excerpts = dict()
+        reflection = dict()
 
     # One prompt variable to take the logic out of the templating language
     prompt = {
@@ -238,7 +246,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     # Get the feels
     feels = get_feels(randomize=True)
 
-    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts, feels=feels)
+    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts, feels=feels, reflection=reflection)
 
 
 def get_studio_stats(sc, studio):

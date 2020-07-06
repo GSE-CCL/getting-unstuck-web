@@ -21,6 +21,9 @@ except:
     USE_SPLIT = True
 
 
+FEELINGS = display.get_feels()
+FEELS = [feel["value"] for feel in FEELINGS]
+
 connect_db = common.connect_db
 
 class Comment(mongo.Document):
@@ -44,6 +47,22 @@ class Project(mongo.Document):
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now() + timedelta(days=30))
     reload_page = mongo.BooleanField(default=False)
+
+def proper_feelings(param):
+    """Raises a ValidationError if doesn't meet format for feelings."""
+    if type(param) != list:
+        raise mongo.ValidationError("feelings is a list.")
+
+    for item in param:
+        if item not in FEELS:
+            raise mongo.ValidationError("Improper feeling.")
+
+class ProjectReflection(mongo.Document):
+    project_id = mongo.IntField(required=True)
+    gu_uid = mongo.StringField(max_length=128, required=True)
+    minutes = mongo.IntField(default=0)
+    feelings = mongo.ListField(default=list(), max_length=5, validation=proper_feelings)
+    timestamp = mongo.DateTimeField(default=datetime.now())
 
 class Studio(mongo.Document):
     studio_id = mongo.IntField(required=True, unique=True)

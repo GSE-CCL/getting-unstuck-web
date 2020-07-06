@@ -1,19 +1,3 @@
-// Get project ID from URL
-let get_id = (text) => {
-    text = text.replace("/editor", "");
-    let tokenized = text.split("/");
-    let i = tokenized[tokenized.length - 1] == ""
-            ? tokenized.length - 2
-            : (tokenized.length - 1);
-
-    if (i < 0) return -1;
-    else {
-        let res = parseInt(tokenized[i]);
-        if (isNaN(res)) return -1;
-        else return res;
-    }
-};
-
 let find_project = (event) => {
     event.preventDefault();
 

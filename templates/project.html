@@ -44,8 +44,9 @@
         <div class="md">
         {{ schema["text"]["prompt_framing_text"]|safe }}
         </div>
-
-        <blockquote class="blockquote mx-2 mx-md-5">{{ prompt["description"] }}</blockquote>
+        <div class="md">
+            <p class="mx-2 mx-md-5 weight">{{ prompt["description"] }}</p>
+        </div>
 
         <div class="md">
         {{ schema["text"]["explanation"]|safe }}
@@ -57,7 +58,7 @@
             {% if project["validation"]["required_block_categories"][schema["comparison_basis"]["priority"]]: %}
             <p class="text-center">
                 Here&rsquo;s an example of how you used
-                <strong>{{ schema["comparison_basis"]["priority"] }}</strong>
+                <span style="font-weight:600">{{ schema["comparison_basis"]["priority"] }}</span>
                 blocks in
                 <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">your project</a>:
             </p>

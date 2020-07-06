@@ -22,7 +22,9 @@ except:
 
 
 FEELINGS = display.get_feels()
-FEELS = [feel["value"] for feel in FEELINGS]
+
+if FEELINGS:
+    FEELS = [feel["value"] for feel in FEELINGS]
 
 connect_db = common.connect_db
 

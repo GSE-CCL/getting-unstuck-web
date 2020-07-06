@@ -57,7 +57,6 @@ let toggle_navbar = (event) => {
 };
 
 
-
 let init_gu = () => {
     if (Cookies.get("_gu_uid") === undefined) {
         Cookies.set("_gu_uid", strgen(128), {expires: 60});

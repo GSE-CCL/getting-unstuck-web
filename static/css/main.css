@@ -211,6 +211,10 @@ img.sprite {
     margin: 0 0 -12px;
 }
 
+.max_height_500px {
+    max-height: 500px;
+}
+
 /* Prompts */
 tbody th {
     padding: 1px !important;

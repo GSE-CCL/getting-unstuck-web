@@ -339,7 +339,7 @@ def studio_id(sid):
 @app.route("/user/<username>")
 def user_id(username):
     common.connect_db()
-    projects = list(scrape.Project.objects(author = username))
+    projects = list(scrape.Project.objects(author = username.lower()))
     studios = dict()
 
     keep_projects = list()

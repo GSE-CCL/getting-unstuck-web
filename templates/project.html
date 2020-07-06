@@ -145,7 +145,7 @@
         <p class="text-center"><span class="time_spent">0</span> <span class="time_unit">minutes</span></p>
     </div>
     <div class="col-md-6">
-        <p class="my-2">How did this project make you feel? <span id="feels_instructions">(Choose up to 5.)</span></p>
+        <p class="my-2">How did working on this project make you feel? <span id="feels_instructions">(Choose up to 5.)</span></p>
         {% for feel in feels: %}
         <input type="checkbox" name="feels" value="{{ feel['value'] }}" id="feels_{{ feel['value'] }}" class="feels d-none">
         <label for="feels_{{ feel['value'] }}" class="btn badge badge-pill btn-light align-middle p-2 font-weight-normal">

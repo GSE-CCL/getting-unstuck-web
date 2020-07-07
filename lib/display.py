@@ -173,7 +173,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     """Get a project page rendered in HTML given a project ID.
     
     Args:
-        pid (str): project ID.
+        pid (int): project ID.
         cache_directory (str): the directory where cached projects are stored.
         
     Returns:
@@ -184,7 +184,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     project, scratch_data = scrape.get_project(pid, cache_directory)
 
     if len(project) == 0 or len(scratch_data) == 0:
-        message = "We couldn&rsquo;t find your project!"
+        message = 'We couldn&rsquo;t find your project! <a href="/project/r/{}">Try again</a>'.format(pid)
         return render_template("project_loader.html", message=message)
 
     studio = scrape.get_studio(project["studio_id"])

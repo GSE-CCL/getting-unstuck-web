@@ -140,6 +140,12 @@ def admin_page(page):
     else:
         return redirect("/admin")
 
+@app.route("/admin/cache/clear")
+@admin_required
+def clear_cache():
+    cache.clear()
+    return redirect("/admin")
+
 @app.route("/admin/error/<eid>")
 @admin_required
 def error_page(eid):
@@ -280,7 +286,7 @@ def reload_project(pid):
 
 
 @app.route("/project/<pid>/view", methods=["GET"])
-@cache.cached(timeout=PROJECT_CACHE_LENGTH, forced_update=scrape.get_reload_project)
+@cache.cached(timeout=PROJECT_CACHE_LENGTH, forced_update=scrape.get_reload_project, unless=authentication.session_active)
 def project__id(pid):
     return display.get_project_page(pid, CACHE_DIRECTORY)
 
@@ -355,7 +361,7 @@ def user_id(username):
     return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
-@cache.cached(timeout=600)
+@cache.cached(timeout=600, unless=authentication.session_active)
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
@@ -399,34 +405,34 @@ def summarize():
 
 # Static pages -- About, Strategies, Signup, Research
 @app.route("/")
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def homepage():
     return render_template("home.html", section="home") 
 
 @app.route("/about", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def about():
     return render_template("about.html")
 
 @app.route("/strategies", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def strategies():
     return render_template("strategies.html")
 
 @app.route("/signup", methods=["GET", "POST"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def signup():
     return render_template("signup.html")
 
 @app.route("/research", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def research():
     return render_template("research.html")
 
 
 # Error pages
 @app.route("/ie")
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def ie():
     return render_template("ie.html")
 

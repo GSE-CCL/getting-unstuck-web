@@ -10,22 +10,29 @@
             project to a daily studio, and reflect on what you&rsquo;ve made. Check back here or <a href=/signup>sign up for the mailing list</a> to find out 
             about each day&rsquo;s prompt!
         </p>
-        <div style="overflow: hidden; text-align:center" class="mr-3 mb-3">
-            <a href="/participation" class="input-group-btn inline btn btn-primary button round-btn" style="font-weight:400">What did you make? What did you learn?</a>
+        <p class="text-center mt-4 mb-1">
+            What did you make? What did you learn?
+        </p>
+        <div class="mb-4 text-center overflow-hidden">
+            <a href="/participation" class="input-group-btn inline btn btn-primary button round-btn font-weight-normal">
+                See what you made
+            </a>
         </div>
 
         <table class="table table-bordered">
             {% for challenge in challenges: %}
                 {% if challenge != None: %}
                 <tr>
-                    <td class="day" width="15%">
+                    <td class="col-md-2 p-2">
+                        <h1 class="gastromond big text-center">
                         {% if "short_label" in schemas[challenge["challenge_id"]]: %}
                             {{ schemas[challenge["challenge_id"]]["short_label"] }}
                         {% else: %}
                             {{ loop.index }}
                         {% endif %}
+                        </h1>
                     </td>
-                    <td style="padding-bottom: 8px" width="85%">
+                    <td style="padding-bottom: 8px" class="col-md-10">
                         {% if "description" in schemas[challenge["challenge_id"]]: %}
                         <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
                         {% else: %}
@@ -34,14 +41,14 @@
 
                         <div class="container">
                             <div class="row table-link">
-                                    {% if "url" in schemas[challenge["challenge_id"]]: %}
-                                    <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp&nbsp || &nbsp&nbsp
-                                    {% else: %}
-                                    &nbsp
-                                    {% endif %}
-                                    <a href="/studio/{{ challenge['studio_id'] }}">Explore what you made</a>
-                                    &nbsp&nbsp || &nbsp&nbsp
-                                    <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
+                                {% if "url" in schemas[challenge["challenge_id"]]: %}
+                                <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp&nbsp || &nbsp&nbsp
+                                {% else: %}
+                                &nbsp
+                                {% endif %}
+                                <a href="/studio/{{ challenge['studio_id'] }}">Explore what you made</a>
+                                &nbsp&nbsp || &nbsp&nbsp
+                                <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
                             </div>
                         </div>
                     </td>

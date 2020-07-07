@@ -238,7 +238,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     # One prompt variable to take the logic out of the templating language
     prompt = {
         "title": sc["title"] if "title" in sc and sc["title"] is not None else studio["title"] if "title" in studio else None,
-        "description": sc["description"] if "description" in sc else studio["description"]
+        "description": sc["description"] if "description" in sc else studio["description"] if "description" in studio else None
     }
 
     # Choose stats to show
@@ -264,6 +264,7 @@ def get_studio_stats(sc, studio):
     parser = Parser()
 
     stats = list()
+    overrides = {"block_count": "blocks used", "number_projects": "projects in the studio"}
 
     if "stats" not in sc:
         return stats
@@ -294,6 +295,10 @@ def get_studio_stats(sc, studio):
             if key == "blocks" or key == "block_categories":
                 append = "blocks"
             else:
+                # Override a few
+                if key in overrides:
+                    key = overrides[key]
+
                 s["name"].append(key.replace("_", " "))
 
         # If studio doesn't have the stat requested

@@ -355,6 +355,7 @@ def user_id(username):
     return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
+@cache.cached(timeout=600)
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))

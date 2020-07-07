@@ -53,7 +53,7 @@ let toggle_navbar = (event) => {
     let selector = event.target.dataset.target;
     let element = document.querySelector(selector);
 
-    element.classList.toggle("d-inline");
+    element.classList.toggle("collapse");
 };
 
 

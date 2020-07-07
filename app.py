@@ -140,6 +140,12 @@ def admin_page(page):
     else:
         return redirect("/admin")
 
+@app.route("/admin/cache/clear")
+@admin_required
+def clear_cache():
+    cache.clear()
+    return redirect("/admin")
+
 @app.route("/admin/error/<eid>")
 @admin_required
 def error_page(eid):

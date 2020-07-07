@@ -200,7 +200,7 @@ img.sprite {
 }
 
 /* Prompts */
-tbody th {
+td.day-num {
     padding: 1px !important;
     width: 450px;
     text-align: center;
@@ -208,7 +208,7 @@ tbody th {
     font-family: 'Gastromond';
 }
 
-.table th {
+.table td {
     vertical-align: middle;
 }
 

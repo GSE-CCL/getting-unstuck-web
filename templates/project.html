@@ -158,19 +158,14 @@
 <div class="row mt-5">
     <div class="col-12">
         <!-- Project comparison excerpts -->
-        <div class="row">
-            <div class="col-md-9">
-                <div class="md mt-3">
-                    {{ schema["text"]["comparison_framing_text"]|safe }}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <a href="/project/r/{{  project['project_id'] }}" class="btn btn-primary mt-3 round-btn float-right mb-1">Five new projects</a>
-            </div>
+        <div class="md mt-3">
+            {{ schema["text"]["comparison_framing_text"]|safe }}
         </div>
 
+        <a href="/project/r/{{  project['project_id'] }}" class="btn btn-primary round-btn float-right mb-1">Five new projects</a>
+
         <!-- Cool CSS-based tabs -->
-        <div class="tabs mb-5">
+        <div class="tabs mb-5 col-12 px-0">
             {% for excerpt in excerpts: %}
             {% if excerpt != project["project_id"]: %}
             <input name="tabs" type="radio" id="tab-{{ loop.index0 }}" {% if loop.index0 == 0: %}checked{% endif %} class="input">

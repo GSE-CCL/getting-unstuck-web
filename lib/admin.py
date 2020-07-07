@@ -185,7 +185,6 @@ def set_info(page, form):
                     doc.stats = form["stats"]
                     doc.title = title
                     doc.description = description
-                    doc.url = schema.Link(url=url["url"], text=url["text"])
                     doc.text = schema.ResultText(explanation=form["text"]["explanation"],
                                                     concluding_text=form["text"]["concluding_text"],
                                                     comparison_reflection_text=form["text"]["comparison_reflection_text"],
@@ -213,6 +212,9 @@ def set_info(page, form):
                     doc.required_text_failure = form["required_text_failure"]
                     doc.required_blocks_failure = form["required_blocks_failure"]
                     doc.modified = datetime.now()
+
+                    if url is not None:
+                        doc.url = schema.Link(url=url["url"], text=url["text"])
 
                     doc.save()
                     return True

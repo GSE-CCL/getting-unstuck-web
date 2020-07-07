@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}{% endblock %}{{ SITE["title"] }}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
@@ -36,22 +36,31 @@
     <body>
     {% endif %}
         
-        <nav class="navbar navbar-expand-lg navbar-dark gu-blue-bg">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsed_nav" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon" data-target="#collapsed_nav"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="collapsed_nav">
-                    <a href="/" class="navbar-left navbar-brand">
+        <nav class="navbar navbar-expand-lg navbar-dark gu-blue-bg" style="overflow-y: visible">
+            <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#collapsed_nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" data-target="#collapsed_nav"></span>
+            </button>
+
+            <div class="collapse navbar-collapse gu-blue-bg" id="collapsed_nav">
+                <div class="mr-auto text-center">
+                    <a href="/" class="navbar-brand">
                         <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ SITE["title"] }}">
                     </a>
-                    <div class="navbar-nav ml-auto navbar-right">
-                        <a class="nav-item nav-link" href="/prompts">PROMPTS</a>
-                        <a class="nav-item nav-link" href="/strategies">STRATEGIES</a>
-                        <a class="nav-item nav-link" href="/about">ABOUT</a>
-                        <a class="nav-item nav-link text-nowrap" href="/signup">SIGN UP</a>
-                    </div>
                 </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/prompts">PROMPTS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/strategies">STRATEGIES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-nowrap" href="/signup">SIGN UP</a>
+                    </li>
+                </ul>
             </div>
         </nav>
         {% if user: %}

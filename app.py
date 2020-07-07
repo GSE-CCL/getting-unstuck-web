@@ -43,8 +43,7 @@ app.jinja_env.filters["get_selected"] = common.get_selected
 app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
-app.config["CACHE_TYPE"] = "filesystem"
-app.config["CACHE_DIR"] = f"{CACHE_DIRECTORY}/pages"
+app.config["CACHE_TYPE"] = "lib.cache.MongoCache"
 app.config["CACHE_DEFAULT_TIMEOUT"] = 1200
 
 cache = Cache(app)
@@ -356,6 +355,7 @@ def user_id(username):
     return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
+@cache.cached(timeout=600)
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))

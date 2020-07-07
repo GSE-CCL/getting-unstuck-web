@@ -23,7 +23,7 @@
             {% for challenge in challenges: %}
                 {% if challenge != None: %}
                 <tr>
-                    <td class="col-md-2 p-2">
+                    <td class="p-2" style="width: 15%">
                         <h1 class="gastromond big text-center">
                         {% if "short_label" in schemas[challenge["challenge_id"]]: %}
                             {{ schemas[challenge["challenge_id"]]["short_label"] }}
@@ -32,7 +32,7 @@
                         {% endif %}
                         </h1>
                     </td>
-                    <td style="padding-bottom: 8px" class="col-md-10">
+                    <td style="padding-bottom: 8px" style="width: 85%">
                         {% if "description" in schemas[challenge["challenge_id"]]: %}
                         <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
                         {% else: %}

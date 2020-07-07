@@ -297,8 +297,8 @@ def add_comments(project_id, username, credentials_file=settings.DEFAULT_CREDENT
                 comment_id = comment["id"],
                 project_id = project_id,
                 date = timestamp,
-                author = comment["username"],
-                recipient = username,
+                author = comment["username"].lower(),
+                recipient = username.lower(),
                 content = comment["comment"]
             )
             doc.save()
@@ -400,7 +400,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             title = metadata["title"],
             description = metadata["description"],
             instructions = metadata["instructions"],
-            author = metadata["author"]["username"],
+            author = metadata["author"]["username"].lower(),
             history = metadata["history"],
             remix = metadata["remix"],
             studio_id = studio_id,
@@ -408,7 +408,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         )
 
     doc.save()
-    add_comments(project_id, metadata["author"]["username"], credentials_file=credentials_file)
+    add_comments(project_id, metadata["author"]["username"].lower(), credentials_file=credentials_file)
 
     # Validate against studio's schema, if available
     if studio_id > 0:

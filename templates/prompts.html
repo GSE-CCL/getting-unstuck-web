@@ -23,7 +23,7 @@
             {% for challenge in challenges: %}
                 {% if challenge != None: %}
                 <tr>
-                    <td class="col-md-2 p-2">
+                    <td class="p-2" style="width: 15%">
                         <h1 class="gastromond big text-center">
                         {% if "short_label" in schemas[challenge["challenge_id"]]: %}
                             {{ schemas[challenge["challenge_id"]]["short_label"] }}
@@ -32,24 +32,20 @@
                         {% endif %}
                         </h1>
                     </td>
-                    <td style="padding-bottom: 8px" class="col-md-10">
+                    <td style="padding-bottom: 8px" style="width: 85%">
                         {% if "description" in schemas[challenge["challenge_id"]]: %}
                         <p>{{ schemas[challenge["challenge_id"]]["description"] }}</p>
                         {% else: %}
                         <p>{{ challenge["description"] }}</p>
                         {% endif %}
 
-                        <div class="container">
-                            <div class="row table-link">
-                                {% if "url" in schemas[challenge["challenge_id"]]: %}
-                                <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp;&nbsp; || &nbsp;&nbsp;
-                                {% else: %}
-                                &nbsp;
-                                {% endif %}
-                                <a href="/studio/{{ challenge['studio_id'] }}">Explore what you made</a>
-                                &nbsp;&nbsp; || &nbsp;&nbsp;
-                                <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
-                            </div>
+                        <div>
+                            {% if "url" in schemas[challenge["challenge_id"]]: %}
+                            <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp;&nbsp; || &nbsp;&nbsp;
+                            {% endif %}
+                            <a href="/studio/{{ challenge['studio_id'] }}">Explore what you made</a>
+                            &nbsp;&nbsp; || &nbsp;&nbsp;
+                            <a href="https://scratch.mit.edu/studios/{{ challenge['studio_id'] }}" target="_blank">Explore the Scratch studio</a>
                         </div>
                     </td>
                 </tr>

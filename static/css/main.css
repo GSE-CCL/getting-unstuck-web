@@ -104,10 +104,21 @@ option:disabled {
 a.nav-item {
     font-size: 0.9rem;
 }
+
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 1);
     padding-left: 1.5em;
     padding-right: 1.5em;
+}
+
+@media (max-width: 800px) {
+    .collapse {
+        position: absolute;
+        z-index: 10000;
+        width: 100%;
+        top: 0;
+        left: 0;
+    }
 }
 
 .block {
@@ -239,6 +250,7 @@ ul {
 .breadcrumb-item+.breadcrumb-item::before {
     content: ">>";
 }
+
 /* Thanks to https://kyusuf.com/post/completely-css-tabs/ for the base code */
 .tabs {
     display: flex;

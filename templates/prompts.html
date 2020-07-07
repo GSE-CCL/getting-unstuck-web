@@ -18,7 +18,7 @@
             {% for challenge in challenges: %}
                 {% if challenge != None: %}
                 <tr>
-                    <td class="day-num" width="15%">
+                    <td class="day" width="15%">
                         {% if "short_label" in schemas[challenge["challenge_id"]]: %}
                             {{ schemas[challenge["challenge_id"]]["short_label"] }}
                         {% else: %}

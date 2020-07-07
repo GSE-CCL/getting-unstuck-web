@@ -46,7 +46,7 @@
         </div>
 
         <div class="md">
-            <p class="mx-2 mx-md-5 weight">{{ prompt["description"] }}</p>
+            <p class="weight">{{ prompt["description"] }}</p>
         </div>
 
         <div class="md">
@@ -72,7 +72,7 @@
             {% set feature = project["validation"]["required_text"][schema["comparison_basis"]["priority"]] %}
             <p class="text-center">
                 Here&rsquo;s an example of how you used the text
-                <strong>&ldquo;{{ schema["required_text"][schema["comparison_basis"]["priority"]][feature] }}&rdquo;</strong>
+                <span style="font-weight:600">&ldquo;{{ schema["required_text"][schema["comparison_basis"]["priority"]][feature] }}&rdquo;</span>
                 in
                 <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">your project</a>:
             </p>
@@ -89,7 +89,7 @@
                 {% set focus_block = schema["comparison_basis"]["priority"][rbo] %}
                 <p class="text-center">
                     Here&rsquo;s an example of how you used the
-                    <strong>{{ focus_block|human_block }}</strong>
+                    <span style="font-weight:600">{{ focus_block|human_block }}</span>
                     block in
                     <a href="https://scratch.mit.edu/projects/{{ project['project_id'] }}" target="_blank">your project</a>:
                 </p>

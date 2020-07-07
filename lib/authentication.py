@@ -125,3 +125,8 @@ def get_login_info():
         return session["user"]
     else:
         return False
+
+
+def session_active():
+    """True if there's a user login right now."""
+    return "user" in session

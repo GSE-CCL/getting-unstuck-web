@@ -42,7 +42,7 @@
                         <div class="container">
                             <div class="row table-link">
                                 {% if "url" in schemas[challenge["challenge_id"]]: %}
-                                <a href="{{ schemas[challenge['challenge_id']]['url']['url']|urlencode }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp;&nbsp; || &nbsp;&nbsp;
+                                <a href="{{ schemas[challenge['challenge_id']]['url']['url'] }}">{{ schemas[challenge['challenge_id']]['url']['text'] }}</a> &nbsp;&nbsp; || &nbsp;&nbsp;
                                 {% else: %}
                                 &nbsp;
                                 {% endif %}

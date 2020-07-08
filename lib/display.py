@@ -118,7 +118,7 @@ def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDEN
     # Find projects that meet the priority category requirement
     elif sc["comparison_basis"]["basis"] == "required_block_categories":
         projects = scrape.get_projects_with_category(sc["comparison_basis"]["priority"],
-                                                     sc["required_block_categories"][sc["comparison_basis"]["basis"]],
+                                                     sc["required_block_categories"][sc["comparison_basis"]["priority"]],
                                                      project["project_id"],
                                                      project["studio_id"],
                                                      credentials_file)

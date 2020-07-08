@@ -75,7 +75,10 @@ def twodec(value):
     return f"{value:,.2f}"
 
 def indexOf(lst, value):
-    return lst.index(value)
+    try:
+        return lst.index(value)
+    except ValueError:
+        return -1
 
 def pluralize(item):
     if type(item) == list:

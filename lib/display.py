@@ -48,8 +48,11 @@ def get_code_excerpt(project, sc, include_orphans=False):
     elif sc["comparison_basis"]["basis"] == "required_block_categories":
         if project["validation"]["required_block_categories"][sc["comparison_basis"]["priority"]]:
             for block in project["stats"]["blocks"]:
-                if block.index(sc["comparison_basis"]["priority"]) == 0:
-                    blocks += project["stats"]["blocks"][block]
+                try:
+                    if block.index(sc["comparison_basis"]["priority"]) == 0:
+                        blocks += project["stats"]["blocks"][block]
+                except ValueError:
+                    pass
 
     # Find blocks if basis is blocks
     elif sc["comparison_basis"]["basis"] == "required_blocks":

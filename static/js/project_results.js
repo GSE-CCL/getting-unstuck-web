@@ -27,7 +27,7 @@ let get_checked_feels =  () => {
 
 let init_reflection = () => {
     let pid = get_id(window.location.href);
-    let saved = (Cookies.get("_reflections") === undefined) ? {} : saved = JSON.parse(Cookies.get("_reflections"));
+    let saved = (Cookies.get("_reflections") === undefined) ? {} : JSON.parse(Cookies.get("_reflections"));
 
     if (pid in saved) {
         document.getElementById("project_minutes").value = saved[pid]["minutes"];

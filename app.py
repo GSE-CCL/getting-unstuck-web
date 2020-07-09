@@ -310,7 +310,10 @@ def studio():
         if request.form["schema"] != "__none__":
             s = request.form["schema"]
 
-        if sid is not None:
+        if request.form["studio"] == "__all__":
+            scrape.rescrape_all.delay(cache_directory=CACHE_DIRECTORY)
+            return "Started"
+        elif sid is not None:
             scrape.add_studio.delay(sid, schema=s, show=("show" in request.form), cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:

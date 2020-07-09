@@ -641,3 +641,21 @@ def get_studio_stats(studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FI
 
 
     return stats
+
+
+@celery.decorators.task
+def rescrape_all(cache_directory=settings.CACHE_DIRECTORY):
+    """Rescrapes every studio in the database at the time of function call.
+    
+    Args:
+        cache_directory (str): the cache directory.
+
+    Returns:
+        None.
+    """
+
+    connect_db()
+    studios = Studio.objects()
+
+    for studio in studios:
+        add_studio(studio["studio_id"], studio["challenge_id"], studio["public_show"], cache_directory)

@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Welcome &minus; {% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/strategies.css') }}">
+{% endblock %}
 {% block main_content %}
 <div class="row">
     <div class="col-12">

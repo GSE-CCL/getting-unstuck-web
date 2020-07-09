@@ -267,7 +267,14 @@ def get_studio_stats(sc, studio):
     parser = Parser()
 
     stats = list()
-    overrides = {"block_count": "blocks used", "number_projects": "projects in the studio"}
+    overrides = {
+        "block_count": "blocks used",
+        "number_projects": "projects in the studio",
+        "description_words": "words in the notes and credits",
+        "instructions_words": "words in the instructions",
+        "description": "characters in the notes and credits",
+        "instructions": "characters in the instructions"
+    }
 
     if "stats" not in sc:
         return stats

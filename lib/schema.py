@@ -266,13 +266,18 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
     if "description" in result:
         del result["description"]
 
+    # Overall schema was met variable
+    result["met"] = True
+
     # Start off with the blockify comparisons
     bc = schema["min_blockify"]
     result["min_blockify"] = dict.fromkeys(bc)
     for key in schema["min_blockify"]:
-        result["min_blockify"][key] = False
         if key in project["stats"] and len(project["stats"][key]) >= schema["min_blockify"][key]:
             result["min_blockify"][key] = True
+        else:
+            result["min_blockify"][key] = False
+            result["met"] = False
             
     # Compare left comment counts
     project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")
@@ -302,6 +307,7 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
             result["required_block_categories"][category] = True
         else:
             result["required_block_categories"][category] = False
+            result["met"] = False
 
     # Check for required blocks
     result["required_blocks"] = [True] * len(schema["required_blocks"])
@@ -312,5 +318,13 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
                 and len(project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
                 result["required_blocks"][opt] = False
                 break
+
+    # Is the schema met overall?
+    result["met"] = (result["met"]
+                     and result["min_comments_made"]
+                     and result["min_instructions_length"]
+                     and result["min_description_length"]
+                     and -1 not in result["required_text"]
+                     and False not in result["required_blocks"])
 
     return result

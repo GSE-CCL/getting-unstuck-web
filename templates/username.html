@@ -22,10 +22,12 @@
         <h5>Getting Unstuck projects:</h5>
         <ul>
             {% for project in projects: %}
+            {% if studios[project["studio_id"]]["public_show"]: %}
             <li>
                 <a href="/project/{{ project['project_id']}}">{{ project["title"] }}</a>
-                in studio <a href="https://scratch.mit.edu/studios/{{ project['studio_id'] }}">{{ studios[project["studio_id"]]["title"] }}</a>
+                in studio <a href="/studio/{{ project['studio_id'] }}">{{ studios[project["studio_id"]]["title"] }}</a>
             </li>
+            {% endif %}
             {% endfor %}
         </ul>
         <p>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</p>

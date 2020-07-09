@@ -41,7 +41,7 @@
 
             <div class="card-body p-3 d-flex flex-column">
                 <h6 class="card-title">
-                    <a :href="'/project/' + project['project_id']" class="card-link"><% truncate(project["title"], 35) %></a>
+                    <a :href="'/project/' + project['project_id']" class="card-link"><% project["title"] %></a>
                 </h6>
                 <h6 class="card-subtitle mb-2 text-muted">by
                     <a :href="'/user/' + project['author']" class="card-link">@<% project["author"] %></a>

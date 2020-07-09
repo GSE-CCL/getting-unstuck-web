@@ -25,7 +25,7 @@
             {% if studios[project["studio_id"]]["public_show"]: %}
             <li>
                 <a href="/project/{{ project['project_id']}}">{{ project["title"] }}</a>
-                in studio <a href="https://scratch.mit.edu/studios/{{ project['studio_id'] }}">{{ studios[project["studio_id"]]["title"] }}</a>
+                in studio <a href="/studio/{{ project['studio_id'] }}">{{ studios[project["studio_id"]]["title"] }}</a>
             </li>
             {% endif %}
             {% endfor %}

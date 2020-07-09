@@ -42,6 +42,7 @@ class Project(mongo.Document):
     description = mongo.StringField(required=True, max_length=5000)
     instructions = mongo.StringField(required=True, max_length=5000)
     author = mongo.StringField(required=True, max_length=50)
+    image = mongo.StringField(default="")
     stats = mongo.DictField(required=True)
     history = mongo.DictField(required=True)
     remix = mongo.DictField(required=True)
@@ -385,6 +386,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
         doc.description = metadata["description"]
         doc.instructions = metadata["instructions"]
         doc.author = metadata["author"]["username"].lower()
+        doc.image = metadata["image"]
         doc.history = metadata["history"]
         doc.remix = metadata["remix"]
         doc.stats = stats
@@ -402,6 +404,7 @@ def add_project(project_id, studio_id=0, cache_directory=None, credentials_file=
             description = metadata["description"],
             instructions = metadata["instructions"],
             author = metadata["author"]["username"].lower(),
+            image = metadata["image"],
             history = metadata["history"],
             remix = metadata["remix"],
             studio_id = studio_id,

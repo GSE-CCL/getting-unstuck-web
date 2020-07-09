@@ -46,7 +46,7 @@
                 <h6 class="card-subtitle mb-2 text-muted">by
                     <a :href="'/user/' + project['author']" class="card-link">@<% project["author"] %></a>
                 </h6>
-                <a href="'https://scratch.mit.edu/projects/' + project['project_id']" target="_blank" class="card-link mt-auto">See it on Scratch!</a>
+                <a :href="'https://scratch.mit.edu/projects/' + project['project_id']" target="_blank" class="card-link mt-auto">See it on Scratch!</a>
             </div>
         </div>
     </div>

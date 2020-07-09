@@ -5,7 +5,7 @@ let loaded_sg = () => {
         el: ".gallery",
         delimiters: ["<%", "%>"],
         data: {
-            batch_size: 8,
+            batch_size: 32,
             more: true,
             page: 0,
             projects: projects,

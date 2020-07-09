@@ -365,7 +365,7 @@ def studio_id(sid):
     common.connect_db()
     studio = scrape.Studio.objects(studio_id = sid).first()
 
-    if studio is None:
+    if studio is None or (not (studio["public_show"] or authentication.session_active())):
         return redirect("/prompts")
 
     projects = list(scrape.Project.objects(studio_id = sid).order_by("author"))

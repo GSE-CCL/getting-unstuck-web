@@ -140,6 +140,10 @@ a.nav-item {
     width: 300px;
 }
 
+.h-24rem {
+    height: 2.4rem;
+}
+
 /* Image settings */
 img.logo {
     height: 3.5rem;

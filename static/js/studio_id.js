@@ -16,7 +16,7 @@ let find_project = (event) => {
     }
     else {
         for (let i = 0; i < titles.length; i++) {
-            let t = titles[i].toLowerCase;
+            let t = titles[i].toLowerCase();
             if (t.includes(identifier.toLowerCase())) {
                 index = i;
                 break;

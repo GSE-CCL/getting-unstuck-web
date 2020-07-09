@@ -7,7 +7,7 @@ import time
 import traceback
 import random
 import urllib
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, Response, session
 from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
@@ -316,6 +316,47 @@ def studio():
         else:
             return render_template("studio.html", message="Please enter a valid studio ID or URL.")
 
+@app.route("/studio/list/<sid>")
+def studio_list(sid):
+    if sid == "":
+        return "Must include a studio ID.", 400
+
+    common.connect_db()
+    studio = scrape.Studio.objects(studio_id = sid).first()
+
+    if studio is None:
+        return "Studio does not exist.", 404
+
+    limit = 8
+    page = 0
+    order = "author"
+    try:
+        if "page" in request.args:
+            page = int(request.args["page"])
+        if "order" in request.args:
+            if request.args["order"] in {"author", "title", "id", "project_id"}:
+                order = request.args["order"]
+        if "limit" in request.args:
+            if int(request.args["limit"]) <= 100:
+                limit = int(request.args["limit"])
+    except:
+        return "Invalid arguments", 400
+    
+    skip = page * limit
+
+    projects = scrape.Project.objects(studio_id = sid).order_by(order).skip(skip).limit(limit)
+    info = {"projects": list()}
+    for i, project in enumerate(projects):
+        info["projects"].append({
+            "project_id": project["project_id"],
+            "title": project["title"],
+            "author": project["author"],
+            "image": (project["image"] if "image" in project else ""),
+            "modified": project["history"]["modified"]
+        })
+    
+    return Response(json.dumps(info), mimetype="application/json")
+
 @app.route("/studio/<sid>")
 def studio_id(sid):
     if sid == "":
@@ -327,7 +368,7 @@ def studio_id(sid):
     if studio is None:
         return redirect("/prompts")
 
-    projects = list(scrape.Project.objects(studio_id = sid))
+    projects = list(scrape.Project.objects(studio_id = sid).order_by("author"))
     info = {"authors": list(), "project_ids": list(), "titles": list()}
 
     for project in projects:

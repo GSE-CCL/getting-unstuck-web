@@ -483,6 +483,13 @@ def add_studio(studio_id, schema=None, show=False, cache_directory=None, credent
 
         # Add all the projects
         project_ids = scraper.get_projects_in_studio(studio_id)
+
+        # Delete projects no longer in studio
+        delete = Project.objects(studio_id=studio_id, project_id__nin=project_ids)
+        logging.info("deleting {} projects no longer in studio {}".format(delete.count(), studio_id))
+        delete.delete()
+
+        # Add to studio
         for i, project in enumerate(project_ids):
             add_project(project, studio_id=studio_id, cache_directory=cache_directory, credentials_file=credentials_file)
             if i % 10 == 0:

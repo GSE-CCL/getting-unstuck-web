@@ -7,4 +7,5 @@ markdown
 mongoengine
 msgpack
 nltk
+pandas
 pytest

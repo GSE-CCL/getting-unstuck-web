@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
+{% block title %}Welcome &minus; {% endblock %}
 
-{% block main_block %}
-<form method="get" action="{{ username }}.pdf">
-    <button type="submit" class="btn btn-primary mt-3 button round-btn">Download</button>
+{% block main_content %}
+<form method="get" action="../{{username}}.pdf">
+    <button type="submit" class="btn btn-primary mt-3 button round-btn">Download Here!</button>
 </form>
 
-
+<a href="../{{username}}.pdf" download>Or here</a>
 {% endblock %}

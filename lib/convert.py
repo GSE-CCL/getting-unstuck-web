@@ -1,5 +1,6 @@
 import pdfkit
 from jinja2 import Template
+import os
 
 def convert_cert(template, username, projectnum):   
     options = {
@@ -13,8 +14,9 @@ def convert_cert(template, username, projectnum):
     'no-outline': None
     }
 
-    css = "certificate.css"
-    jinja2_template_string = open(template,'rb').read()
+    css = "lib/certificate.css"
+    print("CURRENT", os.getcwd(), "ok", "/lib/" + template)
+    jinja2_template_string = open("lib/" + template,'rb').read()
 
     template = Template(jinja2_template_string.decode("utf-8"))
 

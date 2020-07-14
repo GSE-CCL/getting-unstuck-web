@@ -18,11 +18,10 @@ sys.path.insert(0, os.path.abspath('..'))
 def setup(app):
     import subprocess
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    root = os.path.join(dir_path, "..")
+    docs = os.path.dirname(os.path.realpath(__file__))
+    root = os.path.join(docs, "..")
 
     # Handle apidoc
-    docs = os.path.join(dir_path, "docs")
     subprocess.run(["sphinx-apidoc", "-o", docs, root])
 
 

@@ -5,6 +5,7 @@ before_install:
     - sudo apt update
     - sudo apt -y install rabbitmq-server
 install:
+    - pip install yapf
     - pip install -r requirements.txt
     - python3 -c "import nltk; nltk.download('punkt')"
 services:
@@ -14,3 +15,4 @@ script:
     - cp secure/celery.json.example secure/celery.json
     - celery worker -A app.celery &
     - python3 -m pytest tests
+    - yapf -rd .

@@ -48,8 +48,11 @@ def get_credentials(credentials_file):
     if type(credentials_file) == dict:
         return credentials_file
     elif type(credentials_file) == str:
-        with open(credentials_file) as f:
-            return json.load(f)
+        try:
+            with open(credentials_file) as f:
+                return json.load(f)
+        except:
+            return dict()
 
 
 def md(text):

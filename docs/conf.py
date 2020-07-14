@@ -21,11 +21,6 @@ def setup(app):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     root = os.path.join(dir_path, "..")
 
-    # Handle copying of files
-    first = os.path.join(root, "secure/db.json.example")
-    second = os.path.join(root, "secure/db.json")
-    subprocess.run(["cp", first, second])
-
     # Handle apidoc
     docs = os.path.join(dir_path, "docs")
     subprocess.run(["sphinx-apidoc", "-o", docs, root])

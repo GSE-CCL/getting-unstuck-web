@@ -19,10 +19,16 @@ def setup(app):
     import subprocess
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    docs = os.path.join(dir_path, "docs")
-    source = os.path.join(dir_path, "..")
+    root = os.path.join(dir_path, "..")
 
-    subprocess.run(["sphinx-apidoc", "-o", docs, source])
+    # Handle copying of files
+    first = os.path.join(root, "secure/db.json.example")
+    second = os.path.join(root, "secure/db.json")
+    subprocess.run(["cp", first, second])
+
+    # Handle apidoc
+    docs = os.path.join(dir_path, "docs")
+    subprocess.run(["sphinx-apidoc", "-o", docs, root])
 
 
 # -- Project information -----------------------------------------------------

@@ -8,18 +8,22 @@ from lib import common
 
 #sys.path.insert(0, os.path.abspath("../"))
 
+
 @pytest.fixture
 def parser():
     return Parser()
+
 
 @pytest.fixture
 def scraper():
     return Scraper()
 
+
 @pytest.fixture
 def credentials():
     with open("tests/fixtures/secure/db.json") as f:
         return json.load(f)
+
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup(request):

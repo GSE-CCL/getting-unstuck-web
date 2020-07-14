@@ -1,0 +1,8 @@
+[style]
+based_on_style = pep8
+split_before_expression_after_opening_paren = false
+split_before_logical_operator = true
+split_before_dot = true
+coalesce_brackets = true
+allow_split_before_default_or_named_assigns = false
+indent_dictionary_value = true

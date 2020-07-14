@@ -5,7 +5,9 @@ from lib import scrape
 
 
 def test_add_studio_nonexistent(tmp_path, credentials):
-    scrape.add_studio(0, cache_directory=tmp_path, credentials_file=credentials)
+    scrape.add_studio(0,
+                      cache_directory=tmp_path,
+                      credentials_file=credentials)
 
     # Check file system
     files = os.listdir(tmp_path)
@@ -13,10 +15,10 @@ def test_add_studio_nonexistent(tmp_path, credentials):
 
     # Now check database
     db = mongo.connect(credentials["database"],
-                  host=credentials["host"],
-                  port=credentials["port"],
-                  username=credentials["username"],
-                  password=credentials["password"])
+                       host=credentials["host"],
+                       port=credentials["port"],
+                       username=credentials["username"],
+                       password=credentials["password"])
 
     assert len(scrape.Project.objects) == 0
     assert len(scrape.Comment.objects) == 0
@@ -24,8 +26,10 @@ def test_add_studio_nonexistent(tmp_path, credentials):
 
 
 def test_add_studio(tmp_path, credentials):
-    scrape.add_studio.delay(26211962, cache_directory=str(tmp_path), credentials_file=credentials)
-    
+    scrape.add_studio.delay(26211962,
+                            cache_directory=str(tmp_path),
+                            credentials_file=credentials)
+
     count = 0
     while count < 4:
         try:
@@ -40,10 +44,10 @@ def test_add_studio(tmp_path, credentials):
 
     # Now check database
     db = mongo.connect(credentials["database"],
-                  host=credentials["host"],
-                  port=credentials["port"],
-                  username=credentials["username"],
-                  password=credentials["password"])
+                       host=credentials["host"],
+                       port=credentials["port"],
+                       username=credentials["username"],
+                       password=credentials["password"])
 
     while len(scrape.Project.objects(studio_id=26211962)) < 4:
         continue

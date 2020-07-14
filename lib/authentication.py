@@ -8,6 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 connect_db = common.connect_db
 
+
 class User(mongo.Document):
     username = mongo.StringField(required=True, max_length=50, unique=True)
     first_name = mongo.StringField(required=True, max_length=200)
@@ -17,6 +18,7 @@ class User(mongo.Document):
     role = mongo.StringField(default="site_viewer")
     joined = mongo.DateTimeField(default=datetime.now())
     deleted = mongo.BooleanField(default=False)
+
 
 def admin_required(f):
     """
@@ -28,7 +30,9 @@ def admin_required(f):
         if user is None or "role" not in user or user["role"] != "site_admin":
             return redirect("/login")
         return f(*args, **kwargs)
+
     return decorated_function
+
 
 def login_required(f):
     """
@@ -40,10 +44,17 @@ def login_required(f):
         if session.get("user") is None or "_id" not in session.get("user"):
             return redirect("/login")
         return f(*args, **kwargs)
+
     return decorated_function
 
+
 @admin_required
-def register_user(username, email, first_name, last_name, password, role="site_viewer"):
+def register_user(username,
+                  email,
+                  first_name,
+                  last_name,
+                  password,
+                  role="site_viewer"):
     """Registers a user to our database.
     
     Args:
@@ -61,23 +72,19 @@ def register_user(username, email, first_name, last_name, password, role="site_v
     """
     site_roles = ["site_viewer", "site_admin"]
 
-    if (username is None or username == ""
-        or email is None or email == ""
-        or password is None or password == ""
-        or first_name is None or first_name == ""
-        or last_name is None or last_name == ""
-        or role not in site_roles):
-       return "all fields are required"
+    if (username is None or username == "" or email is None or email == ""
+            or password is None or password == "" or first_name is None
+            or first_name == "" or last_name is None or last_name == ""
+            or role not in site_roles):
+        return "all fields are required"
 
     connect_db()
-    doc = User(
-        username = username,
-        email = email,
-        first_name = first_name,
-        last_name = last_name,
-        password = generate_password_hash(password),
-        role = role
-    )
+    doc = User(username=username,
+               email=email,
+               first_name=first_name,
+               last_name=last_name,
+               password=generate_password_hash(password),
+               role=role)
     try:
         doc.save()
     except mongo.errors.NotUniqueError as e:
@@ -92,6 +99,7 @@ def register_user(username, email, first_name, last_name, password, role="site_v
         return False
     return True
 
+
 def login_user(username, password):
     """Logs in a user, setting a session cookie to that effect.
     
@@ -102,10 +110,12 @@ def login_user(username, password):
         True, if able to log in. Else False.
     """
     connect_db()
-    account = User.objects(Q(username = username) | Q(email = username), deleted=False).first()
-    if account is None or not check_password_hash(account["password"], password):
+    account = User.objects(Q(username=username) | Q(email=username),
+                           deleted=False).first()
+    if account is None or not check_password_hash(account["password"],
+                                                  password):
         return False
-    
+
     account_info = {
         "user_id": str(account["id"]),
         "username": account["username"],
@@ -118,6 +128,7 @@ def login_user(username, password):
     session["user"] = account_info
 
     return True
+
 
 def get_login_info():
     """Returns session login info, if it exists. Else returns False."""

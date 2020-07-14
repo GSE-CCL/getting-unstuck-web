@@ -15,8 +15,14 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
 
-import subprocess
-subprocess.check_call(["sphinx-apidoc", "-o", "docs", "."])
+def setup(app):
+    import subprocess
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    docs = os.path.join(dir_path, "docs")
+    source = os.path.join(dir_path, "..")
+
+    subprocess.run(["sphinx-apidoc", "-o", docs, source])
 
 
 # -- Project information -----------------------------------------------------

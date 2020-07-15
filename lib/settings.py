@@ -1,14 +1,18 @@
 import json
 
-
 # Site globals
 CONVERT_URL = "https://scratch-convert.herokuapp.com/convert"
 SITE = {
-    "title": "Getting Unstuck",
-    "description": "Getting Unstuck is a program for learning to debug computer programs.",
-    "author": "Creative Computing Lab at the Harvard Graduate School of Education.",
-    "ga": "<!-- Global site tag (gtag.js) - Google Analytics --><script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-121701097-1\"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-121701097-1');</script>",
-    "default_prompts_url_text": "See the email"
+    "title":
+        "Getting Unstuck",
+    "description":
+        "Getting Unstuck is a program for learning to debug computer programs.",
+    "author":
+        "Creative Computing Lab at the Harvard Graduate School of Education.",
+    "ga":
+        "<!-- Global site tag (gtag.js) - Google Analytics --><script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-121701097-1\"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-121701097-1');</script>",
+    "default_prompts_url_text":
+        "See the email"
 }
 
 # Directories

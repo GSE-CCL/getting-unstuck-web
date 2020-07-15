@@ -449,38 +449,38 @@ def studio_id(sid):
                            message=message)
 
 
-@app.route("/user/<username>", methods=["GET","POST"])
+@app.route("/user/<username>", methods=["GET"])
 def user_id(username):
-    if request.method == "POST":
-        project_num = scrape.Project.objects(author = username).count()
+    # if request.method == "POST":
+    #     project_num = scrape.Project.objects(author = username).count()
 
-        if project_num > 10:
-            project_num = 10
+    #     if project_num > 10:
+    #         project_num = 10
 
-        cert_download = convert.convert_cert("pdf.html", username, project_num)
+    #     cert_download = convert.convert_cert("pdf.html", username, project_num)
 
-        if cert_download:
-            # return redirect("/certificates")
-            return redirect(url_for('certificate', username=username))
-        else:
-            return render_template("username.html", message="Couldn't create a certificate!")
-    else:
-        common.connect_db()
-        projects = list(scrape.Project.objects(author = username.lower()))
-        studios = dict()
+    #     if cert_download:
+    #         # return redirect("/certificates")
+    #         return redirect(url_for('certificate', username=username))
+    #     else:
+    #         return render_template("username.html", message="Couldn't create a certificate!")
 
-        keep_projects = list()
-        for i, project in enumerate(projects):
-            if project["studio_id"] not in studios:
-                studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
-                
-                if studio is not None:
-                    studios[project["studio_id"]] = studio
-                    keep_projects.append(project)
-            else:
+    common.connect_db()
+    projects = list(scrape.Project.objects(author = username.lower()))
+    studios = dict()
+
+    keep_projects = list()
+    for i, project in enumerate(projects):
+        if project["studio_id"] not in studios:
+            studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+            
+            if studio is not None:
+                studios[project["studio_id"]] = studio
                 keep_projects.append(project)
+        else:
+            keep_projects.append(project)
 
-        return render_template("username.html", projects=keep_projects, studios=studios, username=username)
+    return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
 @cache.cached(timeout=600, unless=authentication.session_active)
@@ -529,9 +529,9 @@ def summarize():
 
 # Static pages -- About, Strategies, Signup, Research
 
-@app.route("/certificate", methods=["GET"])
-def certificate():
-    return render_template("certificate.html", username=request.args.get('username'))
+# @app.route("/certificate", methods=["GET"])
+# def certificate():
+#     return render_template("certificate.html", username=request.args.get('username'))
 
 @app.route("/")
 @cache.cached(unless=authentication.session_active)

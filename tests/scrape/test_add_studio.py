@@ -5,9 +5,7 @@ from lib import scrape
 
 
 def test_add_studio_nonexistent(tmp_path, credentials):
-    scrape.add_studio(0,
-                      cache_directory=tmp_path,
-                      credentials_file=credentials)
+    scrape.add_studio(0, cache_directory=tmp_path, credentials_file=credentials)
 
     # Check file system
     files = os.listdir(tmp_path)

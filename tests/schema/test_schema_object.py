@@ -14,8 +14,7 @@ def test_schema_object_defaults(credentials):
         text=schema.ResultText())
     challenge.save()
 
-    assert len(
-        schema.Challenge.objects(title="Test challenge - DEFAULTS")) == 1
+    assert len(schema.Challenge.objects(title="Test challenge - DEFAULTS")) == 1
 
 
 def test_schema_object_correct(credentials):
@@ -35,7 +34,8 @@ def test_schema_object_correct(credentials):
         min_comments_made=1,
         min_blockify=min_blockify,
         text=text,
-        required_text=[["hello", "world"]],
+        required_text=[["hello",
+                        "world"]],
         required_block_categories={"motion": 1},
         required_blocks=[{
             "event_whenflagclicked": 1

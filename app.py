@@ -28,8 +28,10 @@ from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_P
 app = Flask(__name__)
 
 try:
-    celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"],
-                               CLRY["broker_url"], app)
+    celery = tasks.make_celery(CLRY["name"],
+                               CLRY["result_backend"],
+                               CLRY["broker_url"],
+                               app)
 except:
     logging.warn("Couldn't load celery.")
 
@@ -60,8 +62,8 @@ def inject_vars():
 # Helper routes
 @app.route("/redirect", methods=["GET"])
 def redirect_to():
-    if request.args.get(
-            "username") is not None and request.args.get("username") != "":
+    if (request.args.get("username") is not None
+        and request.args.get("username") != ""):  # yapf: disable
         return redirect("/user/{0}".format(
             urllib.parse.quote(request.args.get("username"))))
     else:
@@ -77,11 +79,14 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
     else:
-        if (request.form["username"] is None or request.form["username"] == ""
-                or request.form["password"] is None
-                or request.form["password"] == ""):
+        # yapf: disable
+        if (request.form["username"] is None
+            or request.form["username"] == ""
+            or request.form["password"] is None
+            or request.form["password"] == ""):
             return render_template("login.html",
                                    message="All fields are required!")
+        # yapf: enable
 
         res = authentication.login_user(request.form["username"],
                                         request.form["password"])
@@ -174,14 +179,15 @@ def error_page(eid):
     else:
         issue = {
             "title":
-                "{} error when loading {}".format(
-                    error["error_code"],
-                    urllib.parse.urlparse(error["url"]).path),
+                "{} error when loading {}"
+                .format(error["error_code"],
+                        urllib.parse.urlparse(error["url"]).path),
             "body":
                 "**[Replicate here]({})**\n\nWhen accessing `{}`, there's a {} error. The traceback says:\n\n```python\n{}\n```"
                 .format(error["url"],
                         urllib.parse.urlparse(error["url"]).path,
-                        error["error_code"], error["traceback"])
+                        error["error_code"],
+                        error["traceback"])
         }
 
         return render_template("admin/error.html", error=error, issue=issue)
@@ -287,7 +293,7 @@ def project_download():
 @app.route("/project/f/<pid>", methods=["POST"])
 def project_feedback(pid):
     if ("_gu_uid" in request.cookies and "feelings" in request.json
-            and "minutes" in request.json):
+        and "minutes" in request.json):  # yapf: disable
         try:
             common.connect_db()
             reflection = scrape.ProjectReflection(
@@ -343,9 +349,8 @@ def project_id(pid):
 def studio():
     if request.method == "GET":
         common.connect_db()
-        return render_template(
-            "studio.html",
-            schemas=list(schema.Challenge.objects().order_by("-modified")))
+        return render_template("studio.html",
+                               schemas=list(schema.Challenge.objects().order_by("-modified")))  # yapf: disable
     else:
         scraper = Scraper()
         sid = scraper.get_id(request.form["studio"])
@@ -387,9 +392,7 @@ def studio_list(sid):
         if "page" in request.args:
             page = int(request.args["page"])
         if "order" in request.args:
-            if request.args["order"] in {
-                    "author", "title", "id", "project_id"
-            }:
+            if request.args["order"] in {"author", "title", "id", "project_id"}:
                 order = request.args["order"]
         if "limit" in request.args:
             if int(request.args["limit"]) <= 100:
@@ -482,8 +485,7 @@ def prompts():
 
         schema_ids.add(studio["challenge_id"])
 
-    schemas = schema.Challenge.objects(id__in=schema_ids).order_by(
-        "short_label", "title")
+    schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")  # yapf: disable
     id_order = list(schemas.values_list("id"))
 
     for i in range(len(id_order)):
@@ -560,14 +562,15 @@ def error(e):
         return redirect(REDIRECT_PAGES[request.path], code=301)
 
     status = "closed" if e.code == 404 else "open"
-    saved = errors.add_error(e.code, request.url, traceback.format_exc(),
+    saved = errors.add_error(e.code,
+                             request.url,
+                             traceback.format_exc(),
                              status)
 
     if not isinstance(e, HTTPException):
         e = InternalServerError()
 
-    scratch = "when i receive [error {} v]\nsay [Oh no!]\nswitch costume to (sad :\( v)".format(
-        e.code)
+    scratch = "when i receive [error {} v]\n say [Oh no!]\nswitch costume to (sad :\( v)".format(e.code)  # yapf: disable
 
     return render_template("error.html", error=e, scratch=scratch, saved=saved)
 

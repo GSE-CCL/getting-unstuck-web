@@ -24,7 +24,8 @@ def test_add_schema_correct(credentials):
             "sounds": 0,
             "sprites": 1
         },
-        required_text=[["hello", "world"]],
+        required_text=[["hello",
+                        "world"]],
         required_block_categories={"motion": 2},
         required_blocks=[{
             "event_whenflagclicked": 1

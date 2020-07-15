@@ -1,8 +1,13 @@
 [style]
-based_on_style = pep8
-split_before_expression_after_opening_paren = false
-split_before_logical_operator = true
-split_before_dot = true
-coalesce_brackets = true
-allow_split_before_default_or_named_assigns = false
-indent_dictionary_value = true
+based_on_style=pep8
+allow_split_before_default_or_named_assigns=false
+coalesce_brackets=true
+split_before_dot=True
+indent_dictionary_value=true
+split_penalty_after_opening_bracket=5000
+column_limit=80
+join_multiple_lines=False
+split_all_comma_separated_values=True
+split_before_arithmetic_operator=True
+split_before_bitwise_operator=True
+split_before_logical_operator=True

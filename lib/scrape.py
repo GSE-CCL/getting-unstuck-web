@@ -49,8 +49,8 @@ class Project(mongo.Document):
     remix = mongo.DictField(required=True)
     validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
-    cache_expires = mongo.DateTimeField(default=datetime.now() +
-                                        timedelta(days=30))
+    cache_expires = mongo.DateTimeField(default=datetime.now()
+                                        + timedelta(days=30))
     reload_page = mongo.BooleanField(default=False)
 
 
@@ -111,8 +111,7 @@ def get_project(project_id,
 
     # Get project from database
     try:
-        db = Project.objects(
-            project_id=project_id).first().to_mongo().to_dict()
+        db = Project.objects(project_id=project_id).first().to_mongo().to_dict()
     except:
         db = dict()
 
@@ -126,7 +125,8 @@ def get_project(project_id,
                         cache_directory=cache_directory,
                         credentials_file=credentials_file)
             scratch_data = get_project_from_cache(
-                project_id, cache_directory=cache_directory)
+                project_id,
+                cache_directory=cache_directory)
 
     return db, scratch_data
 
@@ -153,11 +153,10 @@ def get_project_from_cache(project_id,
     return scratch_data
 
 
-def get_projects_with_block(
-        opcode,
-        project_id=0,
-        studio_id=0,
-        credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+def get_projects_with_block(opcode,
+                            project_id=0,
+                            studio_id=0,
+                            credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Finds projects with given opcode.
     
     Args:
@@ -190,12 +189,11 @@ def get_projects_with_block(
     return list(opcode_present)
 
 
-def get_projects_with_category(
-        category,
-        count=1,
-        project_id=0,
-        studio_id=0,
-        credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+def get_projects_with_category(category,
+                               count=1,
+                               project_id=0,
+                               studio_id=0,
+                               credentials_file=settings.DEFAULT_CREDENTIALS_FILE):  # yapf: disable
     """Finds projects with given category.
     
     Args:
@@ -341,8 +339,7 @@ def add_comments(project_id,
                           content=comment["comment"])
             doc.save()
 
-    logging.debug(
-        "successfully scraped comments for project {}".format(project_id))
+    logging.debug("successfully scraped comments for project {}".format(project_id))  # yapf: disable
 
 
 def add_project(project_id,
@@ -388,15 +385,13 @@ def add_project(project_id,
     # Save to cache if needed
     if cache_directory is not None:
         if scraper.make_dir(f"{cache_directory}/projects"):
-            with open(
-                    "{0}/projects/{1}.json".format(cache_directory,
-                                                   project_id), "w") as f:
+            name = "{0}/projects/{1}.json".format(cache_directory, project_id)  # yapf: disable
+            with open(name, "w") as f:
                 try:
                     json.dump(scratch_data, f)
                 except:
                     raise IOError(
-                        "Couldn't write the JSON file to directory {0}".format(
-                            cache_directory))
+                        "Couldn't write the JSON file to directory {0}".format(cache_directory))   # yapf: disable
 
     # Parse the project using the parser class
     try:
@@ -410,8 +405,7 @@ def add_project(project_id,
         stats = False
 
     if not stats:
-        logging.warning(
-            "Couldn't get statistics for project {}".format(project_id))
+        logging.warning("Couldn't get statistics for project {}".format(project_id))   # yapf: disable
         return False
 
     # Change block_text's form
@@ -540,8 +534,9 @@ def add_studio(studio_id,
         # Delete projects no longer in studio
         delete = Project.objects(studio_id=studio_id,
                                  project_id__nin=project_ids)
-        logging.info("deleting {} projects no longer in studio {}".format(
-            delete.count(), studio_id))
+        logging.info("deleting {} projects no longer in studio {}"
+                     .format(delete.count(),
+                             studio_id))
         delete.delete()
 
         # Add to studio
@@ -551,8 +546,10 @@ def add_studio(studio_id,
                         cache_directory=cache_directory,
                         credentials_file=credentials_file)
             if i % 10 == 0:
-                logging.info("completed {}/{} projects in studio {}".format(
-                    i, len(project_ids), studio_id))
+                logging.info("completed {}/{} projects in studio {}"
+                             .format(i,
+                                     len(project_ids),
+                                     studio_id))
 
         stats = get_studio_stats(studio_id, credentials_file=credentials_file)
 
@@ -660,8 +657,8 @@ def get_studio_stats(studio_id,
                 stats["min"]["blocks"][block] = inf
                 stats["max"]["blocks"][block] = -inf
 
-            stats["mean"]["blocks"][block] += len(
-                project["stats"]["blocks"][block])
+            stats["mean"]["blocks"][block] += len(project["stats"]["blocks"]
+                                                  [block])
             stats["min"]["blocks"][block] = min(
                 stats["min"]["blocks"][block],
                 len(project["stats"]["blocks"][block]))
@@ -740,5 +737,7 @@ def rescrape_all(cache_directory=settings.CACHE_DIRECTORY):
     studios = Studio.objects()
 
     for studio in studios:
-        add_studio(studio["studio_id"], studio["challenge_id"],
-                   studio["public_show"], cache_directory)
+        add_studio(studio["studio_id"],
+                   studio["challenge_id"],
+                   studio["public_show"],
+                   cache_directory)

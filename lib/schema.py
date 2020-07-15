@@ -14,15 +14,17 @@ def valid_comparison_basis(param):
     if type(param) != dict:
         raise mongo.ValidationError("comparison_basis is a dict")
     else:
-        if not ("basis" in param and param["basis"] in [
-                "__none__", "required_text", "required_block_categories",
-                "required_blocks"
-        ]):
-            raise mongo.ValidationError(
-                "comparison_basis basis key is invalid")
+        bases = [
+            "__none__",
+            "required_text",
+            "required_block_categories",
+            "required_blocks"
+        ]
+
+        if not ("basis" in param and param["basis"] in bases):
+            raise mongo.ValidationError("comparison_basis basis key is invalid")
         elif not ("priority" in param):
-            raise mongo.ValidationError(
-                "comparison_basis priority key is invalid")
+            raise mongo.ValidationError("comparison_basis priority key is invalid")  # yapf: disable
 
 
 def valid_required_text(param):
@@ -63,8 +65,7 @@ class Blockify(mongo.EmbeddedDocument):
 class ResultText(mongo.EmbeddedDocument):
     explanation = mongo.StringField(max_length=50000, default="")
     concluding_text = mongo.StringField(max_length=50000, default="")
-    comparison_reflection_text = mongo.StringField(max_length=50000,
-                                                   default="")
+    comparison_reflection_text = mongo.StringField(max_length=50000, default="")
     comparison_framing_text = mongo.StringField(max_length=50000, default="")
     prompt_framing_text = mongo.StringField(max_length=50000, default="")
     stats_framing_text = mongo.StringField(max_length=50000, default="")
@@ -83,11 +84,8 @@ class Challenge(mongo.Document):
     short_label = mongo.StringField(max_length=100)
     url = mongo.EmbeddedDocumentField(Link)
     text = mongo.EmbeddedDocumentField(ResultText, required=True)
-    comparison_basis = mongo.DictField(default={
-        "basis": "__none__",
-        "priority": []
-    },
-                                       validation=valid_comparison_basis)
+    comparison_basis = mongo.DictField(default={"basis": "__none__", "priority": []},  # yapf: disable
+                                       validation=valid_comparison_basis)  # yapf: disable
     min_instructions_length = mongo.IntField(default=0)
     min_description_length = mongo.IntField(default=0)
     min_comments_made = mongo.IntField(default=0)
@@ -111,10 +109,7 @@ def add_schema(mins={},
                required_blocks=[],
                required_blocks_failure=None,
                required_text_failure=None,
-               comparison_basis={
-                   "basis": "__none__",
-                   "priority": []
-               },
+               comparison_basis={"basis": "__none__", "priority": []},  # yapf: disable
                stats=[],
                short_label=None,
                title=None,
@@ -269,12 +264,23 @@ def validate_project(schema,
     """
 
     stat_types = [
-        "block_comments", "blocks", "categories", "comments", "costumes",
-        "sounds", "variables"
+        "block_comments",
+        "blocks",
+        "categories",
+        "comments",
+        "costumes",
+        "sounds",
+        "variables"
     ]
     delete_keys = [
-        "description", "text", "modified", "required_text_failure",
-        "required_blocks_failure", "title", "short_label", "comparison_basis"
+        "description",
+        "text",
+        "modified",
+        "required_text_failure",
+        "required_blocks_failure",
+        "title",
+        "short_label",
+        "comparison_basis"
     ]
 
     connect_db(credentials_file=credentials_file)
@@ -309,16 +315,14 @@ def validate_project(schema,
     bc = schema["min_blockify"]
     result["min_blockify"] = dict.fromkeys(bc)
     for key in schema["min_blockify"]:
-        if key in project["stats"] and len(
-                project["stats"][key]) >= schema["min_blockify"][key]:
+        if key in project["stats"] and len(project["stats"][key]) >= schema["min_blockify"][key]:  # yapf: disable
             result["min_blockify"][key] = True
         else:
             result["min_blockify"][key] = False
             result["met"] = False
 
     # Compare left comment counts
-    project_ids = scrape.Project.objects(
-        studio_id=studio_id).values_list("project_id")
+    project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")  # yapf: disable
     comments_left = scrape.Comment.objects(project_id__in=project_ids,
                                            author=project["author"]).count()
 
@@ -355,10 +359,12 @@ def validate_project(schema,
     rb = schema["required_blocks"]
     for opt in range(len(rb)):
         for opcode in rb[opt]:
-            if (not (opcode in project["stats"]["blocks"] and len(
-                    project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
+            # yapf: disable
+            if (not (opcode in project["stats"]["blocks"]
+                     and len(project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
                 result["required_blocks"][opt] = False
                 break
+            # yapf: enable
 
     # Is the schema met overall?
     result["met"] = (result["met"] and result["min_comments_made"]

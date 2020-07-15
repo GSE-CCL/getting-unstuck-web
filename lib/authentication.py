@@ -72,11 +72,20 @@ def register_user(username,
     """
     site_roles = ["site_viewer", "site_admin"]
 
-    if (username is None or username == "" or email is None or email == ""
-            or password is None or password == "" or first_name is None
-            or first_name == "" or last_name is None or last_name == ""
-            or role not in site_roles):
+    # yapf: disable
+    if (username is None
+        or username == ""
+        or email is None
+        or email == ""
+        or password is None
+        or password == ""
+        or first_name is None
+        or first_name == ""
+        or last_name is None
+        or last_name == ""
+        or role not in site_roles):
         return "all fields are required"
+    # yapf: enable
 
     connect_db()
     doc = User(username=username,
@@ -110,10 +119,10 @@ def login_user(username, password):
         True, if able to log in. Else False.
     """
     connect_db()
-    account = User.objects(Q(username=username) | Q(email=username),
-                           deleted=False).first()
-    if account is None or not check_password_hash(account["password"],
-                                                  password):
+
+    # yapf: disable
+    account = User.objects(Q(username=username) | Q(email=username), deleted=False).first()
+    if account is None or not check_password_hash(account["password"], password):
         return False
 
     account_info = {
@@ -125,6 +134,8 @@ def login_user(username, password):
         "role": account["role"],
         "joined": account["joined"]
     }
+    # yapf: enable
+
     session["user"] = account_info
 
     return True

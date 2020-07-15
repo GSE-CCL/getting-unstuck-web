@@ -35,8 +35,7 @@ def get_info(page):
             connect_db()
             info["studios"] = scrape.Studio.objects()
 
-            schemas = schema.Challenge.objects.only(
-                "id", "title", "modified").order_by("-modified")
+            schemas = schema.Challenge.objects.only("id", "title", "modified").order_by("-modified") # yapf: disable
             info["schemas"] = {"__none__": "No schema"}
             for s in schemas:
                 info["schemas"][str(s["id"])] = str(s["modified"])
@@ -76,7 +75,8 @@ def set_info(page, form):
                                                 form["email"],
                                                 form["first_name"],
                                                 form["last_name"],
-                                                form["password"], form["role"])
+                                                form["password"],
+                                                form["role"])
         try:
             if "identifier" not in form and "username" in form:
                 form["identifier"] = form["username"]
@@ -162,14 +162,12 @@ def set_info(page, form):
                 return False
         elif form["action"] == "edit":
             # Handle title, etc.
-            title = None if form["title"].replace(" ",
-                                                  "") == "" else form["title"]
-            description = None if form["description"].replace(
-                " ", "") == "" else form["description"]
-            short_label = None if form["short_label"].replace(
-                " ", "") == "" else form["short_label"]
-            url = None if form["url"]["url"] == "" or form["url"][
-                "text"] == "" else form["url"]
+            # yapf: disable
+            title = None if form["title"].replace(" ", "") == "" else form["title"]
+            description = None if form["description"].replace(" ", "") == "" else form["description"]
+            short_label = None if form["short_label"].replace(" ", "") == "" else form["short_label"]
+            url = None if form["url"]["url"] == "" or form["url"]["text"] == "" else form["url"]
+            # yapf: enable
 
             # If inserting a new schema
             if form["id"] == "__new__":
@@ -177,8 +175,7 @@ def set_info(page, form):
                     mins=form["mins"],
                     min_blockify=form["min_blockify"],
                     required_text=form["required_text"],
-                    required_block_categories=form[
-                        "required_block_categories"],
+                    required_block_categories=form["required_block_categories"],
                     required_blocks=form["required_blocks"],
                     required_blocks_failure=form["required_blocks_failure"],
                     required_text_failure=form["required_text_failure"],
@@ -204,17 +201,12 @@ def set_info(page, form):
                     doc.text = schema.ResultText(
                         explanation=form["text"]["explanation"],
                         concluding_text=form["text"]["concluding_text"],
-                        comparison_reflection_text=form["text"]
-                        ["comparison_reflection_text"],
-                        comparison_framing_text=form["text"]
-                        ["comparison_framing_text"],
-                        prompt_framing_text=form["text"]
-                        ["prompt_framing_text"],
+                        comparison_reflection_text=form["text"]["comparison_reflection_text"],  # yapf: disable
+                        comparison_framing_text=form["text"]["comparison_framing_text"],  # yapf: disable
+                        prompt_framing_text=form["text"]["prompt_framing_text"],
                         stats_framing_text=form["text"]["stats_framing_text"])
-                    doc.min_instructions_length = form["mins"][
-                        "instructions_length"]
-                    doc.min_description_length = form["mins"][
-                        "description_length"]
+                    doc.min_instructions_length = form["mins"]["instructions_length"]  # yapf: disable
+                    doc.min_description_length = form["mins"]["description_length"]  # yapf: disable
                     doc.min_comments_made = form["mins"]["comments_made"]
                     doc.min_blockify = schema.Blockify(
                         comments=form["min_blockify"]["comments"],
@@ -222,21 +214,18 @@ def set_info(page, form):
                         sounds=form["min_blockify"]["sounds"],
                         sprites=form["min_blockify"]["sprites"],
                         variables=form["min_blockify"]["variables"])
-                    doc.required_block_categories = form[
-                        "required_block_categories"]
+                    doc.required_block_categories = form["required_block_categories"]  # yapf: disable
 
                     # Required blocks
                     required_blocks = form["required_blocks"]
                     for i in range(len(required_blocks)):
                         for key in required_blocks[i]:
-                            required_blocks[i][key] = int(
-                                required_blocks[i][key])
+                            required_blocks[i][key] = int(required_blocks[i][key])  # yapf: disable
 
                     doc.required_blocks = form["required_blocks"]
                     doc.required_text = form["required_text"]
                     doc.required_text_failure = form["required_text_failure"]
-                    doc.required_blocks_failure = form[
-                        "required_blocks_failure"]
+                    doc.required_blocks_failure = form["required_blocks_failure"]  # yapf: disable
                     doc.modified = datetime.now()
 
                     if url is not None:

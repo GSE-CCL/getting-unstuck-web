@@ -12,7 +12,17 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
+
+
+def setup(app):
+    import subprocess
+
+    docs = os.path.dirname(os.path.realpath(__file__))
+    root = os.path.join(docs, "..")
+
+    # Handle apidoc
+    subprocess.run(["sphinx-apidoc", "-o", docs, root])
 
 
 # -- Project information -----------------------------------------------------
@@ -21,6 +31,7 @@ project = 'Getting Unstuck Web'
 copyright = '2020, Creative Computing Lab'
 author = 'Creative Computing Lab'
 master_doc = 'index'
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -51,7 +62,4 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['_static']
-
-
-# -- Extension configuration -------------------------------------------------
+html_static_path = ['_static']

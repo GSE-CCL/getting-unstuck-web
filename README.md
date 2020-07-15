@@ -1,8 +1,11 @@
 [![Build Status](https://travis-ci.com/GSE-CCL/getting-unstuck-web.svg?branch=master)](https://travis-ci.com/GSE-CCL/getting-unstuck-web)
+[![Documentation Status](https://readthedocs.org/projects/getting-unstuck-web/badge/?version=latest)](https://getting-unstuck-web.readthedocs.io/en/latest/?badge=latest)
 
 # Getting Unstuck Web
 
 This is the web app for Getting Unstuck, a Scratch learning experience developed by the Creative Computing Lab at the Harvard Graduate School of Education.
+
+API docs for development: [here](https://getting-unstuck-web.readthedocs.io/en/latest/)
 
 ## Requirements
 

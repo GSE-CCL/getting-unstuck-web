@@ -32,12 +32,13 @@ def get_code_excerpt(project, sc, include_orphans=False):
 
     # Start work generating blocks
     blocks = list()
-    
+
     # Find blocks if basis is required text
     if sc["comparison_basis"]["basis"] == "required_text":
-        option = project["validation"]["required_text"][sc["comparison_basis"]["priority"]]
+        option = project["validation"]["required_text"][sc["comparison_basis"]["priority"]]  # yapf: disable
         if option > -1:
-            text = sc["required_text"][sc["comparison_basis"]["priority"]][option].lower()
+            text = sc["required_text"][sc["comparison_basis"]
+                                       ["priority"]][option].lower()
 
             # Add to the block list those blocks that have the appropriate text
             for i, key in enumerate(project["stats"]["block_text"]["text"]):
@@ -46,17 +47,21 @@ def get_code_excerpt(project, sc, include_orphans=False):
 
     # Find blocks if basis is categories
     elif sc["comparison_basis"]["basis"] == "required_block_categories":
-        if project["validation"]["required_block_categories"][sc["comparison_basis"]["priority"]]:
+        if project["validation"]["required_block_categories"][sc["comparison_basis"]["priority"]]:  # yapf: disable
             for block in project["stats"]["blocks"]:
-                if block.index(sc["comparison_basis"]["priority"]) == 0:
-                    blocks += project["stats"]["blocks"][block]
+                try:
+                    if block.index(sc["comparison_basis"]["priority"]) == 0:
+                        blocks += project["stats"]["blocks"][block]
+                except ValueError:
+                    pass
 
     # Find blocks if basis is blocks
     elif sc["comparison_basis"]["basis"] == "required_blocks":
         if True in project["validation"]["required_blocks"]:
             rbo = project["validation"]["required_blocks"].index(True)
-            blocks = project["stats"]["blocks"][sc["comparison_basis"]["priority"][rbo]]
-    
+            blocks = project["stats"]["blocks"][sc["comparison_basis"]
+                                                ["priority"][rbo]]
+
     # Exclude orphan blocks
     if not include_orphans and "orphan_blocks" in project["stats"]:
         for block in project["stats"]["orphan_blocks"]:
@@ -77,9 +82,15 @@ def get_code_excerpt(project, sc, include_orphans=False):
             target = target[0]
 
         try:
-            code = visualizer.generate_script(blocks[0], target["blocks"], blocks, True)
+            code = visualizer.generate_script(blocks[0],
+                                              target["blocks"],
+                                              blocks,
+                                              True)
         except:
-            logging.warn("Failed to generate a script using blocks [{}] in project {}".format(", ".join("blocks"), project["project_id"]))
+            logging.warn(
+                "Failed to generate a script using blocks {} in project {}"
+                .format(", ".join(blocks),
+                        project["project_id"]))
             code = ""
 
         sprite = parser.get_sprite(block, scratch_data)
@@ -87,9 +98,12 @@ def get_code_excerpt(project, sc, include_orphans=False):
         return code, sprite
     else:
         return "", ""
-                    
-    
-def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+
+
+def get_comparisons(project,
+                    sc,
+                    count,
+                    credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Gets comparison projects based on the schema.
     
     Args:
@@ -109,25 +123,32 @@ def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDEN
     elif sc["comparison_basis"]["basis"] == "required_text":
         query = {
             "studio_id": project["studio_id"],
-            "project_id": {"$ne": project["project_id"]},
-            "validation.{}.required_text.{}".format(sc["id"], sc["comparison_basis"]["priority"]): {"$gte": 0}
-        }
+            "project_id": {
+                "$ne": project["project_id"]
+            },
+            "validation.{}.required_text.{}".format(
+                sc["id"],
+                sc["comparison_basis"]["priority"]): {"$gte": 0}
+        }  # yapf: disable
 
         projects = scrape.Project.objects(__raw__=query)
 
     # Find projects that meet the priority category requirement
     elif sc["comparison_basis"]["basis"] == "required_block_categories":
-        projects = scrape.get_projects_with_category(sc["comparison_basis"]["priority"],
-                                                     sc["required_block_categories"][sc["comparison_basis"]["basis"]],
-                                                     project["project_id"],
-                                                     project["studio_id"],
-                                                     credentials_file)
-    
+        projects = scrape.get_projects_with_category(
+            sc["comparison_basis"]["priority"],
+            sc["required_block_categories"][sc["comparison_basis"]["priority"]],
+            project["project_id"],
+            project["studio_id"],
+            credentials_file)
+
     # Find projects that meet a block requirement
     elif sc["comparison_basis"]["basis"] == "required_blocks":
         query = {
             "studio_id": project["studio_id"],
-            "project_id": {"$ne": project["project_id"]},
+            "project_id": {
+                "$ne": project["project_id"]
+            },
             "validation.{}.required_blocks".format(sc["id"]): True
         }
 
@@ -138,11 +159,13 @@ def get_comparisons(project, sc, count, credentials_file=settings.DEFAULT_CREDEN
     result = list()
     for i in ids:
         result.append(projects[i].to_mongo().to_dict())
-    
+
     return result
 
 
-def get_feels(feels=f"{settings.PROJECT_DIRECTORY}/lib/data/feels.json", randomize=False, alphabetize=False):
+def get_feels(feels=f"{settings.PROJECT_DIRECTORY}/lib/data/feels.json",
+              randomize=False,
+              alphabetize=False):
     """Get the emotions (feels, for the younger among us) that a user can choose to describe their experience.
     
     Args:
@@ -162,7 +185,7 @@ def get_feels(feels=f"{settings.PROJECT_DIRECTORY}/lib/data/feels.json", randomi
             random.shuffle(feelings)
 
         if alphabetize:
-            feelings = sorted(feelings, key = lambda f: f["text"]) 
+            feelings = sorted(feelings, key=lambda f: f["text"])
 
         return feelings
     except:
@@ -173,7 +196,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     """Get a project page rendered in HTML given a project ID.
     
     Args:
-        pid (str): project ID.
+        pid (int): project ID.
         cache_directory (str): the directory where cached projects are stored.
         
     Returns:
@@ -184,7 +207,8 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     project, scratch_data = scrape.get_project(pid, cache_directory)
 
     if len(project) == 0 or len(scratch_data) == 0:
-        message = "We couldn&rsquo;t find your project!"
+        message = 'We couldn&rsquo;t find your project! \
+            <a href="/project/r/{}">Try again</a>'.format(pid)
         return render_template("project_loader.html", message=message)
 
     studio = scrape.get_studio(project["studio_id"])
@@ -195,7 +219,7 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
         # Determine whether there's an error here
         err = False
         if str(studio["challenge_id"]) in project["validation"]:
-            project["validation"] = project["validation"][str(studio["challenge_id"])]
+            project["validation"] = project["validation"][str(studio["challenge_id"])]  # yapf: disable
         else:
             err = True
 
@@ -224,10 +248,12 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
             }
 
         # Get the saved reflection, if any
-        _reflections = scrape.ProjectReflection.objects(project_id=pid).order_by("-timestamp")
+        _reflections = scrape.ProjectReflection.objects(
+            project_id=pid).order_by("-timestamp")
         try:
             reflection = _reflections.first().to_mongo().to_dict()
-            reflection["editable"] = True if reflection["gu_uid"] == request.cookies.get("_gu_uid") else False
+            reflection["editable"] = True if reflection[
+                "gu_uid"] == request.cookies.get("_gu_uid") else False
         except:
             reflection = dict()
     else:
@@ -237,8 +263,12 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
 
     # One prompt variable to take the logic out of the templating language
     prompt = {
-        "title": sc["title"] if "title" in sc and sc["title"] is not None else studio["title"] if "title" in studio else None,
-        "description": sc["description"] if "description" in sc else studio["description"] if "description" in studio else None
+        "title":
+            sc["title"] if "title" in sc and sc["title"] is not None else
+            studio["title"] if "title" in studio else None,
+        "description":
+            sc["description"] if "description" in sc else
+            studio["description"] if "description" in studio else None
     }
 
     # Choose stats to show
@@ -247,7 +277,14 @@ def get_project_page(pid, cache_directory=settings.CACHE_DIRECTORY):
     # Get the feels
     feels = get_feels(randomize=True)
 
-    return render_template("project.html", prompt=prompt, project=project, studio=studio, schema=sc, excerpts=excerpts, feels=feels, reflection=reflection)
+    return render_template("project.html",
+                           prompt=prompt,
+                           project=project,
+                           studio=studio,
+                           schema=sc,
+                           excerpts=excerpts,
+                           feels=feels,
+                           reflection=reflection)
 
 
 def get_studio_stats(sc, studio):
@@ -264,7 +301,14 @@ def get_studio_stats(sc, studio):
     parser = Parser()
 
     stats = list()
-    overrides = {"block_count": "blocks used", "number_projects": "projects in the studio"}
+    overrides = {
+        "block_count": "blocks used",
+        "number_projects": "projects in the studio",
+        "description_words": "words in the notes and credits",
+        "instructions_words": "words in the instructions",
+        "description": "characters in the notes and credits",
+        "instructions": "characters in the instructions"
+    }
 
     if "stats" not in sc:
         return stats
@@ -290,7 +334,7 @@ def get_studio_stats(sc, studio):
             # Make block and category names boldface
             if append == "blocks":
                 key = "<strong>{}</strong>".format(key)
-            
+
             # Should we append blocks to the name string?
             if key == "blocks" or key == "block_categories":
                 append = "blocks"
@@ -304,10 +348,10 @@ def get_studio_stats(sc, studio):
         # If studio doesn't have the stat requested
         if s == {}:
             break
-        
+
         if append != "":
             s["name"].append(append)
-        
+
         s["name"] = " ".join(s["name"])
         s["value"] = obj
 

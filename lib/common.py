@@ -4,7 +4,9 @@ import markdown
 import mongoengine as mongo
 from lib import settings
 
-def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE, alias="default"):
+
+def connect_db(credentials_file=settings.DEFAULT_CREDENTIALS_FILE,
+               alias="default"):
     """Connects to MongoDB using credentials.
     
     Args:
@@ -46,8 +48,11 @@ def get_credentials(credentials_file):
     if type(credentials_file) == dict:
         return credentials_file
     elif type(credentials_file) == str:
-        with open(credentials_file) as f:
-            return json.load(f)
+        try:
+            with open(credentials_file) as f:
+                return json.load(f)
+        except:
+            return dict()
 
 
 def md(text):
@@ -62,6 +67,8 @@ def md(text):
 
     text = text.replace("[sb]", '<code class="sb">')
     text = text.replace("[/sb]", "</code>")
+    text = text.replace("[_sb]", '<code class="_sb">')
+    text = text.replace("[/_sb]", "</code>")
 
     html = markdown.markdown(text)
 
@@ -72,8 +79,13 @@ def md(text):
 def twodec(value):
     return f"{value:,.2f}"
 
+
 def indexOf(lst, value):
-    return lst.index(value)
+    try:
+        return lst.index(value)
+    except ValueError:
+        return -1
+
 
 def pluralize(item):
     if type(item) == list:
@@ -81,8 +93,10 @@ def pluralize(item):
     else:
         return "s" if int(item) != 1 else ""
 
+
 def human_block(opcode):
     return Parser().get_block_name(opcode)
+
 
 def get_selected(stat):
     selected = set()

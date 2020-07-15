@@ -28,23 +28,19 @@ class MongoCache(BaseCache):
             credentials (dict): the MongoDB credentials,
                 passed to common.connect_db.
     """
-
-    def __init__(
-        self,
-        app,
-        c,
-        d,
-        default_timeout=300,
-        hash_method=hashlib.md5,
-        credentials=settings.DEFAULT_CREDENTIALS_FILE
-    ):
+    def __init__(self,
+                 app,
+                 c,
+                 d,
+                 default_timeout=300,
+                 hash_method=hashlib.md5,
+                 credentials=settings.DEFAULT_CREDENTIALS_FILE):
         self._default_timeout = default_timeout["default_timeout"]
         self._hash_method = hash_method
         self._credentials = get_credentials(credentials)
         self._alias = "cache"
 
         CachedItem.meta = {"db_alias": self._alias}
-
 
     def _connect(self):
         """Connect to DB."""
@@ -54,7 +50,6 @@ class MongoCache(BaseCache):
         except:
             return False
 
-    
     def _disconnect(self, prune=True):
         """Disconnect from DB. Prunes the database by default."""
         try:
@@ -64,14 +59,12 @@ class MongoCache(BaseCache):
         except:
             return False
 
-
     def _get_name(self, key):
         """Returns name after hash"""
         if isinstance(key, str):
             key = key.encode("utf-8")
         return self._hash_method(key).hexdigest()
 
-    
     def _prune(self):
         """Prunes collection of expired documents"""
         try:
@@ -83,10 +76,9 @@ class MongoCache(BaseCache):
         except:
             return False
 
-
     def add(self, key, value, timeout=None):
         if self._connect():
-            preexisting = CachedItem.objects(name = self._get_name(key))
+            preexisting = CachedItem.objects(name=self._get_name(key))
             self._disconnect()
 
             if preexisting.count > 0:
@@ -96,7 +88,6 @@ class MongoCache(BaseCache):
                 return True
         return False
 
-    
     def clear(self):
         try:
             if self._connect():
@@ -108,10 +99,9 @@ class MongoCache(BaseCache):
         except:
             return False
 
-
     def delete(self, key):
         if self._connect():
-            result = CachedItem.objects(name = self._get_name(key))
+            result = CachedItem.objects(name=self._get_name(key))
             if result.count() > 1:
                 try:
                     result.delete()
@@ -122,10 +112,9 @@ class MongoCache(BaseCache):
                     return True
         return True
 
-
     def get(self, key):
         if self._connect():
-            result = CachedItem.objects(name = self._get_name(key))
+            result = CachedItem.objects(name=self._get_name(key))
             if result.count() > 0:
                 try:
                     data = result.first()
@@ -135,21 +124,19 @@ class MongoCache(BaseCache):
                     return None
         return None
 
-    
     def has(self, key):
         if self._connect():
-            result = CachedItem.objects(name = self._get_name(key)).only(name)
+            result = CachedItem.objects(name=self._get_name(key)).only(name)
             self._disconnect()
 
             return True if result.count() > 0 else False
         return False
 
-
     def set(self, key, value, timeout=None):
         if not self._connect():
             return False
 
-        preexisting = CachedItem.objects(name = self._get_name(key))
+        preexisting = CachedItem.objects(name=self._get_name(key))
         if preexisting.count() > 0:
             try:
                 doc = preexisting.first()
@@ -160,14 +147,14 @@ class MongoCache(BaseCache):
                 doc = CachedItem()
             except:
                 return False
-        
+
         try:
             doc.name = self._get_name(key)
             doc.data = msgpack.packb(value, use_bin_type=True)
 
             seconds = self._default_timeout if timeout is None else timeout
             doc.expires = datetime.utcnow() + timedelta(seconds=seconds)
-            
+
             doc.save()
 
             self._disconnect()

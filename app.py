@@ -7,7 +7,7 @@ import time
 import traceback
 import random
 import urllib
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import Flask, redirect, render_template, request, Response, session, url_for
 from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
@@ -26,11 +26,13 @@ from lib import convert
 from lib.authentication import admin_required, login_required
 from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_PAGES, SITE
 
-
 app = Flask(__name__)
 
 try:
-    celery = tasks.make_celery(CLRY["name"], CLRY["result_backend"], CLRY["broker_url"], app)
+    celery = tasks.make_celery(CLRY["name"],
+                               CLRY["result_backend"],
+                               CLRY["broker_url"],
+                               app)
 except:
     logging.warn("Couldn't load celery.")
 
@@ -49,18 +51,26 @@ app.config["CACHE_DEFAULT_TIMEOUT"] = 1200
 
 cache = Cache(app)
 
+
 # Pass things to all templates
 @app.context_processor
 def inject_vars():
-    return dict(user=authentication.get_login_info(), valid_admin_pages=admin.VALID_ADMIN_PAGES, SITE=SITE)
+    return dict(user=authentication.get_login_info(),
+                valid_admin_pages=admin.VALID_ADMIN_PAGES,
+                SITE=SITE)
+
 
 # Helper routes
 @app.route("/redirect", methods=["GET"])
 def redirect_to():
-    if request.args.get("username") is not None and request.args.get("username") != "":
-        return redirect("/user/{0}".format(urllib.parse.quote(request.args.get("username"))))
+    if (request.args.get("username") is not None
+        and request.args.get("username") != ""):  # yapf: disable
+        return redirect("/user/{0}".format(
+            urllib.parse.quote(request.args.get("username"))))
     else:
-        return render_template("index.html", message="Sorry! I wasn't able to do that.")
+        return render_template("index.html",
+                               message="Sorry! I wasn't able to do that.")
+
 
 # Authentication
 @app.route("/login", methods=["GET", "POST"])
@@ -70,38 +80,48 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
     else:
+        # yapf: disable
         if (request.form["username"] is None
             or request.form["username"] == ""
             or request.form["password"] is None
             or request.form["password"] == ""):
-            return render_template("login.html", message="All fields are required!")
-        
-        res = authentication.login_user(request.form["username"], request.form["password"])
+            return render_template("login.html",
+                                   message="All fields are required!")
+        # yapf: enable
+
+        res = authentication.login_user(request.form["username"],
+                                        request.form["password"])
         if res:
             return redirect("/admin")
         else:
-            return render_template("login.html", message="Couldn't log in with that username/password combination!")
+            return render_template(
+                "login.html",
+                message="Couldn't log in with that username/password combination!"
+            )
+
 
 @app.route("/logout", methods=["GET"])
 def logout():
     session.clear()
     return render_template("login.html", message="Successfully logged out.")
 
+
 @app.route("/register", methods=["POST"])
 def register():
-    res = authentication.register_user(
-        request.form["username"],
-        request.form["email"],
-        request.form["first_name"],
-        request.form["last_name"],
-        request.form["password"],
-        request.form["user_role"]
-    )
+    res = authentication.register_user(request.form["username"],
+                                       request.form["email"],
+                                       request.form["first_name"],
+                                       request.form["last_name"],
+                                       request.form["password"],
+                                       request.form["user_role"])
 
     if type(res) == bool and res:
         return redirect("/login")
     else:
-        return render_template("index.html", message="One or several of your inputs were invalid.")
+        return render_template(
+            "index.html",
+            message="One or several of your inputs were invalid.")
+
 
 # For when the site is brand new
 @app.route("/setup", methods=["GET"])
@@ -113,11 +133,13 @@ def setup():
     else:
         return redirect("/")
 
+
 # Admin pages
 @app.route("/admin")
 @admin_required
 def admin_index():
     return render_template("admin/index.html")
+
 
 @app.route("/admin/<page>", methods=["GET", "POST"])
 @admin_required
@@ -141,6 +163,14 @@ def admin_page(page):
     else:
         return redirect("/admin")
 
+
+@app.route("/admin/cache/clear")
+@admin_required
+def clear_cache():
+    cache.clear()
+    return redirect("/admin")
+
+
 @app.route("/admin/error/<eid>")
 @admin_required
 def error_page(eid):
@@ -149,11 +179,20 @@ def error_page(eid):
         return redirect("/admin/errors")
     else:
         issue = {
-            "title": "{} error when loading {}".format(error["error_code"], urllib.parse.urlparse(error["url"]).path),
-            "body": "**[Replicate here]({})**\n\nWhen accessing `{}`, there's a {} error. The traceback says:\n\n```python\n{}\n```".format(error["url"], urllib.parse.urlparse(error["url"]).path, error["error_code"], error["traceback"])
+            "title":
+                "{} error when loading {}"
+                .format(error["error_code"],
+                        urllib.parse.urlparse(error["url"]).path),
+            "body":
+                "**[Replicate here]({})**\n\nWhen accessing `{}`, there's a {} error. The traceback says:\n\n```python\n{}\n```"
+                .format(error["url"],
+                        urllib.parse.urlparse(error["url"]).path,
+                        error["error_code"],
+                        error["traceback"])
         }
-        
+
         return render_template("admin/error.html", error=error, issue=issue)
+
 
 def schema_editor(id):
     data = {
@@ -172,13 +211,16 @@ def schema_editor(id):
         "required_blocks": [],
         "stats": [],
         "text": {},
-        "comparison_basis": {"basis": "__none__", "priority": None}
+        "comparison_basis": {
+            "basis": "__none__",
+            "priority": None
+        }
     }
 
     if id != "__new__":
         common.connect_db()
         try:
-            data = schema.Challenge.objects(id = id).first().to_mongo()
+            data = schema.Challenge.objects(id=id).first().to_mongo()
         except AttributeError:
             raise NotFound()
 
@@ -192,34 +234,43 @@ def schema_editor(id):
         for block in blocks[cat]:
             block_dict[blocks[cat][block].lower().replace(" ", "")] = block
 
-    return render_template("admin/edit_schema.html", blocks=blocks, block_dict=block_dict, block_list=block_list, categories=list(blocks.keys()), data=data, schema_id=id, stats=scrape.get_default_studio_stats())
+    return render_template("admin/edit_schema.html",
+                           blocks=blocks,
+                           block_dict=block_dict,
+                           block_list=block_list,
+                           categories=list(blocks.keys()),
+                           data=data,
+                           schema_id=id,
+                           stats=scrape.get_default_studio_stats())
+
 
 @app.route("/admin/schemas/edit", methods=["GET"])
 @admin_required
 def add_schema():
     return schema_editor("__new__")
 
+
 @app.route("/admin/schemas/edit/<id>", methods=["GET"])
 @admin_required
 def edit_schema(id):
     return schema_editor(id)
+
 
 # Studios, projects, users, challenges
 @app.route("/participation")
 def index():
     return render_template("index.html")
 
+
 @app.route("/md", methods=["POST"])
 def md():
     text = request.form["text"]
     if text is not None:
-        ret = {
-            "html": common.md(text),
-            "js": "/static/js/sb.js"
-        }
+        ret = {"html": common.md(text), "js": "/static/js/sb.js"}
 
         return json.dumps(ret)
     return "False"
+
 
 @app.route("/project/d", methods=["POST"])
 def project_download():
@@ -233,7 +284,7 @@ def project_download():
         pid = int(pid)
     except:
         return "False"
-    
+
     if pid in scraper.get_projects_in_studio(sid):
         return str(scrape.add_project(pid, sid, CACHE_DIRECTORY))
     else:
@@ -242,15 +293,15 @@ def project_download():
 
 @app.route("/project/f/<pid>", methods=["POST"])
 def project_feedback(pid):
-    if ("_gu_uid" in request.cookies
-        and "feelings" in request.json
-        and "minutes" in request.json):
+    if ("_gu_uid" in request.cookies and "feelings" in request.json
+        and "minutes" in request.json):  # yapf: disable
         try:
             common.connect_db()
-            reflection = scrape.ProjectReflection(project_id = pid,
-                                                  gu_uid = request.cookies.get("_gu_uid"),
-                                                  minutes = int(request.json["minutes"]),
-                                                  feelings = request.json["feelings"])
+            reflection = scrape.ProjectReflection(
+                project_id=pid,
+                gu_uid=request.cookies.get("_gu_uid"),
+                minutes=int(request.json["minutes"]),
+                feelings=request.json["feelings"])
             reflection.save()
             return "True"
         except:
@@ -263,7 +314,8 @@ def project_feedback(pid):
 def feedback_owner(pid):
     try:
         common.connect_db()
-        reflection = scrape.ProjectReflection.objects(project_id=pid).order_by("-timestamp").first()
+        reflection = scrape.ProjectReflection.objects(
+            project_id=pid).order_by("-timestamp").first()
         return reflection["gu_uid"]
     except:
         return ""
@@ -281,7 +333,9 @@ def reload_project(pid):
 
 
 @app.route("/project/<pid>/view", methods=["GET"])
-@cache.cached(timeout=PROJECT_CACHE_LENGTH, forced_update=scrape.get_reload_project)
+@cache.cached(timeout=PROJECT_CACHE_LENGTH,
+              forced_update=scrape.get_reload_project,
+              unless=authentication.session_active)
 def project__id(pid):
     return display.get_project_page(pid, CACHE_DIRECTORY)
 
@@ -296,7 +350,8 @@ def project_id(pid):
 def studio():
     if request.method == "GET":
         common.connect_db()
-        return render_template("studio.html", schemas=list(schema.Challenge.objects().order_by("-modified")))
+        return render_template("studio.html",
+                               schemas=list(schema.Challenge.objects().order_by("-modified")))  # yapf: disable
     else:
         scraper = Scraper()
         sid = scraper.get_id(request.form["studio"])
@@ -305,11 +360,63 @@ def studio():
         if request.form["schema"] != "__none__":
             s = request.form["schema"]
 
-        if sid is not None:
-            scrape.add_studio.delay(sid, schema=s, show=("show" in request.form), cache_directory=CACHE_DIRECTORY)
+        if request.form["studio"] == "__all__":
+            scrape.rescrape_all.delay(cache_directory=CACHE_DIRECTORY)
+            return "Started"
+        elif sid is not None:
+            scrape.add_studio.delay(sid,
+                                    schema=s,
+                                    show=("show" in request.form),
+                                    cache_directory=CACHE_DIRECTORY)
             return redirect("/studio/{0}".format(sid))
         else:
-            return render_template("studio.html", message="Please enter a valid studio ID or URL.")
+            return render_template(
+                "studio.html",
+                message="Please enter a valid studio ID or URL.")
+
+
+@app.route("/studio/list/<sid>")
+def studio_list(sid):
+    if sid == "":
+        return "Must include a studio ID.", 400
+
+    common.connect_db()
+    studio = scrape.Studio.objects(studio_id=sid).first()
+
+    if studio is None:
+        return "Studio does not exist.", 404
+
+    limit = 8
+    page = 0
+    order = "author"
+    try:
+        if "page" in request.args:
+            page = int(request.args["page"])
+        if "order" in request.args:
+            if request.args["order"] in {"author", "title", "id", "project_id"}:
+                order = request.args["order"]
+        if "limit" in request.args:
+            if int(request.args["limit"]) <= 100:
+                limit = int(request.args["limit"])
+    except:
+        return "Invalid arguments", 400
+
+    skip = page * limit
+
+    projects = scrape.Project.objects(
+        studio_id=sid).order_by(order).skip(skip).limit(limit)
+    info = {"projects": list()}
+    for i, project in enumerate(projects):
+        info["projects"].append({
+            "project_id": project["project_id"],
+            "title": project["title"],
+            "author": project["author"],
+            "image": (project["image"] if "image" in project else ""),
+            "modified": project["history"]["modified"]
+        })
+
+    return Response(json.dumps(info), mimetype="application/json")
+
 
 @app.route("/studio/<sid>")
 def studio_id(sid):
@@ -317,12 +424,13 @@ def studio_id(sid):
         return redirect("/prompts")
 
     common.connect_db()
-    studio = scrape.Studio.objects(studio_id = sid).first()
+    studio = scrape.Studio.objects(studio_id=sid).first()
 
-    if studio is None:
+    if studio is None or (not (studio["public_show"]
+                               or authentication.session_active())):
         return redirect("/prompts")
 
-    projects = list(scrape.Project.objects(studio_id = sid))
+    projects = list(scrape.Project.objects(studio_id=sid).order_by("author"))
     info = {"authors": list(), "project_ids": list(), "titles": list()}
 
     for project in projects:
@@ -334,7 +442,12 @@ def studio_id(sid):
     if studio["status"] == "in_progress" or studio["status"] is None:
         message = "This studio is currently in the process of being downloaded and analyzed. <a href=''>Refresh page.</a>"
 
-    return render_template("studio_id.html", info=info, projects=projects, studio=studio, message=message)
+    return render_template("studio_id.html",
+                           info=info,
+                           projects=projects,
+                           studio=studio,
+                           message=message)
+
 
 @app.route("/user/<username>", methods=["GET","POST"])
 def user_id(username):
@@ -370,7 +483,7 @@ def user_id(username):
         return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
-@cache.cached(timeout=600)
+@cache.cached(timeout=600, unless=authentication.session_active)
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
@@ -382,7 +495,7 @@ def prompts():
 
         schema_ids.add(studio["challenge_id"])
 
-    schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")
+    schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")  # yapf: disable
     id_order = list(schemas.values_list("id"))
 
     for i in range(len(id_order)):
@@ -393,7 +506,7 @@ def prompts():
     new_schemas = dict()
     for sc in schemas:
         new_schemas[str(sc["_id"])] = sc
-    
+
     # Order the studios
     ordered_studios = [None] * len(studios)
     for studio in studios:
@@ -408,9 +521,11 @@ def prompts():
                            challenges=ordered_studios,
                            schemas=new_schemas)
 
+
 @app.route("/summary", methods=["GET"])
 def summarize():
     return render_template("summary.html")
+
 
 # Static pages -- About, Strategies, Signup, Research
 
@@ -419,34 +534,38 @@ def certificate():
     return render_template("certificate.html", username=request.args.get('username'))
 
 @app.route("/")
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def homepage():
-    return render_template("home.html", section="home") 
+    return render_template("home.html", section="home")
+
 
 @app.route("/about", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def about():
     return render_template("about.html")
 
+
 @app.route("/strategies", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def strategies():
     return render_template("strategies.html")
 
+
 @app.route("/signup", methods=["GET", "POST"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def signup():
     return render_template("signup.html")
 
+
 @app.route("/research", methods=["GET"])
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def research():
     return render_template("research.html")
 
 
 # Error pages
 @app.route("/ie")
-@cache.cached()
+@cache.cached(unless=authentication.session_active)
 def ie():
     return render_template("ie.html")
 
@@ -458,12 +577,15 @@ def error(e):
         return redirect(REDIRECT_PAGES[request.path], code=301)
 
     status = "closed" if e.code == 404 else "open"
-    saved = errors.add_error(e.code, request.url, traceback.format_exc(), status)
+    saved = errors.add_error(e.code,
+                             request.url,
+                             traceback.format_exc(),
+                             status)
 
     if not isinstance(e, HTTPException):
         e = InternalServerError()
 
-    scratch = "when i receive [error {} v]\nsay [Oh no!]\nswitch costume to (sad :\( v)".format(e.code)
+    scratch = "when i receive [error {} v]\n say [Oh no!]\nswitch costume to (sad :\( v)".format(e.code)  # yapf: disable
 
     return render_template("error.html", error=e, scratch=scratch, saved=saved)
 
@@ -471,7 +593,6 @@ def error(e):
 # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(error)
-
 
 if __name__ == "__main__":
     app.run()

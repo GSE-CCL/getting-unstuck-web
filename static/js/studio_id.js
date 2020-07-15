@@ -8,15 +8,16 @@ let find_project = (event) => {
     if (identifier == "") {
         index = -1;
     }
-    else if (authors.includes(identifier)) {
-        index = authors.indexOf(identifier);
+    else if (authors.includes(identifier.toLowerCase())) {
+        index = authors.indexOf(identifier.toLowerCase());
     }
     else if (project_ids.includes(id)) {
         index = project_ids.indexOf(id);
     }
     else {
         for (let i = 0; i < titles.length; i++) {
-            if ( titles[i].includes(identifier)) {
+            let t = titles[i].toLowerCase();
+            if (t.includes(identifier.toLowerCase())) {
                 index = i;
                 break;
             }

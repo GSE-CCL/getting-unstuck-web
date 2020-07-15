@@ -7,7 +7,7 @@ import time
 import traceback
 import random
 import urllib
-from flask import Flask, redirect, render_template, request, Response, session, url_for
+from flask import Flask, redirect, render_template, request, Response, session, url_for, send_from_directory
 from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
@@ -449,7 +449,7 @@ def studio_id(sid):
                            message=message)
 
 
-@app.route("/user/<username>", methods=["GET"])
+@app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
     # if request.method == "POST":
     #     project_num = scrape.Project.objects(author = username).count()
@@ -464,23 +464,26 @@ def user_id(username):
     #         return redirect(url_for('certificate', username=username))
     #     else:
     #         return render_template("username.html", message="Couldn't create a certificate!")
+    if request.method == "POST":
+        print("directorrry", os.getcwd())
+        return send_from_directory(directory=os.getcwd() + "/certificates", filename = username + ".pdf")
+    else:
+        common.connect_db()
+        projects = list(scrape.Project.objects(author = username.lower()))
+        studios = dict()
 
-    common.connect_db()
-    projects = list(scrape.Project.objects(author = username.lower()))
-    studios = dict()
-
-    keep_projects = list()
-    for i, project in enumerate(projects):
-        if project["studio_id"] not in studios:
-            studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
-            
-            if studio is not None:
-                studios[project["studio_id"]] = studio
+        keep_projects = list()
+        for i, project in enumerate(projects):
+            if project["studio_id"] not in studios:
+                studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+                
+                if studio is not None:
+                    studios[project["studio_id"]] = studio
+                    keep_projects.append(project)
+            else:
                 keep_projects.append(project)
-        else:
-            keep_projects.append(project)
 
-    return render_template("username.html", projects=keep_projects, studios=studios, username=username)
+        return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
 @cache.cached(timeout=600, unless=authentication.session_active)

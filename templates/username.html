@@ -32,9 +32,11 @@
         </ul>
         <p>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</p>
         {% endif %}
-        <form action=""/user/{{ username }}"" method="GET">
+        <form action="/user/{{username}}" method="POST">
             <button type="submit" class="btn btn-primary mt-3 button round-btn">Congratulations! Download Certificate Here</button>
         </form>
+
+        <!-- <a href="/certificates/{{ username }}.pdf">Download</a> -->
 
     </div>
     <div class="col-md-5">

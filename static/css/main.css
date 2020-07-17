@@ -468,3 +468,12 @@ input[type=range]::-ms-thumb {
 .hide {
     display: none;
 }
+
+
+/* summary/certificate */
+div.border-yellow {
+    border-style: solid; 
+    border-radius: 25px; 
+    border-color:#f9d433; 
+    border-width: medium;
+}

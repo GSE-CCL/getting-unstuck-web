@@ -34,6 +34,8 @@ def download_certs(usernames):
     common.connect_db()
     for username in usernames:
         project_num = scrape.Project.objects(author = username).count()
+        if project_num > 10:
+            project_num = 10
         cert_download = convert_cert("pdf.html", username, project_num)
 
         if not cert_download:

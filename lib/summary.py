@@ -1,6 +1,7 @@
 import celery.decorators
 import hashlib
 import io
+import json
 import logging
 import math
 import requests
@@ -108,30 +109,33 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """
 
     # Stitch the project images together
-    img = get_stitched(get_image_urls(), 16, w=96, h=72)
-    img.save("{}/summary/projects.jpg".format(settings.CACHE_DIRECTORY), dpi=(72, 72), quality=75)
+    #img = get_stitched(get_image_urls(), 16, w=96, h=72)
+    #img.save("{}/summary/projects.jpg".format(settings.CACHE_DIRECTORY), dpi=(72, 72), quality=75)
 
     # Get the data
     studios = get_ordered_studios()
     studio_ids = [s["studio_id"] for s in studios]
     data = {
-        "studios_ordered": studios,
-        "unique_authors": len(get_unique_authors(studio_ids)),
-        "nations": get_author_origins(get_unique_authors()),
+        "studios_ordered": [s.to_json() for s in studios],
+        #"nations": get_author_origins(get_unique_authors(studio_ids)),
         "totals": {
+            "unique_authors": len(get_unique_authors(studio_ids)),
             "projects": sum([s["stats"]["total"]["number_projects"] for s in studios]),
             "comments": sum([s["stats"]["total"]["comments_left"] for s in studios]),
-            "notes_credits": sum([s["stats"]["total"]["description_words"] for s in studios]),
-            "engagement": get_total_engagement(studio_ids)
+            "description": sum([s["stats"]["total"]["description_words"] for s in studios]),
+            #"engagement": get_total_engagement(studio_ids)
         }
     }
+
+    with open("static/summary.json", "w") as f:
+        json.dump(data, f)
 
 
 def get_total_engagement(studio_ids):
     """Gets likes and hearts from Scratch API."""
 
     common.connect_db()
-    engagement = scrape.Project(studio_id__in=studio_ids).values_list("engagement")
+    engagement = scrape.Project.objects(studio_id__in=studio_ids).values_list("engagement")
 
     stats = {"views": 0, "loves": 0, "favorites": 0}
     for e in engagement:
@@ -145,7 +149,7 @@ def get_total_engagement(studio_ids):
 def get_unique_authors(studio_ids):
     """Gets the unique authors of projects across studios."""
 
-    authors = set(scrape.Project(studio_id__in=studio_ids).values_list("author"))
+    authors = set(scrape.Project.objects(studio_id__in=studio_ids).values_list("author"))
 
     return authors
 

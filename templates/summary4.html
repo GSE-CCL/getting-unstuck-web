@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block container_setup %}
+<div class="container-fluid">
+{% endblock %}
+
+{% block main_content %}
+<div class="row" id="above_the_fold" style="margin-bottom: -3rem;">
+    <div class="col-md-8 col-lg-6 p-5">
+        <h1 class="gastromond big mb-5">Getting Unstuck in review</h1>
+
+        {% for item in data["content"]: %}
+        <p>{{ item|safe }}</p>
+        {% endfor %}
+    </div>
+    <div class="col-md-4 col-lg-6 px-0">
+        <img src="/static/img/outall-75.jpg" alt="projects" class="w-100" style="opacity:.5; transition: .5s" id="img">
+    </div>
+</div>
+
+<script>
+let opacity = (e) => {
+    e.target.style.opacity = 1
+}
+let opacity2 = (e) => {
+    e.target.style.opacity = .5
+}
+
+let img = document.getElementById("img");
+
+img.addEventListener("mouseenter", opacity)
+img.addEventListener("mouseleave", opacity2)
+</script>
+<script src="/static/js/sb.js"></script>
+
+{% endblock %}

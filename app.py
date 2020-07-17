@@ -23,7 +23,7 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_PAGES, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
 app = Flask(__name__)
 
@@ -514,7 +514,14 @@ def prompts():
 
 @app.route("/summary", methods=["GET"])
 def summarize():
-    return render_template("summary2.html")
+
+    with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
+        data = json.load(f)
+
+    for i, item in enumerate(data["content"]):
+        data["content"][i] = common.md(item) if isinstance(item, str) else item
+
+    return render_template("summary4.html", data=data)
 
 
 # Static pages -- About, Strategies, Signup, Research

@@ -469,7 +469,6 @@ input[type=range]::-ms-thumb {
     display: none;
 }
 
-
 /* summary/certificate */
 div.border-yellow {
     border-style: solid; 

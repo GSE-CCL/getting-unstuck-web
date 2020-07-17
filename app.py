@@ -451,22 +451,8 @@ def studio_id(sid):
 
 @app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
-    # if request.method == "POST":
-    #     project_num = scrape.Project.objects(author = username).count()
-
-    #     if project_num > 10:
-    #         project_num = 10
-
-    #     cert_download = convert.convert_cert("pdf.html", username, project_num)
-
-    #     if cert_download:
-    #         # return redirect("/certificates")
-    #         return redirect(url_for('certificate', username=username))
-    #     else:
-    #         return render_template("username.html", message="Couldn't create a certificate!")
     if request.method == "POST":
-        print("directorrry", os.getcwd())
-        return send_from_directory(directory=os.getcwd() + "/certificates", filename = username + ".pdf")
+        return send_from_directory(CACHE_DIRECTORY, filename = username + ".pdf")
     else:
         common.connect_db()
         projects = list(scrape.Project.objects(author = username.lower()))

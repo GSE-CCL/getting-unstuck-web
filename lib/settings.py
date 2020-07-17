@@ -16,8 +16,9 @@ CACHE_DIRECTORY = "cache"
 SECURE_DIRECTORY = "secure"
 DEFAULT_CREDENTIALS_FILE = f"{SECURE_DIRECTORY}/db.json"
 
-PROJECT_DIRECTORY = "c:/users/jarch/code/getting-unstuck-web"
+PROJECT_DIRECTORY = "c:/users/phaduong/Documents/gu-site-new/getting-unstuck-web"
 PROJECT_CACHE_LENGTH = 60 * 60 * 24 * 7
+
 
 # Task management
 try:

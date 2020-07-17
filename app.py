@@ -44,8 +44,11 @@ app.secret_key = os.urandom(24)
 app.url_map.strict_slashes = False
 
 app.config["CACHE_TYPE"] = "lib.cache.MongoCache"
-app.config["CACHE_DEFAULT_TIMEOUT"] = 1200
+app.config["CACHE_DEFAULT_TIMEOUT"] = 50
 
+app.jinja_env.auto_reload = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+    
 cache = Cache(app)
 
 # Pass things to all templates
@@ -472,6 +475,11 @@ def signup():
 @cache.cached(unless=authentication.session_active)
 def research():
     return render_template("research.html")
+
+@app.route("/foo", methods=["GET"])
+#@cache.cached(unless=authentication.session_active)
+def foo():
+    return render_template("foo.html")
 
 
 # Error pages

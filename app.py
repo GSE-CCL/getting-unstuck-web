@@ -514,7 +514,7 @@ def prompts():
 
 @app.route("/summary", methods=["GET"])
 def summarize():
-    return render_template("summary.html")
+    return render_template("summary2.html")
 
 
 # Static pages -- About, Strategies, Signup, Research

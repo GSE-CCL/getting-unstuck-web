@@ -118,8 +118,10 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     studio_ids = [s["studio_id"] for s in studios]
     data = {
         "studios_ordered": [s.to_json() for s in studios],
+        "project_counts": [s["stats"]["total"]["number_projects"] for s in studios],
         "nations": get_author_origins(get_unique_authors(studio_ids)),
         "totals": {
+            "categories": get_total_categories(studios),
             "unique_authors": len(get_unique_authors(studio_ids)),
             "projects": sum([s["stats"]["total"]["number_projects"] for s in studios]),
             "comments": sum([s["stats"]["total"]["comments_left"] for s in studios]),
@@ -132,6 +134,20 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
         with open("{}/data/summary.json".format(settings.CACHE_DIRECTORY), "w") as f:
             json.dump(data, f)
 
+
+def get_total_categories(studios):
+    """Gets total category counts."""
+
+    categories = dict()
+    for studio in studios:
+        bc = studio["stats"]["total"]["block_categories"]
+        for cat in bc:
+            if cat not in categories:
+                categories[cat] = 0
+            categories[cat] += bc[cat]
+
+    return categories
+            
 
 def get_total_engagement(studio_ids):
     """Gets likes and hearts from Scratch API."""
@@ -162,7 +178,6 @@ def get_author_origins(authors):
     nations = dict()
     scraper = Scraper()
     for author in authors:
-        print(author)
         user = scraper.get_user_info(author)
         if user["profile"]["country"] in nations:
             nations[user["profile"]["country"]] += 1

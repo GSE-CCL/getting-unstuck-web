@@ -6,8 +6,8 @@
 
 {% block main_content %}
 <div class="row" id="above_the_fold" style="margin-bottom: -3rem;">
-    <div class="col-md-8 col-lg-6 p-5" id="review_content">
-        <h1 class="gastromond big mb-5">Getting Unstuck in review</h1>
+    <div class="col-md-8 col-lg-7 p-5" id="review_content">
+        <h1 class="gastromond big mb-5">10 Days of Getting Unstuck</h1>
 
         {% for item in data["content"]: %}
         {% if "<div" in item: %}
@@ -17,7 +17,7 @@
         {% endif %}
         {% endfor %}
     </div>
-    <div class="col-md-4 col-lg-6 px-0">
+    <div class="col-md-4 col-lg-5 px-0">
         <img src="/static/img/outall-75.jpg" alt="projects" class="w-100" style="opacity:.5; transition: .5s" id="img">
     </div>
 </div>
@@ -98,6 +98,59 @@ let get_data = (cb) => {
         }
 
         country_map(countries_data);
+
+
+        let projects_data = [];
+        for (let i = 0; i < data["project_counts"].length; i++) {
+            let a = d3.map();
+            a.set("key", "Day " + i);
+            a.set("value", data["project_counts"][i]);
+            projects_data.push(a);
+        }
+
+        bar_graph(projects_data, "project-graph");
+
+
+        let categories_data = [];
+        for (cat in data["totals"]["categories"]) {
+            let a = d3.map();
+            a.set("key", cat);
+            a.set("value", data["totals"]["categories"][cat])
+            categories_data.push(a);
+        }
+
+        let choose_color = (d) => {
+            // From https://github.com/heyjessi/getting-unstuck-visual/blob/master/js/main.js#L166
+            if (d.get("key") === "motion"){
+                return "#4681db";
+            }
+            if (d.get("key") === "control") {
+                return "#f2ab1d"
+            }
+            if (d.get("key") === "event") {
+                return "#ffcb3f"
+            }
+            if (d.get("key") === "looks") {
+                return "#965ffc"
+            }
+            if (d.get("key") === "operator") {
+                return "#4faa49"
+            }
+            if (d.get("key") === "sensing") {
+                return "#66b2d6"
+            }
+            if (d.get("key") === "sound") {
+                return "#ca70d8"
+            }
+            if (d.get("key") === "data") {
+                return "#ef7b28"
+            }
+            if (d.get("key") === "procedures") {
+                return "#f75976"
+            }
+        };
+
+        bar_graph(categories_data, "categories-graph", {x: 50, y: 30}, choose_color);
     });
 </script>
 

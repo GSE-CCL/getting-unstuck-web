@@ -59,7 +59,7 @@ let country_map = (countries_data) => {
     }
 };
 
-let bar_graph = (dataset, id, margin = {x: 30, y: 30}, barcolor = (d) => { return "#f9d433" }) => {
+let bar_graph = (dataset, id, xlabel="", ylabel="", barcolor = (d) => { return "#f9d433" }, margin = {x: 30, y: 30}, angle = 0) => {
     // Define the div for the tooltip
     let div = d3.select("body").append("div")
                             .attr("class", "tooltip")
@@ -81,15 +81,36 @@ let bar_graph = (dataset, id, margin = {x: 30, y: 30}, barcolor = (d) => { retur
     xScale.domain(dataset.map(function(d) { return d.get("key"); }));
     yScale.domain([0, d3.max(dataset.map(function(d) { return d.get("value"); }))]);
 
+    // x axis
     g.append("g")
         .style("font", ".8rem p22-underground")
-        .attr("transform", "translate(" + margin.x + "," + (height - margin.y) + ")")
-        .call(d3.axisBottom(xScale));
+        .attr("transform", "translate(" + (margin.x * 2) + "," + (height - 2 * margin.y) + ")")
+        .call(d3.axisBottom(xScale))
+        .selectAll("text")
+        .attr("transform", "rotate(" + angle + ")");
 
+    // text label for the x axis
+    svg.append("text")             
+        .attr("transform",
+                "translate(" + (width / 2) + " ," + 
+                            (height - 10) + ")")
+        .style("text-anchor", "middle")
+        .text(xlabel);
+
+    // y axis
     g.append("g")
         .style("font", ".8rem p22-underground")
-        .attr("transform", "translate(" + margin.x + ", " + (margin.y) + ")")
-        .call(d3.axisLeft(yScale));
+        .attr("transform", "translate(" + (margin.x * 2) + ", "+ 0 + ")")
+        .call(d3.axisLeft(yScale).ticks(5));
+
+    // text label for the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text(ylabel); 
 
     g.selectAll(".bar")
         .data(dataset)
@@ -98,7 +119,7 @@ let bar_graph = (dataset, id, margin = {x: 30, y: 30}, barcolor = (d) => { retur
         .attr("x", function(d) { return xScale(d.get("key")); })
         .attr("y", function(d) { return yScale(d.get("value")); })
         .attr("width", xScale.bandwidth())
-        .attr("transform", "translate( " + margin.x + ", " + margin.y + ")")
+        .attr("transform", "translate( " + (margin.x * 2) + ", 0)")
         .attr("height", function(d) { return height - 2 * margin.y - yScale(d.get("value")); })
         .attr("fill", barcolor)
         .on("mouseover", function(d) {

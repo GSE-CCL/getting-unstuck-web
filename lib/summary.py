@@ -116,19 +116,24 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     # Get the data
     studios = get_ordered_studios()
     studio_ids = [s["studio_id"] for s in studios]
+    engagement = get_total_engagement(studio_ids)
     data = {
-        "studios_ordered": [s.to_json() for s in studios],
         "project_counts": [s["stats"]["total"]["number_projects"] for s in studios],
         "nations": get_author_origins(get_unique_authors(studio_ids)),
         "totals": {
             "categories": get_total_categories(studios),
             "unique_authors": len(get_unique_authors(studio_ids)),
             "projects": sum([s["stats"]["total"]["number_projects"] for s in studios]),
+            "block_count": sum([s["stats"]["total"]["block_count"] for s in studios]),
             "comments": sum([s["stats"]["total"]["comments_left"] for s in studios]),
             "description": sum([s["stats"]["total"]["description_words"] for s in studios]),
-            #"engagement": get_total_engagement(studio_ids)
+            "hearts_stars": engagement["loves"] + engagement["favorites"]
         }
     }
+
+    with open("{}/lib/data/summary.json".format(settings.PROJECT_DIRECTORY)) as f:
+        static = json.load(f)
+        data["static"] = static["statistics"]
 
     if Scraper().make_dir("{}/data".format(settings.CACHE_DIRECTORY)):
         with open("{}/data/summary.json".format(settings.CACHE_DIRECTORY), "w") as f:

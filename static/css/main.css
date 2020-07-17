@@ -530,7 +530,7 @@ div.border-yellow {
     position: absolute;
     text-align: center;
     width: 120px;
-    height: 30px;
+    min-height: 30px;
     padding: 2px;
     font-family: 'p22-underground';
     font: 14px;

@@ -47,6 +47,7 @@ class Project(mongo.Document):
     stats = mongo.DictField(required=True)
     history = mongo.DictField(required=True)
     remix = mongo.DictField(required=True)
+    engagement = mongo.DictField(default=dict())
     validation = mongo.DictField(default=dict())
     studio_id = mongo.IntField(default=0)
     cache_expires = mongo.DateTimeField(default=datetime.now()
@@ -430,6 +431,7 @@ def add_project(project_id,
         doc.history = metadata["history"]
         doc.remix = metadata["remix"]
         doc.stats = stats
+        doc.engagement = metadata["stats"]
 
         if studio_id > 0:
             doc.studio_id = studio_id
@@ -446,6 +448,7 @@ def add_project(project_id,
                       image=metadata["image"],
                       history=metadata["history"],
                       remix=metadata["remix"],
+                      engagement=metadata["stats"],
                       studio_id=studio_id,
                       stats=stats)
 

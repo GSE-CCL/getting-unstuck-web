@@ -131,18 +131,15 @@ def get_total_engagement(studio_ids):
     """Gets likes and hearts from Scratch API."""
 
     common.connect_db()
-    projects = scrape.Project(studio_id__in=studio_ids).values_list("project_id")
+    engagement = scrape.Project(studio_id__in=studio_ids).values_list("engagement")
 
     stats = {"views": 0, "loves": 0, "favorites": 0}
-    scraper = Scraper()
-    for project in projects:
-        meta = scraper.get_project_meta(project)
-        stats["views"] += meta["stats"]["views"]
-        stats["loves"] += meta["stats"]["loves"]
-        stats["favorites"] += meta["stats"]["favorites"]
+    for e in engagement:
+        stats["views"] += e["views"]
+        stats["loves"] += e["loves"]
+        stats["favorites"] += e["favorites"]
     
     return stats
-
 
 
 def get_unique_authors(studio_ids):

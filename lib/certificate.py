@@ -91,4 +91,4 @@ def generate_certs(usernames,
         if not cert_download:
             logging.info("certificate download failed for {}".format(username))
     
-    logging.info("certificate generation completed!"
+    logging.info("certificate generation completed!")

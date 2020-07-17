@@ -22,7 +22,7 @@ from lib import tasks
 from lib import authentication
 from lib import admin
 from lib import display
-from lib import convert
+from lib import certificate
 from lib.authentication import admin_required, login_required
 from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
@@ -511,16 +511,19 @@ def prompts():
                            schemas=new_schemas)
 
 
-@app.route("/summary", methods=["GET"])
+@app.route("/summary", methods=["GET", "POST"])
 def summarize():
+    if request.method == "GET":
+        with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
+            data = json.load(f)
 
-    with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
-        data = json.load(f)
+        for i, item in enumerate(data["content"]):
+            data["content"][i] = common.md(item) if isinstance(item, str) else item
 
-    for i, item in enumerate(data["content"]):
-        data["content"][i] = common.md(item) if isinstance(item, str) else item
-
-    return render_template("summary4.html", data=data)
+        return render_template("summary4.html", data=data)
+    else:
+        with open("{}/data/summary.json".format(CACHE_DIRECTORY)) as f:
+            return Response(f.read(), mimetype="application/json")
 
 
 # Static pages -- About, Strategies, Signup, Research

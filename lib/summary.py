@@ -7,6 +7,7 @@ import math
 import requests
 
 from ccl_scratch_tools import Scraper
+from pathlib import Path
 from PIL import Image
 
 from lib import common, schema, scrape, settings
@@ -117,7 +118,7 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     studio_ids = [s["studio_id"] for s in studios]
     data = {
         "studios_ordered": [s.to_json() for s in studios],
-        #"nations": get_author_origins(get_unique_authors(studio_ids)),
+        "nations": get_author_origins(get_unique_authors(studio_ids)),
         "totals": {
             "unique_authors": len(get_unique_authors(studio_ids)),
             "projects": sum([s["stats"]["total"]["number_projects"] for s in studios]),
@@ -127,8 +128,9 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
         }
     }
 
-    with open("static/summary.json", "w") as f:
-        json.dump(data, f)
+    if Scraper().make_dir("{}/data".format(settings.CACHE_DIRECTORY)):
+        with open("{}/data/summary.json".format(settings.CACHE_DIRECTORY), "w") as f:
+            json.dump(data, f)
 
 
 def get_total_engagement(studio_ids):
@@ -160,6 +162,7 @@ def get_author_origins(authors):
     nations = dict()
     scraper = Scraper()
     for author in authors:
+        print(author)
         user = scraper.get_user_info(author)
         if user["profile"]["country"] in nations:
             nations[user["profile"]["country"]] += 1

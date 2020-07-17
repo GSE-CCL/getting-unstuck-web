@@ -69,6 +69,10 @@ def md(text):
     text = text.replace("[/sb]", "</code>")
     text = text.replace("[_sb]", '<code class="_sb">')
     text = text.replace("[/_sb]", "</code>")
+    text = text.replace("[stats]", '<div class="container"><div class="row code-gray">')
+    text = text.replace("[/stats]", "</div></div>")
+    text = text.replace("[stat]", '<span class="stat">')
+    text = text.replace("[/stat]", "</span>")
 
     html = markdown.markdown(text)
 

@@ -1,0 +1,42 @@
+.main {
+    text-align:center;
+    background-color: #FFFFFF;
+    /* width: 280px;
+    margin: 50px auto; */
+    border: 30px solid #5dc7e4; /* width, style, colour */
+    padding: 5%;
+    margin: 0;
+    color: rgb(85, 85, 85);
+    /* position: absolute; */
+
+} 
+
+.underground {
+    font-family: 'p22-underground';
+    font-weight: 600px;
+}
+
+.garamond  {
+    font-family: 'Gastromond';
+}
+
+h3 {
+    margin-top: 50px;
+    font-size: 30px;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+.foot {
+    text-align: left;
+    font-size: 16px;
+}
+
+.name {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: black;
+    font-weight: 800px !important;
+}

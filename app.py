@@ -7,7 +7,7 @@ import time
 import traceback
 import random
 import urllib
-from flask import Flask, redirect, render_template, request, Response, session
+from flask import Flask, redirect, render_template, request, Response, session, url_for, send_from_directory
 from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
@@ -22,6 +22,7 @@ from lib import tasks
 from lib import authentication
 from lib import admin
 from lib import display
+from lib import convert
 from lib.authentication import admin_required, login_required
 from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
@@ -448,29 +449,27 @@ def studio_id(sid):
                            message=message)
 
 
-@app.route("/user/<username>")
+@app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
-    common.connect_db()
-    projects = list(scrape.Project.objects(author=username.lower()))
-    studios = dict()
+    if request.method == "POST":
+        return send_from_directory(CACHE_DIRECTORY, filename = username + ".pdf")
+    else:
+        common.connect_db()
+        projects = list(scrape.Project.objects(author = username.lower()))
+        studios = dict()
 
-    keep_projects = list()
-    for i, project in enumerate(projects):
-        if project["studio_id"] not in studios:
-            studio = scrape.Studio.objects(
-                studio_id=project["studio_id"]).first()
-
-            if studio is not None:
-                studios[project["studio_id"]] = studio
+        keep_projects = list()
+        for i, project in enumerate(projects):
+            if project["studio_id"] not in studios:
+                studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
+                
+                if studio is not None:
+                    studios[project["studio_id"]] = studio
+                    keep_projects.append(project)
+            else:
                 keep_projects.append(project)
-        else:
-            keep_projects.append(project)
 
-    return render_template("username.html",
-                           projects=keep_projects,
-                           studios=studios,
-                           username=username)
-
+        return render_template("username.html", projects=keep_projects, studios=studios, username=username)
 
 @app.route("/prompts", methods=["GET"])
 @cache.cached(timeout=600, unless=authentication.session_active)
@@ -525,6 +524,11 @@ def summarize():
 
 
 # Static pages -- About, Strategies, Signup, Research
+
+# @app.route("/certificate", methods=["GET"])
+# def certificate():
+#     return render_template("certificate.html", username=request.args.get('username'))
+
 @app.route("/")
 @cache.cached(unless=authentication.session_active)
 def homepage():

@@ -479,3 +479,64 @@ input[type=range]::-ms-thumb {
 .hide {
     display: none;
 }
+
+/* summary/certificate */
+div.border-yellow {
+    border-style: solid; 
+    border-radius: 25px; 
+    border-color:#f9d433; 
+    border-width: medium;
+}
+
+/*********************/
+/*  TOOLTIP OVERLAY  */
+/*********************/
+
+.tooltip-title {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  
+  .d3-tip {
+    line-height: 1;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+  }
+  
+  /* Creates a small triangle extender for the tooltip */
+  .d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+  }
+  
+  /* Style northward tooltips differently */
+  .d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+  }
+  
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 120px;
+    height: 30px;
+    padding: 2px;
+    font-family: 'p22-underground';
+    font: 14px;
+    color: white;
+    background: #5dc7e4;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+  }

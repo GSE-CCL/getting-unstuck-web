@@ -50,7 +50,8 @@ def convert_cert(template, username, projectnum, cache_directory=settings.CACHE_
 
     html_template_string = template.render(name=username, projectnum=projectnum)
 
-    pdfkit.from_string(html_template_string, f"{cache_directory}/certificates/{username}.pdf", options=options, css=css)
+    config = pdfkit.configuration(wkhtmltopdf=settings.WKPDF_LOCATION)
+    pdfkit.from_string(html_template_string, f"{cache_directory}/certificates/{username}.pdf", options=options, css=css, configuration=config)
     
     return True
 

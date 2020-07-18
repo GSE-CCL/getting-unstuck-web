@@ -4,6 +4,9 @@ import celery.decorators
 import logging
 from jinja2 import Template
 import os
+
+from ccl_scratch_tools import Scraper
+
 from . import common as common
 from . import scrape, settings
 
@@ -39,15 +42,15 @@ def convert_cert(template, username, projectnum, cache_directory=settings.CACHE_
     }
 
     # Location of the css file
-    css = "lib/assets/certificate.css"
+    css = "{}/lib/assets/certificate.css".format(settings.PROJECT_DIRECTORY)
 
     # Use of jinja and pdfkit to build the certificate pdf
-    jinja2_template_string = open(f"lib/assets/{template}", "rb").read()
+    jinja2_template_string = open("{}/lib/assets/{}".format(settings.PROJECT_DIRECTORY, template), "rb").read()
     template = Template(jinja2_template_string.decode("utf-8"))
 
     html_template_string = template.render(name=username, projectnum=projectnum)
 
-    pdfkit.from_string(html_template_string, f"{cache_directory}/{username}.pdf", options=options, css=css)
+    pdfkit.from_string(html_template_string, f"{cache_directory}/certificates/{username}.pdf", options=options, css=css)
     
     return True
 
@@ -66,6 +69,8 @@ def generate_certs(usernames,
     Returns: 
         None.
     """
+
+    Scraper().make_dir(f"{cache_directory}/certificates")
     
     logging.info("attempting to generate certificates")
     connect_db(credentials_file=credentials_file)

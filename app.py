@@ -262,8 +262,8 @@ def edit_schema(id):
 @admin_required
 def generate_certificate():
     common.connect_db()
-    authors = set(scrape.Project.objects().values_list("author"))
-    certificate.generate_certs(authors).delay()
+    authors = list(set(scrape.Project.objects().values_list("author")))
+    certificate.generate_certs.delay(authors)
 
     return "Started generation"
 
@@ -462,7 +462,7 @@ def studio_id(sid):
 @app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
     if request.method == "POST":
-        return send_from_directory(CACHE_DIRECTORY, filename = username + ".pdf")
+        return send_from_directory(f"{CACHE_DIRECTORY}/certificates", filename=f"{username}.pdf")
     else:
         common.connect_db()
         projects = list(scrape.Project.objects(author = username.lower()))

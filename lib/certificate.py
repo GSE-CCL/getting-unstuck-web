@@ -44,16 +44,19 @@ def convert_cert(template, username, projectnum, cache_directory=settings.CACHE_
     # Location of the css file
     css = "{}/lib/assets/certificate.css".format(settings.PROJECT_DIRECTORY)
 
-    # Use of jinja and pdfkit to build the certificate pdf
-    jinja2_template_string = open("{}/lib/assets/{}".format(settings.PROJECT_DIRECTORY, template), "rb").read()
-    template = Template(jinja2_template_string.decode("utf-8"))
+    try:
+        # Use of jinja and pdfkit to build the certificate pdf
+        jinja2_template_string = open("{}/lib/assets/{}".format(settings.PROJECT_DIRECTORY, template), "rb").read()
+        template = Template(jinja2_template_string.decode("utf-8"))
 
-    html_template_string = template.render(name=username, projectnum=projectnum)
+        html_template_string = template.render(name=username, projectnum=projectnum)
 
-    config = pdfkit.configuration(wkhtmltopdf=settings.WKPDF_LOCATION)
-    pdfkit.from_string(html_template_string, f"{cache_directory}/certificates/{username}.pdf", options=options, css=css, configuration=config)
-    
-    return True
+        config = pdfkit.configuration(wkhtmltopdf=settings.WKPDF_LOCATION)
+        pdfkit.from_string(html_template_string, f"{cache_directory}/certificates/{username}.pdf", options=options, css=css, configuration=config)
+        
+        return True
+    except:
+        return False
 
 
 @celery.decorators.task

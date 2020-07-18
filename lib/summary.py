@@ -132,7 +132,12 @@ def get_ordered_studios(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     studio_ids = studios.values_list("studio_id")
 
     schema_ids = set(studios.values_list("challenge_id"))
-    schema_ids.remove(None)
+
+    try:
+        schema_ids.remove(None)
+    except:
+        pass
+    
     schemas = schema.Challenge.objects(id__in=schema_ids).order_by("short_label", "title")  # yapf: disable
     schema_order = [str(v) for v in schemas.values_list("id")]
 

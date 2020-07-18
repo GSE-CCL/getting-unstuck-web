@@ -463,24 +463,30 @@ def studio_id(sid):
 @app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
     if request.method == "POST":
-        return send_from_directory(f"{CACHE_DIRECTORY}/certificates", filename=f"{username}.pdf")
+        return send_from_directory(f"{CACHE_DIRECTORY}/certificates",
+                                   filename="{}.pdf".format(username.lower()))
     else:
         common.connect_db()
-        projects = list(scrape.Project.objects(author = username.lower()))
+        projects = list(scrape.Project.objects(author=username.lower()))
         studios = dict()
 
         keep_projects = list()
         for i, project in enumerate(projects):
             if project["studio_id"] not in studios:
-                studio = scrape.Studio.objects(studio_id = project["studio_id"]).first()
-                
+                studio = scrape.Studio.objects(
+                    studio_id=project["studio_id"]).first()
+
                 if studio is not None:
                     studios[project["studio_id"]] = studio
                     keep_projects.append(project)
             else:
                 keep_projects.append(project)
 
-        return render_template("username.html", projects=keep_projects, studios=studios, username=username)
+        return render_template("username.html",
+                               projects=keep_projects,
+                               studios=studios,
+                               username=username)
+
 
 @app.route("/prompts", methods=["GET"])
 @cache.cached(timeout=600, unless=authentication.session_active)
@@ -529,7 +535,7 @@ def summarize():
             data = json.load(f)
 
         for i, item in enumerate(data["content"]):
-            data["content"][i] = common.md(item) if isinstance(item, str) else item
+            data["content"][i] = common.md(item) if isinstance(item, str) else item  # yapf: disable
 
         return render_template("summary.html", data=data)
     else:
@@ -540,7 +546,7 @@ def summarize():
 @app.route("/summary/image")
 def summary_image():
     try:
-        with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:
+        with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:  # yapf: disable
             return f.read()
     except:
         return "Not found", 404
@@ -551,6 +557,7 @@ def summary_image():
 def generate_summary():
     summary.generate_summary_page.delay()
     return redirect("/admin/utilities")
+
 
 # Static pages -- About, Strategies, Signup, Research
 @app.route("/")

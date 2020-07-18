@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
-VALID_ADMIN_PAGES = ["errors", "schemas", "studios",  "users", "utilities"]
+VALID_ADMIN_PAGES = ["errors", "schemas", "studios", "users", "utilities"]
 VALID_REDIRECTS = ["/admin/errors"]
 
 

@@ -529,6 +529,7 @@ def prompts():
 
 
 @app.route("/summary", methods=["GET", "POST"])
+@cache.cached(unless=authentication.session_active)
 def summarize():
     if request.method == "GET":
         with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
@@ -544,6 +545,7 @@ def summarize():
 
 
 @app.route("/summary/image")
+@cache.cached()
 def summary_image():
     try:
         with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:  # yapf: disable

@@ -18,7 +18,7 @@ let country_map = (countries_data) => {
         .scale(width / 640 * 100);
 
     queue()
-        .defer(d3.json, "http://enjalot.github.io/wwsd/data/world/world-110m.geojson")
+        .defer(d3.json, "https://enjalot.github.io/wwsd/data/world/world-110m.geojson")
         .await(createVisualization);
 
     function createVisualization(error, topo) {

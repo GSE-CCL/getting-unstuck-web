@@ -265,7 +265,8 @@ def generate_certificate():
     authors = list(set(scrape.Project.objects().values_list("author")))
     certificate.generate_certs.delay(authors)
 
-    return "Started generation"
+    return redirect("/admin/utilities")
+
 
 @app.route("/participation")
 def index():
@@ -549,7 +550,7 @@ def summary_image():
 @admin_required
 def generate_summary():
     summary.generate_summary_page.delay()
-    return "Started generation"
+    return redirect("/admin/utilities")
 
 # Static pages -- About, Strategies, Signup, Research
 @app.route("/")

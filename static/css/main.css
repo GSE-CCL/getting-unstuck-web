@@ -511,7 +511,6 @@ div.border-yellow {
     box-sizing: border-box;
     display: inline;
     font-size: 10px;
-    width: 100%;
     line-height: 1;
     color: rgba(0, 0, 0, 0.8);
     content: "\25BC";
@@ -540,3 +539,7 @@ div.border-yellow {
     border-radius: 8px;
     pointer-events: none;
   }
+
+.child_img_full img {
+    width: 100%;
+}

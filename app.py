@@ -512,7 +512,7 @@ def prompts():
 
 
 @app.route("/summary", methods=["GET", "POST"])
-def summarize():
+def summary():
     if request.method == "GET":
         with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
             data = json.load(f)
@@ -520,18 +520,22 @@ def summarize():
         for i, item in enumerate(data["content"]):
             data["content"][i] = common.md(item) if isinstance(item, str) else item
 
-        return render_template("summary4.html", data=data)
+        return render_template("summary.html", data=data)
     else:
         with open("{}/data/summary.json".format(CACHE_DIRECTORY)) as f:
             return Response(f.read(), mimetype="application/json")
 
 
+@app.route("/summary/image")
+def summary_image():
+    try:
+        with open("{}/lib/data/summary.jpg".format(PROJECT_DIRECTORY), "rb") as f:
+            return f.read()
+    except:
+        return "Not found", 404
+
+
 # Static pages -- About, Strategies, Signup, Research
-
-# @app.route("/certificate", methods=["GET"])
-# def certificate():
-#     return render_template("certificate.html", username=request.args.get('username'))
-
 @app.route("/")
 @cache.cached(unless=authentication.session_active)
 def homepage():

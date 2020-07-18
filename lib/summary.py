@@ -59,6 +59,7 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
             json.dump(data, f)
 
     logging.info("completed aggregating summary statistics")
+    return True
 
 
 
@@ -107,7 +108,10 @@ def get_image_urls(studio_ids=None, credentials_file=settings.DEFAULT_CREDENTIAL
         studio_ids = scrape.Studio.objects(public_show=True).values_list("studio_id")
 
     projects = set(scrape.Project.objects(studio_id__in=studio_ids).values_list("image"))
-    projects.remove(None)
+    try:
+        projects.remove(None)
+    except:
+        pass
 
     return projects
 

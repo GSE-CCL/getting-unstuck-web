@@ -23,6 +23,7 @@ from lib import authentication
 from lib import admin
 from lib import display
 from lib import certificate
+from lib import summary
 from lib.authentication import admin_required, login_required
 from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
@@ -257,6 +258,15 @@ def edit_schema(id):
 
 
 # Studios, projects, users, challenges
+@app.route("/certificate/generate")
+@admin_required
+def generate_certificate():
+    common.connect_db()
+    authors = set(scrape.Project.objects().values_list("author"))
+    certificate.generate_certs(authors).delay()
+
+    return "Started generation"
+
 @app.route("/participation")
 def index():
     return render_template("index.html")
@@ -512,7 +522,7 @@ def prompts():
 
 
 @app.route("/summary", methods=["GET", "POST"])
-def summary():
+def summarize():
     if request.method == "GET":
         with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
             data = json.load(f)
@@ -529,11 +539,17 @@ def summary():
 @app.route("/summary/image")
 def summary_image():
     try:
-        with open("{}/lib/data/summary.jpg".format(PROJECT_DIRECTORY), "rb") as f:
+        with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:
             return f.read()
     except:
         return "Not found", 404
 
+
+@app.route("/summary/generate")
+@admin_required
+def generate_summary():
+    summary.generate_summary_page.delay()
+    return "Started generation"
 
 # Static pages -- About, Strategies, Signup, Research
 @app.route("/")

@@ -80,7 +80,7 @@ def generate_certs(usernames,
     # Loop through each username to generate certificate
     for username in usernames:
         # Get number of projects completed
-        author_count = projects.filter(author=author).count()
+        author_count = projects.filter(author=username).count()
         if author_count > 10:
             logging.info("certificate for {} has more than 10 projects! reset to 10".format(username))
             author_count = 10

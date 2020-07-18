@@ -76,7 +76,12 @@ let init_graphics = () => {
     // Country map
     let countries_data = d3.map();
     for (nation in data["nations"]) {
-        countries_data.set(nation, data["nations"][nation]);
+        if (nation == "United States") {
+            countries_data.set("USA", data["nations"][nation])
+        }
+        else {
+            countries_data.set(nation, data["nations"][nation]);
+        }
     }
 
     country_map(countries_data);

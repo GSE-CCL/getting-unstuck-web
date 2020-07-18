@@ -7,7 +7,7 @@ import time
 import traceback
 import random
 import urllib
-from flask import Flask, redirect, render_template, request, Response, session
+from flask import Flask, redirect, render_template, request, Response, session, url_for, send_from_directory
 from flask_caching import Cache
 from ccl_scratch_tools import Parser
 from ccl_scratch_tools import Scraper
@@ -22,8 +22,10 @@ from lib import tasks
 from lib import authentication
 from lib import admin
 from lib import display
+from lib import certificate
+from lib import summary
 from lib.authentication import admin_required, login_required
-from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, REDIRECT_PAGES, SITE
+from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
 app = Flask(__name__)
 
@@ -256,6 +258,16 @@ def edit_schema(id):
 
 
 # Studios, projects, users, challenges
+@app.route("/certificate/generate")
+@admin_required
+def generate_certificate():
+    common.connect_db()
+    authors = list(set(scrape.Project.objects().values_list("author")))
+    certificate.generate_certs.delay(authors)
+
+    return redirect("/admin/utilities")
+
+
 @app.route("/participation")
 def index():
     return render_template("index.html")
@@ -448,28 +460,32 @@ def studio_id(sid):
                            message=message)
 
 
-@app.route("/user/<username>")
+@app.route("/user/<username>", methods=["GET", "POST"])
 def user_id(username):
-    common.connect_db()
-    projects = list(scrape.Project.objects(author=username.lower()))
-    studios = dict()
+    if request.method == "POST":
+        return send_from_directory(f"{CACHE_DIRECTORY}/certificates",
+                                   filename="{}.pdf".format(username.lower()))
+    else:
+        common.connect_db()
+        projects = list(scrape.Project.objects(author=username.lower()))
+        studios = dict()
 
-    keep_projects = list()
-    for i, project in enumerate(projects):
-        if project["studio_id"] not in studios:
-            studio = scrape.Studio.objects(
-                studio_id=project["studio_id"]).first()
+        keep_projects = list()
+        for i, project in enumerate(projects):
+            if project["studio_id"] not in studios:
+                studio = scrape.Studio.objects(
+                    studio_id=project["studio_id"]).first()
 
-            if studio is not None:
-                studios[project["studio_id"]] = studio
+                if studio is not None:
+                    studios[project["studio_id"]] = studio
+                    keep_projects.append(project)
+            else:
                 keep_projects.append(project)
-        else:
-            keep_projects.append(project)
 
-    return render_template("username.html",
-                           projects=keep_projects,
-                           studios=studios,
-                           username=username)
+        return render_template("username.html",
+                               projects=keep_projects,
+                               studios=studios,
+                               username=username)
 
 
 @app.route("/prompts", methods=["GET"])
@@ -512,9 +528,37 @@ def prompts():
                            schemas=new_schemas)
 
 
-@app.route("/summary", methods=["GET"])
+@app.route("/summary", methods=["GET", "POST"])
+@cache.cached(unless=authentication.session_active)
 def summarize():
-    return render_template("summary.html")
+    if request.method == "GET":
+        with open("{}/lib/data/summary.json".format(PROJECT_DIRECTORY)) as f:
+            data = json.load(f)
+
+        for i, item in enumerate(data["content"]):
+            data["content"][i] = common.md(item) if isinstance(item, str) else item  # yapf: disable
+
+        return render_template("summary.html", data=data)
+    else:
+        with open("{}/data/summary.json".format(CACHE_DIRECTORY)) as f:
+            return Response(f.read(), mimetype="application/json")
+
+
+@app.route("/summary/image")
+@cache.cached()
+def summary_image():
+    try:
+        with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:  # yapf: disable
+            return f.read()
+    except:
+        return "Not found", 404
+
+
+@app.route("/summary/generate")
+@admin_required
+def generate_summary():
+    summary.generate_summary_page.delay()
+    return redirect("/admin/utilities")
 
 
 # Static pages -- About, Strategies, Signup, Research

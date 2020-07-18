@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash
 
 connect_db = common.connect_db
 
-VALID_ADMIN_PAGES = ["errors", "schemas", "studios", "users"]
+VALID_ADMIN_PAGES = ["errors", "schemas", "studios", "users", "utilities"]
 VALID_REDIRECTS = ["/admin/errors"]
 
 
@@ -51,6 +51,8 @@ def get_info(page):
             else:
                 info["errors"] = errors.Error.objects(
                     status__ne="closed").order_by("-timestamp")
+        elif page == "utilities":
+            info["utilities"] = []
 
     return info
 

@@ -43,7 +43,7 @@
     <body>
     {% endif %}
         
-        <nav class="navbar navbar-expand-lg navbar-dark gu-blue-bg" style="overflow-y: visible">
+        <nav class="navbar navbar-expand-lg navbar-dark gu-blue-bg" style="overflow-y: visible" id="main_nav">
             <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#collapsed_nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon" data-target="#collapsed_nav"></span>
             </button>
@@ -65,7 +65,7 @@
                         <a class="nav-link" href="/about">ABOUT</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-nowrap" href="/signup">SIGN UP</a>
+                        <a class="nav-link text-nowrap" href="/summary">SUMMARY</a>
                     </li>
                 </ul>
             </div>
@@ -100,6 +100,8 @@
             </div>
         </nav>
         {% endif %}
+
+        {% block container_setup %}
         <div class="container mt-4">
             <div class="row">
                 <div class="col-12">
@@ -112,7 +114,8 @@
                     {% endif %}
                 </div>
             </div>
-            
+        {% endblock %}
+
             {% block main_content %}
             {% endblock %}
         </div>
@@ -125,10 +128,10 @@
             &nbsp;&nbsp;<a href="https://twitter.com/scratchedteam?lang=en" target="_blank" class="fa fa-twitter"></a>
         </footer>
 
-        {% block end_file %}
-        {% endblock %}
         <script src="/static/js/ie.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
         <script src="/static/js/gu.js"></script>
+        {% block end_file %}
+        {% endblock %}
     </body>
 </html>

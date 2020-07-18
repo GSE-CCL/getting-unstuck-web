@@ -31,9 +31,22 @@
             {% endfor %}
         </ul>
         <p>Is there a project missing from this list? Check back tomorrow to see if it appears. If not, you can reach us at <a href="mailto:gettingunstuck@gse.harvard.edu">gettingunstuck@gse.harvard.edu</a>.</p>
+        
+        <div class="border-yellow">
+            <p style="text-align:center; margin-bottom:0rem" class="mt-3">Congratulations!</p>
+            <div class="text-center">
+                <form action="/user/{{ username }}" method="POST">
+                    <button type="submit" class="btn btn-primary mt-2 mb-2 button round-btn">DOWNLOAD CERTIFICATE</button>
+                </form>
+            </div>
+            
+            <p style="text-align:center">We’d love to hear about your experiences in Getting Unstuck. <br>Please take our <a href="https://www.surveymonkey.com/r/get-unstuck-2020" target="_blank">feedback survey</a>.</p>
+        </div>
+
         {% endif %}
+
     </div>
-    <div class="col-md-5">
+    <div class="col-md-5 vert-center">
         <img src="{{ url_for('static', filename='img/SIGCSE_Motivation.png') }}" class="mt-5 w-100">
     </div>
 </div>

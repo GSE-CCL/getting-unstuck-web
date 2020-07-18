@@ -14,6 +14,10 @@ let get_stat = (identifier, stats) => {
 
 // Replace the stat placeholders on the page with the actual stats
 let replace_stats = (stats) => {
+    if ("updated" in stats) {
+        document.getElementById("update_date").innerText = stats["updated"];
+    }
+
     // Inline stats
     let elements = document.getElementsByClassName("stat");
     for (let i = 0; i < elements.length; i++) {

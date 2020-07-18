@@ -7,6 +7,7 @@ import math
 import requests
 
 from ccl_scratch_tools import Scraper
+from datetime import datetime
 from pathlib import Path
 from PIL import Image
 
@@ -35,6 +36,7 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     logging.info("project image stitch saved, starting on data gathering")
 
     # Get the data
+    now = datetime.now()
     studios = get_ordered_studios()
     studio_ids = [s["studio_id"] for s in studios]
     engagement = get_total_engagement(studio_ids)
@@ -59,7 +61,8 @@ def generate_summary_page(credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
                 sum([s["stats"]["total"]["number_projects"] for s in studios]),
             "unique_authors":
                 len(get_unique_authors(studio_ids))
-        }
+        },
+        "updated": now.strftime("%A, %B %d, %Y")
     }
 
     with open("{}/lib/data/summary.json".format(settings.PROJECT_DIRECTORY)) as f:  # yapf: disable

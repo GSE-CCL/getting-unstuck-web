@@ -270,10 +270,16 @@ def revalidate_studios(studio_ids, credentials_file=settings.DEFAULT_CREDENTIALS
         if schema is None:
             continue
 
+        studio["status"] = "revalidating"
+        studio.save()
+
         projects = scrape.Project.objects(studio_id=studio_id)
         for project in projects:
             project["validation"][str(schema)] = validate_project(schema, project["project_id"], studio_id, credentials_file)
             project.save()
+
+        studio["status"] = "complete"
+        studio.save()
 
     logging.info("Finished revalidating studios.")
 

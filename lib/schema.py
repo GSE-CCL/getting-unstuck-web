@@ -7,16 +7,25 @@ from . import scrape, settings
 
 connect_db = common.connect_db
 
+
 # Here, some validation functions and the schema as a Mongoengine object.
 def valid_comparison_basis(param):
     """Raises a ValidationError if doesn't meet format for comparison_basis."""
     if type(param) != dict:
         raise mongo.ValidationError("comparison_basis is a dict")
     else:
-        if not ("basis" in param and param["basis"] in ["__none__", "required_text", "required_block_categories", "required_blocks"]):
+        bases = [
+            "__none__",
+            "required_text",
+            "required_block_categories",
+            "required_blocks"
+        ]
+
+        if not ("basis" in param and param["basis"] in bases):
             raise mongo.ValidationError("comparison_basis basis key is invalid")
         elif not ("priority" in param):
-            raise mongo.ValidationError("comparison_basis priority key is invalid")
+            raise mongo.ValidationError("comparison_basis priority key is invalid")  # yapf: disable
+
 
 def valid_required_text(param):
     """Raises a ValidationError if doesn't meet format for required_text."""
@@ -28,7 +37,9 @@ def valid_required_text(param):
                 raise mongo.ValidationError("required_text is a list of lists")
             for item in r:
                 if type(item) != str:
-                    raise mongo.ValidationError("required_text is a list of lists of strings")
+                    raise mongo.ValidationError(
+                        "required_text is a list of lists of strings")
+
 
 def valid_required_blocks(param):
     """Raises a ValidationError if doesn't meet format for required_blocks."""
@@ -37,7 +48,9 @@ def valid_required_blocks(param):
     else:
         for r in param:
             if type(r) != dict:
-                raise mongo.ValidationError("required_blocks is a list of dicts")
+                raise mongo.ValidationError(
+                    "required_blocks is a list of dicts")
+
 
 # The part of the schema that can be found with blockify results
 class Blockify(mongo.EmbeddedDocument):
@@ -46,6 +59,7 @@ class Blockify(mongo.EmbeddedDocument):
     sounds = mongo.IntField(default=0)
     sprites = mongo.IntField(default=0)
     variables = mongo.IntField(default=0)
+
 
 # The part of the schema that handles result page text
 class ResultText(mongo.EmbeddedDocument):
@@ -56,10 +70,12 @@ class ResultText(mongo.EmbeddedDocument):
     prompt_framing_text = mongo.StringField(max_length=50000, default="")
     stats_framing_text = mongo.StringField(max_length=50000, default="")
 
+
 # Links have both text and a URL
 class Link(mongo.EmbeddedDocument):
-    url = mongo.URLField(max_length = 2000, required=True)
-    text = mongo.StringField(max_length = 2000, required=True)
+    url = mongo.URLField(max_length=2000, required=True)
+    text = mongo.StringField(max_length=2000, required=True)
+
 
 # The schema as a Mongoengine object.
 class Challenge(mongo.Document):
@@ -68,19 +84,22 @@ class Challenge(mongo.Document):
     short_label = mongo.StringField(max_length=100)
     url = mongo.EmbeddedDocumentField(Link)
     text = mongo.EmbeddedDocumentField(ResultText, required=True)
-    comparison_basis = mongo.DictField(default={"basis": "__none__", "priority": []},
-                                       validation=valid_comparison_basis)
+    comparison_basis = mongo.DictField(default={"basis": "__none__", "priority": []},  # yapf: disable
+                                       validation=valid_comparison_basis)  # yapf: disable
     min_instructions_length = mongo.IntField(default=0)
     min_description_length = mongo.IntField(default=0)
     min_comments_made = mongo.IntField(default=0)
     min_blockify = mongo.EmbeddedDocumentField(Blockify, required=True)
-    required_text = mongo.ListField(default=[[]], validation=valid_required_text)
+    required_text = mongo.ListField(default=[[]],
+                                    validation=valid_required_text)
     required_text_failure = mongo.StringField(max_length=5000)
     required_block_categories = mongo.DictField(default={})
-    required_blocks = mongo.ListField(default=[], validation=valid_required_blocks)
+    required_blocks = mongo.ListField(default=[],
+                                      validation=valid_required_blocks)
     required_blocks_failure = mongo.StringField(max_length=5000)
     stats = mongo.ListField(default=[])
     modified = mongo.DateTimeField(default=datetime.now())
+
 
 # Functions to actually work with this schema
 def add_schema(mins={},
@@ -90,7 +109,7 @@ def add_schema(mins={},
                required_blocks=[],
                required_blocks_failure=None,
                required_text_failure=None,
-               comparison_basis={"basis": "__none__", "priority": []},
+               comparison_basis={"basis": "__none__", "priority": []},  # yapf: disable
                stats=[],
                short_label=None,
                title=None,
@@ -155,9 +174,11 @@ def add_schema(mins={},
         if "concluding_text" in text:
             result_text.concluding_text = text["concluding_text"]
         if "comparison_reflection_text" in text:
-            result_text.comparison_reflection_text = text["comparison_reflection_text"]
+            result_text.comparison_reflection_text = text[
+                "comparison_reflection_text"]
         if "comparison_framing_text" in text:
-            result_text.comparison_framing_text = text["comparison_framing_text"]
+            result_text.comparison_framing_text = text[
+                "comparison_framing_text"]
         if "prompt_framing_text" in text:
             result_text.prompt_framing_text = text["prompt_framing_text"]
 
@@ -171,22 +192,22 @@ def add_schema(mins={},
 
     # URL object
     if url is not None:
-        url = Link(url = url["url"], text = url["text"])
+        url = Link(url=url["url"], text=url["text"])
 
     # Challenge object
-    challenge = Challenge(short_label = short_label,
-                          title = title,
-                          description = description,
-                          url = url,
-                          comparison_basis = comparison_basis,
-                          stats = stats,
-                          text = result_text,
-                          min_blockify = new_min_blockify,
-                          required_text = required_text,
-                          required_block_categories = required_block_categories,
-                          required_blocks = required_blocks,
-                          required_blocks_failure = required_blocks_failure,
-                          required_text_failure = required_text_failure)
+    challenge = Challenge(short_label=short_label,
+                          title=title,
+                          description=description,
+                          url=url,
+                          comparison_basis=comparison_basis,
+                          stats=stats,
+                          text=result_text,
+                          min_blockify=new_min_blockify,
+                          required_text=required_text,
+                          required_block_categories=required_block_categories,
+                          required_blocks=required_blocks,
+                          required_blocks_failure=required_blocks_failure,
+                          required_text_failure=required_text_failure)
 
     if type(mins) == dict:
         if "instructions_length" in mins:
@@ -220,11 +241,14 @@ def get_schema(schema_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
         schema["id"] = str(schema["_id"])
     except:
         schema = dict()
-    
+
     return schema
 
 
-def validate_project(schema, project, studio_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+def validate_project(schema,
+                     project,
+                     studio_id,
+                     credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Determines if the project meets the standards of a given schema.
     
     Args:
@@ -239,21 +263,39 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
         False if couldn't successfully validate the project, as when there's no valid schema.
     """
 
-    stat_types = ["block_comments", "blocks", "categories", "comments", "costumes", "sounds", "variables"]
-    delete_keys = ["description", "text", "modified", "required_text_failure", "required_blocks_failure", "title", "short_label", "comparison_basis"]
+    stat_types = [
+        "block_comments",
+        "blocks",
+        "categories",
+        "comments",
+        "costumes",
+        "sounds",
+        "variables"
+    ]
+    delete_keys = [
+        "description",
+        "text",
+        "modified",
+        "required_text_failure",
+        "required_blocks_failure",
+        "title",
+        "short_label",
+        "comparison_basis"
+    ]
 
     connect_db(credentials_file=credentials_file)
 
     # Get the schema in dictionary format
     if type(schema) != dict:
-        schema = Challenge.objects(id = schema).first().to_mongo().to_dict()
+        schema = Challenge.objects(id=schema).first().to_mongo().to_dict()
 
     if schema is None:
         return False
 
     # Get the project in dictionary format
     if type(project) != dict:
-        project = scrape.Project.objects(project_id = project).first().to_mongo().to_dict()
+        project = scrape.Project.objects(
+            project_id=project).first().to_mongo().to_dict()
 
     # Start the result dictionary
     result = dict.fromkeys(schema)
@@ -273,21 +315,24 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
     bc = schema["min_blockify"]
     result["min_blockify"] = dict.fromkeys(bc)
     for key in schema["min_blockify"]:
-        if key in project["stats"] and len(project["stats"][key]) >= schema["min_blockify"][key]:
+        if key in project["stats"] and len(project["stats"][key]) >= schema["min_blockify"][key]:  # yapf: disable
             result["min_blockify"][key] = True
         else:
             result["min_blockify"][key] = False
             result["met"] = False
-            
+
     # Compare left comment counts
-    project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")
-    comments_left = scrape.Comment.objects(project_id__in=project_ids, author=project["author"]).count()
+    project_ids = scrape.Project.objects(studio_id=studio_id).values_list("project_id")  # yapf: disable
+    comments_left = scrape.Comment.objects(project_id__in=project_ids,
+                                           author=project["author"]).count()
 
     result["min_comments_made"] = comments_left >= schema["min_comments_made"]
 
     # Compare length of instructions and description
-    result["min_instructions_length"] = len(project["instructions"]) >= schema["min_instructions_length"]
-    result["min_description_length"] = len(project["description"]) >= schema["min_description_length"]
+    result["min_instructions_length"] = len(
+        project["instructions"]) >= schema["min_instructions_length"]
+    result["min_description_length"] = len(
+        project["description"]) >= schema["min_description_length"]
 
     # Check for required text
     result["required_text"] = [-1] * len(schema["required_text"])
@@ -314,14 +359,15 @@ def validate_project(schema, project, studio_id, credentials_file=settings.DEFAU
     rb = schema["required_blocks"]
     for opt in range(len(rb)):
         for opcode in rb[opt]:
+            # yapf: disable
             if (not (opcode in project["stats"]["blocks"]
-                and len(project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
+                     and len(project["stats"]["blocks"][opcode]) >= rb[opt][opcode])):
                 result["required_blocks"][opt] = False
                 break
+            # yapf: enable
 
     # Is the schema met overall?
-    result["met"] = (result["met"]
-                     and result["min_comments_made"]
+    result["met"] = (result["met"] and result["min_comments_made"]
                      and result["min_instructions_length"]
                      and result["min_description_length"]
                      and -1 not in result["required_text"]

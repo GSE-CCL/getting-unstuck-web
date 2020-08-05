@@ -1,0 +1,36 @@
+{
+    "content": [
+        "Dear friends,",
+        "A primary aspiration of Getting Unstuck is to support playful learning opportunities where learners can develop both creative and computational fluency by creating, sharing, and reflecting on personally meaningful projects. When we dream big about the questions we have and the ideas we want to explore, we can encounter &ldquo;hard fun,&rdquo; which Seymour Papert explained as &ldquo;fun because it was hard rather than in spite of being hard.&rdquo; In the creative process, the &ldquo;hard&rdquo; part of hard fun can come from feeling frustrated or stuck, and part of the fun comes from the satisfaction of how to get unstuck and make progress. Getting Unstuck was inspired by the idea that we all experience getting stuck and unstuck when we engage in creative work.",
+        "From July 6&ndash;17, 2020, participants received a <a href=\"https://gettingunstuck.gse.harvard.edu/prompts\" target=\"_blank\">daily email invitation</a> to explore an idea, create a Scratch project, share that project to the daily studio, and reflect on creative process. We designed this learning experience for PK&ndash;12 teachers who are passionate and curious about supporting creative work with <a href=\"https://scratch.mit.edu\" target=\"_blank\">Scratch</a> in the classroom. Even in such a short amount of time (only two weeks!), we all explored new things, reflected deeply on our creative process, and supported and encouraged others in our work. Below, we describe some of the participation we saw in Getting Unstuck this year.",
+        "Over a thousand people subscribed to the mailing list and **[stat]totals/unique_authors[/stat]** made at least one project. Collectively, we made a lot of projects!",
+        "[stats][[\"1,009\", \"signups\"], [\"$totals/unique_authors\", \"participants\"], [\"$totals/projects\", \"projects\"]][/stats]",
+        "Participants came from many places all over the world and spoke many different languages. With the help of **translation** blocks, we were able to understand each other!",
+        "<div id=\"country-map\"></div>",
+        "The Getting Unstuck prompts were designed to be accessible to learners of all experience levels, with low floors, high ceilings, and wide walls. We joined Getting Unstuck with a wide range of backgrounds in teaching and learning with Scratch:",
+        "<div id=\"experience-graph\"></div>",
+        "Developing greater computational and creative fluency is supported through practice, or having many opportunities to create projects. As Twyla Tharp said, &ldquo;Creativity is a habit.&rdquo; Every day for ten days, we individually created Scratch projects in response to a prompt and shared them to a collective daily studio. Whether you made one project or ten, we made a lot of projects together in a very short period of time:",
+        "<div id=\"project-graph\"></div>",
+        "Each prompt asked us to explore a number of different computational concepts and blocks. For example, <a href=\"https://gettingunstuck.gse.harvard.edu/studio/27044057\"target=\"_blank\">Day 4</a> focused on **broadcast** blocks, while <a href=\"https://gettingunstuck.gse.harvard.edu/studio/27044072\" target=\"_blank\">Day 8</a> focused on **variables**. Regardless of the day, or how complex any individual project was, we used a lot of blocks from across the block palette.",
+        "[stats][[\"$totals/block_count\", \"Total number of blocks\"]][/stats]",
+        "<div id=\"categories-graph\" class=\"mt-5\"></div>",
+        "The daily emails invited us to reflect on our learning. There is no learning without reflection, as John Dewey noted, especially when it comes to understanding our own creative processes. What we saw in Getting Unstuck was that when all of us reflected in public, those reflections supported our own learning as well as the learning of others. Not only did we create many projects, we wrote a lot about our own work and responded to the work of others:",
+        "[stats][[\"$totals/hearts_stars\", \"Hearts and stars\"], [\"$totals/description\", \"Total number of words in notes/credits\"], [\"$totals/comments\", \"Total number of comments\"]][/stats]",
+        "In our writing, many of us noted that we invested more time than we initially imagined in our creative work. Figuring out what you want to make and then successfully creating the project of your dreams can take time! As we noted earlier, getting stuck and unstuck can mean experiencing the emotional ups and downs of the creative process. Through our <a href=\"https://gettingunstuck.gse.harvard.edu/participation\" target=\"_blank\">new visualization tool</a>, we were able to see our projects in new ways.",
+        "![Image of Getting Unstuck Web visualization tool](/static/img/guw-reflections.png)",
+        "Even during this short experience, we saw expansive creativity within the daily Scratch studios. As you were reading this, you may have noticed the project thumbnails on the right; these are the many projects that we created together. Thank you so much for participating in Getting Unstuck 2020! These were some of our thoughts; we&rsquo;d love to <a href=\"https://www.surveymonkey.com/r/get-unstuck-2020\">hear from you about your experiences</a>. ",
+        "Yours in creative computing,",
+        "Paulina + Karen",
+        "&nbsp;",
+        "<div class=\"text-center\"><a href=\"https://www.surveymonkey.com/r/get-unstuck-2020\" target=\"_blank\" class=\"btn round-btn\">FEEDBACK SURVEY</a></div>"
+    ],
+    "statistics": {
+        "experience": {
+            "Brand new!": 57,
+            "Seen others use it": 113,
+            "Made a couple projects": 259,
+            "Helped others": 315,
+            "Well-acquainted": 265
+        }
+    }
+}

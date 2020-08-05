@@ -1,5 +1,7 @@
 from . import common as common
 from datetime import datetime
+import celery.decorators
+import logging
 import mongoengine as mongo
 from mongoengine.queryset.visitor import Q
 
@@ -245,6 +247,48 @@ def get_schema(schema_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     return schema
 
 
+@celery.decorators.task
+def revalidate_studios(studio_ids,
+                       credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+    """Revalidates a studio against its schema.
+
+    Args:
+        studio_ids (lst): The studio IDs to revalidate.
+        credentials_file (str): path to the database credentials file.
+
+    Returns:
+        None.
+    """
+
+    connect_db(credentials_file=credentials_file)
+
+    for studio_id in studio_ids:
+        logging.info("Revalidating studio {}".format(studio_id))
+
+        studio = scrape.Studio.objects(studio_id=studio_id).first()
+        schema = studio["challenge_id"]
+
+        if schema is None:
+            continue
+
+        studio["status"] = "revalidating"
+        studio.save()
+
+        projects = scrape.Project.objects(studio_id=studio_id)
+        for project in projects:
+            project["validation"][str(
+                schema)] = validate_project(schema,
+                                            project["project_id"],
+                                            studio_id,
+                                            credentials_file)
+            project.save()
+
+        studio["status"] = "complete"
+        studio.save()
+
+    logging.info("Finished revalidating studios.")
+
+
 def validate_project(schema,
                      project,
                      studio_id,
@@ -371,6 +415,6 @@ def validate_project(schema,
                      and result["min_instructions_length"]
                      and result["min_description_length"]
                      and -1 not in result["required_text"]
-                     and False not in result["required_blocks"])
+                     and True in result["required_blocks"])
 
     return result

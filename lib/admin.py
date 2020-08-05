@@ -153,6 +153,18 @@ def set_info(page, form):
                 return True
             except:
                 return False
+        elif form["action"] == "revalidate":
+            try:
+                if form["studio"] == "__all__":
+                    studio_ids = list(scrape.Studio.objects().values_list(
+                        "studio_id"))
+                else:
+                    studio_ids = [int(form["studio"])]
+
+                schema.revalidate_studios.delay(studio_ids)
+                return True
+            except:
+                return False
     elif page == "schemas":
         connect_db()
         if form["action"] == "delete":

@@ -23,11 +23,22 @@ def get_projects():
 
     common.connect_db()
 
+    project_reflections = scrape.ProjectReflection.objects()
+
     try:
         if int(request.args["studio_id"]) > 0:
             projects = json.loads(scrape.Project.objects(studio_id=request.args["studio_id"]).exclude("id", "cache_expires", "image", "reload_page").to_json())
     except:
         projects = json.loads(scrape.Project.objects().exclude("id", "cache_expires", "image", "reload_page").to_json())
+
+    for project in projects:
+        reflections = project_reflections.filter(project_id=project["project_id"]).order_by("-id")
+        if reflections.count() > 0:
+            reflection = reflections.first()
+            project["minutes"] = reflection["minutes"]
+
+            for i, feeling in enumerate(reflection["feelings"]):
+                project[f"feeling_{i}"] = feeling
 
 
     flattened = pd.json_normalize(projects, max_level=level)
@@ -40,7 +51,7 @@ def get_projects():
             stats.append(row)
     cols = cols + sorted(stats)
 
-    response = Response(flattened.to_csv(na_rep=0, columns=cols, index=False), mimetype="text/csv")
+    response = Response(flattened.to_csv(columns=cols, index=False), mimetype="text/csv")
     response.headers.set("Content-Disposition", "attachment", filename="projects.csv")
 
     return response

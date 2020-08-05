@@ -248,7 +248,8 @@ def get_schema(schema_id, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
 
 
 @celery.decorators.task
-def revalidate_studios(studio_ids, credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
+def revalidate_studios(studio_ids,
+                       credentials_file=settings.DEFAULT_CREDENTIALS_FILE):
     """Revalidates a studio against its schema.
 
     Args:
@@ -258,7 +259,7 @@ def revalidate_studios(studio_ids, credentials_file=settings.DEFAULT_CREDENTIALS
     Returns:
         None.
     """
-    
+
     connect_db(credentials_file=credentials_file)
 
     for studio_id in studio_ids:
@@ -275,7 +276,11 @@ def revalidate_studios(studio_ids, credentials_file=settings.DEFAULT_CREDENTIALS
 
         projects = scrape.Project.objects(studio_id=studio_id)
         for project in projects:
-            project["validation"][str(schema)] = validate_project(schema, project["project_id"], studio_id, credentials_file)
+            project["validation"][str(
+                schema)] = validate_project(schema,
+                                            project["project_id"],
+                                            studio_id,
+                                            credentials_file)
             project.save()
 
         studio["status"] = "complete"

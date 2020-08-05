@@ -7,6 +7,7 @@ markdown
 mongoengine
 msgpack
 nltk
+pandas
 pdfkit
 Pillow
 pytest

@@ -16,6 +16,14 @@
         <p>
             {{ studio["description"] }}
         </p>
+
+        {% if user: %}
+        <div class="btn-group mb-5">
+            <a href="#" class="btn btn-secondary align-middle"><i class="fa fa-file-excel-o"></i></a>
+            <a href="/admin/reports/studios?block_detail=all&id={{ studio['studio_id'] }}" class="btn btn-light">Studio</a>
+            <a href="/admin/reports/projects?block_detail=all&studio_id={{ studio['studio_id'] }}" class="btn btn-light">Projects</a>
+        </div>
+        {% endif %}
    
         {% if studio["status"] == "complete": %}
         <form name="find_project" id="find_project" class="mt-1 mb-1">

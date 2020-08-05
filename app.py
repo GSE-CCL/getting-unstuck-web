@@ -25,9 +25,11 @@ from lib import display
 from lib import certificate
 from lib import summary
 from lib.authentication import admin_required, login_required
+from lib.reports import reporting
 from lib.settings import CACHE_DIRECTORY, CLRY, PROJECT_CACHE_LENGTH, PROJECT_DIRECTORY, REDIRECT_PAGES, SITE
 
 app = Flask(__name__)
+app.register_blueprint(reporting)
 
 try:
     celery = tasks.make_celery(CLRY["name"],

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Reports &minus; {% endblock %}
+
+{% block main_content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Reports</h1>
+        <p>Here are some reports you can run:</p>
+        <ul>
+            <li>
+                <a href="/admin/reports/studios">All studios</a>
+                <ul>
+                    <li><a href="/admin/reports/studios?block_detail=all">All studios, with full studio stats</a></li>
+                    <li>Single studio -- see the page of the studio whose data you want to download.</li>
+                </ul>
+            </li>
+            <li>
+                <a href="/admin/reports/projects">All projects</a>
+                <ul>
+                    <li><a href="/admin/reports/projects?block_detail=all">All projects, with full stats</a></li>
+                    <li>Single studio -- see the page of the studio whose data you want to download.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

@@ -10,7 +10,8 @@
 
         <p>
             <a href="/studio">Add</a>&nbsp;&nbsp;
-            <a href="#" data-action="redownload" data-identifier="__all__">Redownload all</a>
+            <a href="#" data-action="redownload" data-identifier="__all__">Redownload all</a>&nbsp;&nbsp;
+            <a href="#" data-action="revalidate" data-identifier="__all__">Revalidate all</a>
         </p>
 
         <table class="table table-responsive-lg">
@@ -51,6 +52,7 @@
                         <a href="#" title="Choose prompt schema" data-action="choose_schema" data-identifier="{{ studio['studio_id'] }}" class="fa fa-link"></a>&nbsp;
                         <a href="#" title="Toggle public visibility" class="fa fa-globe" data-action="toggle_publicity" data-to="{{ not studio['public_show'] }}"></a>&nbsp;
                         <a href="#" title="Redownload" class="fa fa-cloud-download" data-action="redownload" data-identifier="{{ studio['studio_id'] }}"></a>&nbsp;
+                        <a href="#" title="Revalidate" class="fa fa-repeat" data-action="revalidate" data-identifier="{{ studio['studio_id'] }}"></a>&nbsp;
                         <a href="https://scratch.mit.edu/studios/{{ studio['studio_id'] }}" title="View on Scratch" class="fa fa-external-link" target="_blank"></a>&nbsp;
                         <a href="#" data-action="delete" data-identifier="{{ studio['studio_id'] }}" title="Delete" class="fa fa-trash"></a>
                     </td>

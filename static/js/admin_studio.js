@@ -39,6 +39,19 @@ let loaded = function() {
         }, type="form");
     };
 
+    // Page-specific event: revalidate studio
+    let revalidate = (event) => {
+        let identifier = event.target.dataset.identifier;
+        let data = {
+            "action": "revalidate",
+            "studio": identifier,
+            "schema": "__none__"
+        };
+        handle_ajax("POST", "/admin/studios", data, () => {
+            alert("Initiated revalidation.");
+        }, type="form");
+    };
+
     // Set page-specific events
     let page_events = function() {
         let choose_schema_buttons = document.querySelectorAll("[data-action='choose_schema']");
@@ -51,6 +64,12 @@ let loaded = function() {
         redownload_buttons.forEach(btn => {
             btn.removeEventListener("click", redownload);
             btn.addEventListener("click", redownload);
+        });
+
+        let revalidate_buttons = document.querySelectorAll("[data-action='revalidate']");
+        revalidate_buttons.forEach(btn => {
+            btn.removeEventListener("click", revalidate);
+            btn.addEventListener("click", revalidate);
         });
     };
     document.addEventListener("page_events", page_events);

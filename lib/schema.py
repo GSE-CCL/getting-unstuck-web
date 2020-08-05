@@ -415,6 +415,7 @@ def validate_project(schema,
                      and result["min_instructions_length"]
                      and result["min_description_length"]
                      and -1 not in result["required_text"]
-                     and True in result["required_blocks"])
+                     and (True in result["required_blocks"]
+                          or len(result["required_blocks"]) == 0))
 
     return result

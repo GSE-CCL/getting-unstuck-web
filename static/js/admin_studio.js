@@ -44,8 +44,7 @@ let loaded = function() {
         let identifier = event.target.dataset.identifier;
         let data = {
             "action": "revalidate",
-            "studio": identifier,
-            "schema": "__none__"
+            "studio": identifier
         };
         handle_ajax("POST", "/admin/studios", data, () => {
             alert("Initiated revalidation.");

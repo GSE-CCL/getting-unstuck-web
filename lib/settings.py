@@ -20,7 +20,9 @@ CACHE_DIRECTORY = "cache"
 SECURE_DIRECTORY = "secure"
 DEFAULT_CREDENTIALS_FILE = f"{SECURE_DIRECTORY}/db.json"
 
-PROJECT_DIRECTORY = "c:/users/jarch/code/getting-unstuck-web"
+
+
+PROJECT_DIRECTORY = "/Users/phaduong/Documents/getting-unstuck-web"
 PROJECT_CACHE_LENGTH = 60 * 60 * 24 * 7
 
 WKPDF_LOCATION = "/usr/local/bin/wkhtmltopdf"
@@ -39,5 +41,6 @@ REDIRECT_PAGES = {
     "/index.html": "/",
     "/research.html": "/research",
     "/signup.html": "/signup",
-    "/strategies.html": "/strategies"
+    "/strategies.html": "/strategies",
+    "/curriculum.html": "/curriculum"
 }

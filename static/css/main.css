@@ -26,11 +26,11 @@ a.button {
     background-color: #ffffff;
     border: 1px solid #bbb;
     cursor: pointer;
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'p22-underground';
+    font-family: 'Open Sans', sans-serif;
     color: #222;
     height: 100%;
     width: 100%;
@@ -61,9 +61,9 @@ html {
     margin-top: 1em;
 }
 
-
+/* Used to be gastromond font; was replaced by Abril Fatface; only replacing in the CSS for now. */
 .gastromond {
-    font-family: 'Gastromond';
+    font-family: 'Abril Fatface',cursive;
 }
 
 .page-img img{
@@ -169,7 +169,7 @@ img.bug {
     flex: 1;
     height: 100%;
 }
-  
+
 .splash {
     padding: 1em 3em 1em 3em;
     font-size: 1rem;
@@ -236,7 +236,7 @@ td.day {
     width: 450px;
     text-align: center;
     font-size: 3.0em;
-    font-family: 'Gastromond';
+    font-family: 'Abril Fatface', cursive;
 }
 
 .table td {
@@ -287,11 +287,11 @@ ul {
     color: rgb(70, 69, 69);
     border: 1px solid #A6A8AB;
 }
-  
+
 .label:hover {
     background: #E6E7E8;
 }
-  
+
 .label:active {
     background: #ccc;
     box-shadow: inset 0px 0px 0px 2px #F9D344;
@@ -322,13 +322,13 @@ ul {
     padding: 20px 30px 30px;
     background: #fff;
 }
-  
+
 @media (min-width: 600px) {
     .panel {
         order: 99;
     }
 }
-  
+
 .input:checked + .label + .panel {
     display: block;
 }
@@ -482,9 +482,9 @@ input[type=range]::-ms-thumb {
 
 /* summary/certificate */
 div.border-yellow {
-    border-style: solid; 
-    border-radius: 25px; 
-    border-color:#f9d433; 
+    border-style: solid;
+    border-radius: 25px;
+    border-color:#f9d433;
     border-width: medium;
 }
 
@@ -497,7 +497,7 @@ div.border-yellow {
     margin-bottom: 5px;
     font-weight: 600;
   }
-  
+
   .d3-tip {
     line-height: 1;
     padding: 12px;
@@ -505,7 +505,7 @@ div.border-yellow {
     color: #fff;
     border-radius: 2px;
   }
-  
+
   /* Creates a small triangle extender for the tooltip */
   .d3-tip:after {
     box-sizing: border-box;
@@ -517,21 +517,21 @@ div.border-yellow {
     position: absolute;
     text-align: center;
   }
-  
+
   /* Style northward tooltips differently */
   .d3-tip.n:after {
     margin: -1px 0 0 0;
     top: 100%;
     left: 0;
   }
-  
+
   div.tooltip {
     position: absolute;
     text-align: center;
     width: 120px;
     min-height: 30px;
     padding: 2px;
-    font-family: 'p22-underground';
+    font-family: 'Open Sans', sans-serif;
     font: 14px;
     color: white;
     background: #5dc7e4;
@@ -542,4 +542,88 @@ div.border-yellow {
 
 .child_img_full img {
     width: 100%;
+}
+
+
+/* FOR THE CURRICULUM PAGE */
+
+/* for the dropdown https://www.coderomeos.org/pure-html-css-accordion-or-collapsible-panel-using-details-and-summary-tags */
+
+/* .tes {
+  padding: 1.5rem;
+  details {
+    border: 1px solid #5dc7e4;
+    background: #5dc7e4;
+    margin-bottom: 1.5rem;
+    border-radius: 0.35rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+		0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    summary {
+      cursor: pointer;
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+      background: #5dc7e4;
+    }
+    div {
+      padding: 1rem 1.5rem;
+    }
+  }
+} */
+
+/* details summary {
+  cursor: pointer;
+} */
+
+details {
+  border: 1px solid #f9d344;
+  /* background: #5dc7e4; */
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.35rem;
+  /* box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  0 10px 10px -5px rgba(0, 0, 0, 0.04); */
+}
+
+.details-curriculum {
+  padding: 1rem;
+}
+
+summary {
+    cursor: pointer;
+    padding: 1rem;
+    border-bottom: 1px solid #fff;
+    background: #5dc7e4;
+  }
+
+.curriculum-row {
+    padding: 0rem 1.5rem 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+.curriculum-description{
+  padding-top: 1rem;
+}
+
+/* for the images */
+
+.curriculum-img {
+  max-width: 75%;
+  height: auto;
+}
+
+/* for the videos */
+
+.video-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+
+
+.video-container iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }

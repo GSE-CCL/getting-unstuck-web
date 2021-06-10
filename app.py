@@ -1,3 +1,5 @@
+# note to self - commented out all the caching; DON'T UPLOAD APP.PY JUST UPLOAD THE TEMPLATE PAGES
+
 import json
 import logging
 import markdown
@@ -52,7 +54,7 @@ app.url_map.strict_slashes = False
 app.config["CACHE_TYPE"] = "lib.cache.MongoCache"
 app.config["CACHE_DEFAULT_TIMEOUT"] = 1200
 
-cache = Cache(app)
+# cache = Cache(app)
 
 
 # Pass things to all templates
@@ -346,11 +348,11 @@ def reload_project(pid):
 
 
 @app.route("/project/<pid>/view", methods=["GET"])
-@cache.cached(timeout=PROJECT_CACHE_LENGTH,
-              forced_update=scrape.get_reload_project,
-              unless=authentication.session_active)
-def project__id(pid):
-    return display.get_project_page(pid, CACHE_DIRECTORY)
+# @cache.cached(timeout=PROJECT_CACHE_LENGTH,
+#               forced_update=scrape.get_reload_project,
+#               unless=authentication.session_active)
+# def project__id(pid):
+#     return display.get_project_page(pid, CACHE_DIRECTORY)
 
 
 @app.route("/project/<pid>", methods=["GET"])
@@ -491,7 +493,7 @@ def user_id(username):
 
 
 @app.route("/prompts", methods=["GET"])
-@cache.cached(timeout=600, unless=authentication.session_active)
+# @cache.cached(timeout=600, unless=authentication.session_active)
 def prompts():
     common.connect_db()
     studios = list(scrape.Studio.objects(public_show=True))
@@ -546,7 +548,7 @@ def summarize():
 
 
 @app.route("/summary/image")
-@cache.cached()
+# @cache.cached()
 def summary_image():
     try:
         with open("{}/cache/data/projects.jpg".format(PROJECT_DIRECTORY), "rb") as f:  # yapf: disable
@@ -562,40 +564,45 @@ def generate_summary():
     return redirect("/admin/utilities")
 
 
-# Static pages -- About, Strategies, Signup, Research
+# Static pages -- About, Strategies, Signup, Research, Curriculum
 @app.route("/")
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def homepage():
     return render_template("home.html", section="home")
 
+@app.route("/curriculum", methods=["GET"])
+# @cache.cached(unless=authentication.session_active)
+def curriculum():
+    return render_template("curriculum.html")
+
 
 @app.route("/about", methods=["GET"])
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def about():
     return render_template("about.html")
 
 
 @app.route("/strategies", methods=["GET"])
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def strategies():
     return render_template("strategies.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def signup():
     return render_template("signup.html")
 
 
 @app.route("/research", methods=["GET"])
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def research():
     return render_template("research.html")
 
 
 # Error pages
 @app.route("/ie")
-@cache.cached(unless=authentication.session_active)
+# @cache.cached(unless=authentication.session_active)
 def ie():
     return render_template("ie.html")
 
